@@ -21,5 +21,14 @@ class MainViewController: UIViewController {
     @IBAction func unwindToMainViewController( segue : UIStoryboardSegue ) {
         
     }
+    
+    /**
+        Presents a test alert.
+    */
+    @IBAction func presentAlert() {
+        let alert = UIAlertController(title: "Alert", message: "test alert", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 
 }

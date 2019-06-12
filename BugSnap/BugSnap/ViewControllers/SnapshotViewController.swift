@@ -40,9 +40,13 @@ public class SnapshotViewController: UIViewController {
     private func setupNavigationBar() {
         
         // Setup the title and the buttons
-        title = "🐞 Bug Snapped! "
+        title = "Report Bug 🐞"
         navigationItem.setLeftBarButton(UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDone)), animated: false)
-        navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(onEdit)), animated: false)
+        
+        let markupButton = MarkupButton()
+        markupButton.addTarget(self, action: #selector(onEdit), for: .touchUpInside)
+        let annotationBarButtonItem = UIBarButtonItem(customView: markupButton)
+        navigationItem.setRightBarButton(annotationBarButtonItem, animated: false)
     }
     
     private func setupSnapshot() {

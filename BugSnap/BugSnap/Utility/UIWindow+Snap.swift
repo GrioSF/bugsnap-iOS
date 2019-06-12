@@ -34,11 +34,11 @@ public extension UIView {
         fxView.backgroundColor = UIColor.white
         fxView.alpha = 0.0
         addSubview(fxView)
-        UIView.animate(withDuration: 0.25, delay: 0.0, options: [.beginFromCurrentState,.curveEaseIn], animations: {
+        UIView.animate(withDuration: 0.7, delay: 0.0, options: [.beginFromCurrentState,.curveEaseInOut], animations: {
             fxView.alpha = 1.0
         }) { (_) in
             AudioServicesPlaySystemSound(1108)
-            UIView.animate(withDuration: 0.25, delay: 0.0, options: [.beginFromCurrentState,.curveEaseOut], animations: {
+            UIView.animate(withDuration: 0.5, delay: 0.0, options: [.beginFromCurrentState,.curveEaseIn], animations: {
                 fxView.alpha = 0.0
             }) { (_) in
                 fxView.removeFromSuperview()

@@ -41,15 +41,33 @@
                                     <segue destination="h47-Im-0Zv" kind="showDetail" id="xK2-mP-1X1"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LQS-QA-l6x">
+                                <rect key="frame" x="174" y="539" width="66" height="30"/>
+                                <state key="normal" title="Test Alert"/>
+                                <connections>
+                                    <action selector="presentAlert" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="HlS-Mc-kqU"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="51R-py-SmU">
+                                <rect key="frame" x="181" y="593" width="52" height="30"/>
+                                <state key="normal" title="Markup"/>
+                                <connections>
+                                    <segue destination="deS-id-sQd" kind="show" id="o0k-UC-0vI"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="JeD-YI-2ej" firstAttribute="top" secondItem="sE3-H5-h0O" secondAttribute="bottom" constant="21" id="4Vl-MI-inm"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Hue-AL-vpD" secondAttribute="trailing" id="Ffm-HA-K8f"/>
+                            <constraint firstItem="51R-py-SmU" firstAttribute="top" secondItem="LQS-QA-l6x" secondAttribute="bottom" constant="24" id="K4H-ky-05S"/>
                             <constraint firstItem="Hue-AL-vpD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Khu-h3-xqd"/>
                             <constraint firstItem="sE3-H5-h0O" firstAttribute="top" secondItem="Hue-AL-vpD" secondAttribute="bottom" constant="69" id="UiV-7p-3vU"/>
+                            <constraint firstItem="51R-py-SmU" firstAttribute="centerX" secondItem="LQS-QA-l6x" secondAttribute="centerX" id="UsR-Sy-gpI"/>
                             <constraint firstItem="sE3-H5-h0O" firstAttribute="centerX" secondItem="Hue-AL-vpD" secondAttribute="centerX" id="asr-43-Xgq"/>
                             <constraint firstItem="Hue-AL-vpD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="kxF-Ha-AM0"/>
+                            <constraint firstItem="LQS-QA-l6x" firstAttribute="centerX" secondItem="JeD-YI-2ej" secondAttribute="centerX" id="o8r-nM-ZA8"/>
+                            <constraint firstItem="LQS-QA-l6x" firstAttribute="top" secondItem="JeD-YI-2ej" secondAttribute="bottom" constant="25" id="oa0-99-eH7"/>
                             <constraint firstItem="JeD-YI-2ej" firstAttribute="centerX" secondItem="sE3-H5-h0O" secondAttribute="centerX" id="u9Y-6a-B62"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -105,11 +123,27 @@
                             <constraint firstItem="vfy-sn-hcc" firstAttribute="centerY" secondItem="Dos-3c-mhY" secondAttribute="centerY" id="geY-m5-zSc"/>
                             <constraint firstItem="3wL-uP-yHd" firstAttribute="top" secondItem="Dos-3c-mhY" secondAttribute="top" constant="44" id="l9e-ac-WrI"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="icJ-E8-Zpe"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RZ0-u1-2Tu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1372" y="-50"/>
+        </scene>
+        <!--Markup Editor View Controller-->
+        <scene sceneID="mfF-ok-onp">
+            <objects>
+                <viewController id="deS-id-sQd" customClass="MarkupEditorViewController" customModule="BugSnap" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8LD-co-EPR">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="Ex7-3f-kUR"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EWh-fF-fNu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-248" y="895"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="R0n-6h-3oe">
