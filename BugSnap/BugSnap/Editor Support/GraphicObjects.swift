@@ -1,9 +1,10 @@
 //
-//  GraphicProperties.swift
+//  GraphicObjects.swift
 //  BugSnap
+//  Common Definitions
 //
 //  Created by Héctor García Peña on 6/12/19.
-//  Copyright © 2019 Héctor García Peña. All rights reserved.
+//  Copyright © 2019 Grio. All rights reserved.
 //
 
 import UIKit

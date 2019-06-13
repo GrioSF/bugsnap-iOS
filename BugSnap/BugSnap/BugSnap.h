@@ -3,7 +3,7 @@
 //  BugSnap
 //
 //  Created by Héctor García Peña on 6/11/19.
-//  Copyright © 2019 Héctor García Peña. All rights reserved.
+//  Copyright © 2019 Grio. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
