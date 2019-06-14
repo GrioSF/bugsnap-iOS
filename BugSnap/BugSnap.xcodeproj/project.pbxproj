@@ -21,9 +21,20 @@
 		7FEBAC5122B190670022158D /* MarkupButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5022B190670022158D /* MarkupButton.swift */; };
 		7FEBAC5322B19E7C0022158D /* MarkupEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */; };
 		7FEBAC5822B1ABE90022158D /* ColorSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */; };
-		7FEBAC5A22B1B7DB0022158D /* StrokeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5922B1B7DB0022158D /* StrokeButton.swift */; };
-		7FEBAC5D22B1BA4B0022158D /* StrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5C22B1BA4B0022158D /* StrokeView.swift */; };
+		7FEBAC5D22B1BA4B0022158D /* ShapesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5C22B1BA4B0022158D /* ShapesView.swift */; };
 		7FEBAC5F22B1BC810022158D /* GraphicObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5E22B1BC810022158D /* GraphicObjects.swift */; };
+		7FEBAC6122B2A3390022158D /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6022B2A3390022158D /* Shapes.swift */; };
+		7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6222B2A3F70022158D /* Number+Utilities.swift */; };
+		7FEBAC6622B2A4250022158D /* UIView+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6522B2A4250022158D /* UIView+Animations.swift */; };
+		7FEBAC6822B2A42E0022158D /* IrisTransitioningNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6722B2A42E0022158D /* IrisTransitioningNavigationController.swift */; };
+		7FEBAC6A22B2A4790022158D /* UIView+IBHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6922B2A4790022158D /* UIView+IBHelpers.swift */; };
+		7FEBAC6C22B2FF080022158D /* ToolsButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6B22B2FF080022158D /* ToolsButtons.swift */; };
+		7FEBAC6E22B3077D0022158D /* ColorSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6D22B3077D0022158D /* ColorSelectorViewController.swift */; };
+		7FEBAC7022B4079B0022158D /* LineWidthButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC6F22B4079B0022158D /* LineWidthButton.swift */; };
+		7FEBAC7222B408BC0022158D /* PathBasedCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC7122B408BC0022158D /* PathBasedCollectionViewCell.swift */; };
+		7FEBAC7422B41A5E0022158D /* LineWidthSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC7322B41A5E0022158D /* LineWidthSelectorButton.swift */; };
+		7FEBAC7822B41FD60022158D /* PathBasedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC7722B41FD60022158D /* PathBasedTableViewCell.swift */; };
+		7FEBAC7A22B4201C0022158D /* LineWidthSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC7922B4201C0022158D /* LineWidthSelectorViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,9 +65,20 @@
 		7FEBAC5022B190670022158D /* MarkupButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkupButton.swift; sourceTree = "<group>"; };
 		7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkupEditorViewController.swift; sourceTree = "<group>"; };
 		7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelectorButton.swift; sourceTree = "<group>"; };
-		7FEBAC5922B1B7DB0022158D /* StrokeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeButton.swift; sourceTree = "<group>"; };
-		7FEBAC5C22B1BA4B0022158D /* StrokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeView.swift; sourceTree = "<group>"; };
+		7FEBAC5C22B1BA4B0022158D /* ShapesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapesView.swift; sourceTree = "<group>"; };
 		7FEBAC5E22B1BC810022158D /* GraphicObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicObjects.swift; sourceTree = "<group>"; };
+		7FEBAC6022B2A3390022158D /* Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
+		7FEBAC6222B2A3F70022158D /* Number+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Number+Utilities.swift"; sourceTree = "<group>"; };
+		7FEBAC6522B2A4250022158D /* UIView+Animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Animations.swift"; sourceTree = "<group>"; };
+		7FEBAC6722B2A42E0022158D /* IrisTransitioningNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IrisTransitioningNavigationController.swift; sourceTree = "<group>"; };
+		7FEBAC6922B2A4790022158D /* UIView+IBHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+IBHelpers.swift"; sourceTree = "<group>"; };
+		7FEBAC6B22B2FF080022158D /* ToolsButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsButtons.swift; sourceTree = "<group>"; };
+		7FEBAC6D22B3077D0022158D /* ColorSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelectorViewController.swift; sourceTree = "<group>"; };
+		7FEBAC6F22B4079B0022158D /* LineWidthButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineWidthButton.swift; sourceTree = "<group>"; };
+		7FEBAC7122B408BC0022158D /* PathBasedCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathBasedCollectionViewCell.swift; sourceTree = "<group>"; };
+		7FEBAC7322B41A5E0022158D /* LineWidthSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineWidthSelectorButton.swift; sourceTree = "<group>"; };
+		7FEBAC7722B41FD60022158D /* PathBasedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathBasedTableViewCell.swift; sourceTree = "<group>"; };
+		7FEBAC7922B4201C0022158D /* LineWidthSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineWidthSelectorViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +121,7 @@
 		7F0BCF2C22AFFF53006B4F26 /* BugSnap */ = {
 			isa = PBXGroup;
 			children = (
+				7FEBAC6422B2A4180022158D /* Utilities */,
 				7FEBAC5422B19EDC0022158D /* Editor Support */,
 				7FEBAC4D22B17FF70022158D /* CustomViews */,
 				7F0BCF9F22B04F9B006B4F26 /* ViewControllers */,
@@ -144,6 +167,8 @@
 			children = (
 				7F0BCFA022B051C3006B4F26 /* SnapshotViewController.swift */,
 				7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */,
+				7FEBAC6D22B3077D0022158D /* ColorSelectorViewController.swift */,
+				7FEBAC7922B4201C0022158D /* LineWidthSelectorViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -154,8 +179,12 @@
 				7FEBAC4E22B180B00022158D /* PathBasedButton.swift */,
 				7FEBAC5022B190670022158D /* MarkupButton.swift */,
 				7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */,
-				7FEBAC5922B1B7DB0022158D /* StrokeButton.swift */,
-				7FEBAC5C22B1BA4B0022158D /* StrokeView.swift */,
+				7FEBAC5C22B1BA4B0022158D /* ShapesView.swift */,
+				7FEBAC6B22B2FF080022158D /* ToolsButtons.swift */,
+				7FEBAC7322B41A5E0022158D /* LineWidthSelectorButton.swift */,
+				7FEBAC6F22B4079B0022158D /* LineWidthButton.swift */,
+				7FEBAC7122B408BC0022158D /* PathBasedCollectionViewCell.swift */,
+				7FEBAC7722B41FD60022158D /* PathBasedTableViewCell.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -164,8 +193,20 @@
 			isa = PBXGroup;
 			children = (
 				7FEBAC5E22B1BC810022158D /* GraphicObjects.swift */,
+				7FEBAC6022B2A3390022158D /* Shapes.swift */,
 			);
 			path = "Editor Support";
+			sourceTree = "<group>";
+		};
+		7FEBAC6422B2A4180022158D /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				7FEBAC6922B2A4790022158D /* UIView+IBHelpers.swift */,
+				7FEBAC6222B2A3F70022158D /* Number+Utilities.swift */,
+				7FEBAC6722B2A42E0022158D /* IrisTransitioningNavigationController.swift */,
+				7FEBAC6522B2A4250022158D /* UIView+Animations.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,19 +319,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FEBAC4F22B180B00022158D /* PathBasedButton.swift in Sources */,
+				7FEBAC7822B41FD60022158D /* PathBasedTableViewCell.swift in Sources */,
+				7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */,
 				7F0BCFA122B051C3006B4F26 /* SnapshotViewController.swift in Sources */,
+				7FEBAC6122B2A3390022158D /* Shapes.swift in Sources */,
 				7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */,
+				7FEBAC7A22B4201C0022158D /* LineWidthSelectorViewController.swift in Sources */,
+				7FEBAC7022B4079B0022158D /* LineWidthButton.swift in Sources */,
 				7FEBAC5822B1ABE90022158D /* ColorSelectorButton.swift in Sources */,
 				7F0BCF9E22B04C1A006B4F26 /* UIWindow+Snap.swift in Sources */,
+				7FEBAC6622B2A4250022158D /* UIView+Animations.swift in Sources */,
 				7FEBAC5F22B1BC810022158D /* GraphicObjects.swift in Sources */,
+				7FEBAC6E22B3077D0022158D /* ColorSelectorViewController.swift in Sources */,
+				7FEBAC6C22B2FF080022158D /* ToolsButtons.swift in Sources */,
+				7FEBAC7422B41A5E0022158D /* LineWidthSelectorButton.swift in Sources */,
 				7FEBAC5322B19E7C0022158D /* MarkupEditorViewController.swift in Sources */,
 				7FEBAC5122B190670022158D /* MarkupButton.swift in Sources */,
 				7F0BCF9122B00C85006B4F26 /* AccelerometerShakeDetector.swift in Sources */,
+				7FEBAC6822B2A42E0022158D /* IrisTransitioningNavigationController.swift in Sources */,
 				7F0BCF9722B045A2006B4F26 /* UIViewController+Snap.swift in Sources */,
+				7FEBAC6A22B2A4790022158D /* UIView+IBHelpers.swift in Sources */,
 				7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */,
-				7FEBAC5A22B1B7DB0022158D /* StrokeButton.swift in Sources */,
-				7FEBAC5D22B1BA4B0022158D /* StrokeView.swift in Sources */,
+				7FEBAC5D22B1BA4B0022158D /* ShapesView.swift in Sources */,
 				7F0BCF8F22B0011D006B4F26 /* UIApplication+Snap.swift in Sources */,
+				7FEBAC7222B408BC0022158D /* PathBasedCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

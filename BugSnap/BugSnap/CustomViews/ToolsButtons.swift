@@ -1,18 +1,27 @@
 //
-//  StrokeButton.swift
+//  ToolsButtons.swift
 //  BugSnap
 //
-//  Created by Héctor García Peña on 6/12/19.
-//  Copyright © 2019 Grio. All rights reserved.
+//  Created by Héctor García Peña on 6/13/19.
+//  Copyright © 2019 Héctor García Peña. All rights reserved.
 //
 
 import UIKit
 
 /**
-    Button with a pencil path to symbolize a stroke button
-*/
-@IBDesignable class StrokeButton: PathBasedButton {
-
+ Button with a pencil path to symbolize a stroke button
+ */
+@IBDesignable class StrokeTool: ToolButton {
+    
+    override var pathStrokeColor: UIColor? {
+        get {
+            return nil
+        }
+        set(newVal) {
+            
+        }
+    }
+    
     // MARK: - Override PathBasedButton
     
     override public func configureButton() {
@@ -45,11 +54,55 @@ import UIKit
         pathRef.addLine(to: CGPoint(x: 60.067, y: 33.298))
         pathRef.closeSubpath()
         
+        toolType = StrokeShape.self
         designSize = CGSize(width: 128.0, height: 128.0)
         pathStrokeColor = nil
         pathFillColor = UIColor.black
         bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
         path = pathRef as CGPath
     }
+}
 
+/**
+    Button with a pencil path to symbolize a stroke button
+ */
+@IBDesignable class RectangleTool: ToolButton {
+    
+    
+    // MARK: - Override PathBasedButton
+    
+    override public func configureButton() {
+        
+        /*  Shape   */
+        let bezierPath = UIBezierPath(rect: CGRect(x: 10, y: 14, width: 20, height: 12))
+        
+        toolType = RectangleShape.self
+        designSize = CGSize(width: 40.0, height: 40.0)
+        pathStrokeColor = nil
+        pathFillColor = UIColor.black
+        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        path = bezierPath.cgPath
+    }
+}
+
+/**
+ Button with a pencil path to symbolize a stroke button
+ */
+@IBDesignable class OvalTool: ToolButton {
+    
+    
+    // MARK: - Override PathBasedButton
+    
+    override public func configureButton() {
+        
+        /*  Shape   */
+        let bezierPath = UIBezierPath(ovalIn: CGRect(x: 10, y: 12, width: 20, height: 16))
+        
+        toolType = OvalShape.self
+        designSize = CGSize(width: 40.0, height: 40.0)
+        pathStrokeColor = nil
+        pathFillColor = UIColor.black
+        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        path = bezierPath.cgPath
+    }
 }

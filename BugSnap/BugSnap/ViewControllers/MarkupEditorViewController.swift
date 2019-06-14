@@ -18,11 +18,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     /// The screen snapshot
     var screenSnapshot : UIImage? = nil
-    
-    // MARK: - Current Drawing Parameters
-    
-    /// The stroke color
-    private var graphicProperties = GraphicProperties()
 
     // MARK: - UI Properties
     
@@ -30,10 +25,7 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     private var scrollView = UIScrollView()
     
     /// The content view for the scroll view
-    private var snapshot = UIImageView()
-    
-    /// The stroke bar button item
-    private var strokeButton : StrokeButton!
+    private var snapshot = ShapesView()
     
     // MARK: - View Life Cycle
     
@@ -99,17 +91,23 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     }
     
     private func setupToolbar() {
-        strokeButton = StrokeButton()
-        strokeButton.addTarget(self, action: #selector(onStroke), for: .touchUpInside)
-        let strokeButtonItem = UIBarButtonItem(customView: strokeButton)
-        navigationController?.toolbar.setItems([strokeButtonItem,
-                                                colorButton(color: UIColor.black),
-                                                colorButton(color: UIColor.white),
-                                                colorButton(color: UIColor.red, selected: true),
-                                                colorButton(color: UIColor.blue),
-                                                colorButton(color: UIColor.green),
+        navigationController?.toolbar.setItems([toolButton(button: StrokeTool()),
+                                                toolButton(button: RectangleTool()),
+                                                toolButton(button: OvalTool()),
+                                                customViewControl(control: LineWidthSelectorButton(), selector: #selector(onLineWidth(button:))),
+                                                colorButton(color: UIColor.black, selected: true),
                                                 UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
             ], animated: true)
+    }
+    
+    private func customViewControl( control : UIControl, selector : Selector ) -> UIBarButtonItem {
+        control.addTarget(self, action: selector, for: .touchUpInside)
+        return UIBarButtonItem(customView: control)
+    }
+    
+    private func toolButton ( button : ToolButton ) -> UIBarButtonItem {
+        button.addTarget(self, action: #selector(onTool(button:)), for: .touchUpInside)
+        return UIBarButtonItem(customView: button)
     }
     
     private func colorButton( color : UIColor , selected : Bool = false) -> UIBarButtonItem {
@@ -121,11 +119,29 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         button.bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40.0, height: 40.0))
         
         if selected {
-            strokeButton.pathFillColor = color
-            graphicProperties.strokeColor = color
+            setToolsColor(color: color)
         }
         
         return UIBarButtonItem(customView: button)
+    }
+    
+    private func setToolsColor( color : UIColor? , isStroke : Bool = true) {
+        if let items = navigationController?.toolbar.items {
+            items.forEach { if $0.customView?.isKind(of: ToolButton.self) ?? false {
+                    if isStroke {
+                        ($0.customView as? ToolButton)?.pathFillColor = color
+                    } else {
+                        ($0.customView as? ToolButton)?.pathStrokeColor = color
+                    }
+                }
+            }
+        }
+        if isStroke {
+            snapshot.graphicProperties.strokeColor = color
+        } else {
+            snapshot.graphicProperties.fillColor = color
+        }
+        
     }
     
     // MARK: - UICallback
@@ -134,52 +150,58 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         self.navigationController?.popViewController(animated: true)
     }
     
-    @objc func onStroke() {
+    @objc func onTool( button : ToolButton ) {
+        guard let items = navigationController?.toolbar.items else { return }
         
-        if let strokeView = snapshot.subviews.last as? StrokeView,
-            strokeView.isUserInteractionEnabled {
+        // Toggle
+        guard !button.isSelected else {
+            button.isSelected = false
+            snapshot.currentToolType = nil
             scrollView.isScrollEnabled = true
-            strokeView.isUserInteractionEnabled = false
-            strokeView.backgroundColor = UIColor.clear
             snapshot.isUserInteractionEnabled = false
             return
         }
         
-        let strokeView = StrokeView()
-        strokeView.backgroundColor = UIColor(white: 0.0, alpha: 0.1)
-        strokeView.bounds = snapshot.bounds
-        strokeView.center = CGPoint(x: strokeView.bounds.width * 0.5, y: strokeView.bounds.height * 0.5)
-        strokeView.isUserInteractionEnabled = true
-        strokeView.graphicProperties = graphicProperties
-        scrollView.isScrollEnabled = false
-        snapshot.isUserInteractionEnabled = true
-        snapshot.addSubview(strokeView)
-    }
-    
-    @objc func onColor( button : ColorSelectorButton? ) {
-        guard let items = navigationController?.toolbar.items else { return }
-        
-        // Deselect previous color
+        // Toggle the selection
         for item in items {
-            if let control = item.customView as? UIControl,
-               control.isSelected {
+            if let control = item.customView as? ToolButton,
+                control.isSelected {
                 control.isSelected = false
                 break
             }
         }
-        
-        // Select current color
-        strokeButton.pathFillColor = button?.pathFillColor
-        graphicProperties.strokeColor = button?.pathFillColor
-        button?.isSelected = true
-        updateTool()
+        button.isSelected = true
+        snapshot.currentToolType = button.toolType
+        scrollView.isScrollEnabled = false
+        snapshot.isUserInteractionEnabled = true
     }
     
-    private func updateTool() {
-        if var drawable = snapshot.subviews.last as? DrawableView {
-            drawable.graphicProperties = graphicProperties
+    @objc func onColor( button : ColorSelectorButton? ) {
+        
+        let controller = ColorSelectorViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        controller.modalPresentationStyle = .popover
+        controller.popoverPresentationController?.delegate = self
+        controller.popoverPresentationController?.sourceView = button
+        controller.onColorSelected = {
+            [weak self] (color) in
+            self?.setToolsColor(color: color)
         }
+        
+        present(controller, animated: true, completion: nil)
     }
+    
+    @objc func onLineWidth( button : UIView? ) {
+        let controller = LineWidthSelectorViewController()
+        controller.modalPresentationStyle = .popover
+        controller.popoverPresentationController?.delegate = self
+        controller.popoverPresentationController?.sourceView = button
+        controller.onLineWidthSelected = {
+            [weak self] (lineWidth) in
+            self?.snapshot.graphicProperties.lineWidth = lineWidth
+        }
+        present(controller, animated: true, completion: nil)
+    }
+    
     
     // MARK: - UIScrollViewDelegate
     

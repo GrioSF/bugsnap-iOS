@@ -151,3 +151,26 @@ import UIKit
     }
 
 }
+
+/**
+    Generic button for a tool. All the tools when selected allow to be selected
+ */
+@IBDesignable class ToolButton : PathBasedButton {
+    
+    /// Override to mark the button as selected
+    public override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                layer.cornerRadius = bounds.width * 0.5
+                layer.masksToBounds = true
+                layer.borderWidth = 1.0
+                layer.borderColor = UIColor.black.cgColor
+            } else {
+                layer.borderWidth = 0.0
+            }
+        }
+    }
+    
+    /// The shape tool associated with the tool button
+    var toolType : ShapeToolType!
+}
