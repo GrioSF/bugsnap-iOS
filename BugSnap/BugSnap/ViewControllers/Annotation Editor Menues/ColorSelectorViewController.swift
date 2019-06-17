@@ -19,7 +19,7 @@ public class ColorSelectorViewController: UICollectionViewController {
     // MARK: - Properties
     
     /// The available colors for selecting
-    var colors = [UIColor]()
+    var colors = [UIColor?]()
     
     /// The callback when selecting the color. The callback will be called when the color is selected in the popover
     var onColorSelected : ((UIColor?)->Void)? = nil
@@ -45,6 +45,24 @@ public class ColorSelectorViewController: UICollectionViewController {
     // MARK: - Support
     
     private func setupColors() {
+        
+        colors.append(nil)
+        colors.append(UIColor.black)
+        colors.append(UIColor.darkText)
+        colors.append(UIColor.darkGray)
+        colors.append(UIColor.gray)
+        colors.append(UIColor.lightGray)
+        colors.append(UIColor.lightText)
+        colors.append(UIColor.white)
+        colors.append(UIColor.red)
+        colors.append(UIColor.green)
+        colors.append(UIColor.blue)
+        colors.append(UIColor.orange)
+        colors.append(UIColor.yellow)
+        colors.append(UIColor.magenta)
+        colors.append(UIColor.purple)
+        colors.append(UIColor.brown)
+        colors.append(UIColor.cyan)
         
         for i in 0...4 {
             for j in 0...4 {

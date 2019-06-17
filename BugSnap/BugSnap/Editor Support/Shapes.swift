@@ -96,7 +96,7 @@ public protocol ShapePathAdapter : ShapeGestureHandler {
 }
 
 /// A convenience alias for the shape tool
-typealias ShapeTool = CAShapeLayer&ShapeProtocol&ShapeGestureHandler
+typealias ShapeTool = CALayer&ShapeProtocol&ShapeGestureHandler
 
 /// The type for a shape tool
 typealias ShapeToolType = ShapeTool.Type
@@ -243,7 +243,7 @@ public class StrokeShape : Shape {
             points.append(converted)
         }
         path = stroke.path as CGPath?
-        enclosingFrame = CGRect(x: 0, y: 0, width: enclosingFrame.width, height: enclosingFrame.height)
+        enclosingFrame = enclosingFrame.originAnchoredRect
     }
 }
 
@@ -258,7 +258,7 @@ public class RectangleShape : Shape {
     }
     
     override public func normalizePath() {
-        enclosingFrame = CGRect(x: 0, y: 0, width: enclosingFrame.width, height: enclosingFrame.height)
+        enclosingFrame = enclosingFrame.originAnchoredRect
         path = UIBezierPath(rect: enclosingFrame ).cgPath
     }
     
@@ -275,8 +275,10 @@ public class OvalShape : Shape {
     }
     
     override public func normalizePath() {
-        enclosingFrame = CGRect(x: 0, y: 0, width: enclosingFrame.width, height: enclosingFrame.height)
+        enclosingFrame = enclosingFrame.originAnchoredRect
         path = UIBezierPath(ovalIn: enclosingFrame).cgPath
     }
 }
+
+
 

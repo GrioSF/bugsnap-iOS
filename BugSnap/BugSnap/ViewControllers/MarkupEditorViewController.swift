@@ -18,6 +18,9 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     /// The screen snapshot
     var screenSnapshot : UIImage? = nil
+    
+    /// The handler when the edition has finished
+    var onEditionFinished : ((UIImage?)->Void)? = nil
 
     // MARK: - UI Properties
     
@@ -27,17 +30,33 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     /// The content view for the scroll view
     private var snapshot = ShapesView()
     
+    /// The undo button for enabling it or disable it
+    private var undoButton : UndoButton!
+    
     // MARK: - View Life Cycle
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        snapshot.image = UIImage(named: "TestImage")
+        
+        snapshot.image = screenSnapshot ?? UIImage(named: "TestImage")
+        snapshot.onEndedGesture = {
+            [weak self] (autoDeselected) in
+            
+            if autoDeselected {
+                self?.scrollView.isScrollEnabled = true
+                self?.snapshot.isUserInteractionEnabled = false
+                // Reset the auto deselection whenever this is called.
+                self?.snapshot.autoDeselect = false
+            }
+            self?.undoButton.isEnabled = self?.snapshot.isDirty ?? false
+            
+        }
         setup()        
     }
     
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        undoButton.isEnabled = snapshot.isDirty
     }
     
     override public func viewDidAppear(_ animated: Bool) {
@@ -52,8 +71,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     // MARK: - Setup for the UI elements
     
-    
-    
     private func setup() {
         setupNavigationBar()
         setupScrollView()
@@ -62,7 +79,10 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     private func setupNavigationBar() {
         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDone))
+        undoButton = UndoButton()
+        let undoButtonItem = customViewControl(control: undoButton, selector: #selector(onUndo(button:)))
         navigationItem.setLeftBarButton(doneButton, animated: false)
+        navigationItem.setRightBarButton(undoButtonItem, animated: false)
         navigationController?.setToolbarHidden(false, animated: false)
         title = "Markup"
     }
@@ -92,12 +112,15 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     private func setupToolbar() {
         navigationController?.toolbar.setItems([toolButton(button: StrokeTool()),
-                                                toolButton(button: RectangleTool()),
-                                                toolButton(button: OvalTool()),
+                                                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
                                                 customViewControl(control: LineWidthSelectorButton(), selector: #selector(onLineWidth(button:))),
-                                                colorButton(color: UIColor.black, selected: true),
-                                                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+                                                customViewControl(control: StrokeColorSelectorButton(), selector: #selector(onStrokeColor(button:))),
+                                                customViewControl(control: ColorSelectorButton(), selector: #selector(onFillColor(button:))),
+                                                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                                                customViewControl(control: ShapeSelectorButton(), selector: #selector(onShapeTools(button:)))
             ], animated: true)
+        setToolsColor(color: UIColor.red, isStroke: true)
+        setToolsColor(color: nil, isStroke: false)
     }
     
     private func customViewControl( control : UIControl, selector : Selector ) -> UIBarButtonItem {
@@ -110,28 +133,13 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         return UIBarButtonItem(customView: button)
     }
     
-    private func colorButton( color : UIColor , selected : Bool = false) -> UIBarButtonItem {
-        let button = ColorSelectorButton()
-        button.pathFillColor = color
-        button.pathLineWidth = 2.0
-        button.addTarget(self, action: #selector(onColor(button:)), for: .touchUpInside)
-        button.isSelected = selected
-        button.bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40.0, height: 40.0))
-        
-        if selected {
-            setToolsColor(color: color)
-        }
-        
-        return UIBarButtonItem(customView: button)
-    }
-    
     private func setToolsColor( color : UIColor? , isStroke : Bool = true) {
         if let items = navigationController?.toolbar.items {
             items.forEach { if $0.customView?.isKind(of: ToolButton.self) ?? false {
                     if isStroke {
-                        ($0.customView as? ToolButton)?.pathFillColor = color
-                    } else {
                         ($0.customView as? ToolButton)?.pathStrokeColor = color
+                    } else {
+                        ($0.customView as? ToolButton)?.pathFillColor = color
                     }
                 }
             }
@@ -144,14 +152,58 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         
     }
     
+    // MARK: - Support
+    
+    private func deselectToolbarTools() {
+        guard let items = navigationController?.toolbar.items else { return }
+        
+        // Toggle the selection
+        for item in items {
+            if let control = item.customView as? ToolButton,
+                control.isSelected {
+                control.isSelected = false
+                break
+            }
+        }
+    }
+    
+    private func captureTextToolText() {
+        let controller = UIAlertController(title: "Text Tool", message: "Enter your text", preferredStyle: .alert)
+        controller.addTextField { (textField) in
+            textField.text = "Text"
+            textField.font = UIFont.systemFont(ofSize: 16.0, weight: .semibold)
+            
+        }
+        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
+            (_) in
+            self.snapshot.currentToolType = nil
+        }))
+        controller.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+            let textField = controller.textFields?.first!
+            self.snapshot.currentText = textField?.text
+            self.deselectToolbarTools()
+            self.scrollView.isScrollEnabled = false
+            self.snapshot.isUserInteractionEnabled = true
+            self.snapshot.autoDeselect = true
+        }))
+        present(controller, animated: true, completion: nil)
+    }
+    
     // MARK: - UICallback
     
     @objc func onDone() {
-        self.navigationController?.popViewController(animated: true)
+        scrollView.isUserInteractionEnabled = false
+        snapshot.snapshot { [weak self] (image) in
+            self?.onEditionFinished?(image)
+            self?.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    @objc func onUndo( button : PathBasedButton ) {
+        button.isEnabled = snapshot.undo()
     }
     
     @objc func onTool( button : ToolButton ) {
-        guard let items = navigationController?.toolbar.items else { return }
         
         // Toggle
         guard !button.isSelected else {
@@ -162,21 +214,29 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
             return
         }
         
-        // Toggle the selection
-        for item in items {
-            if let control = item.customView as? ToolButton,
-                control.isSelected {
-                control.isSelected = false
-                break
-            }
-        }
+        // Select this tool
+        deselectToolbarTools()
         button.isSelected = true
         snapshot.currentToolType = button.toolType
         scrollView.isScrollEnabled = false
         snapshot.isUserInteractionEnabled = true
     }
     
-    @objc func onColor( button : ColorSelectorButton? ) {
+    @objc func onStrokeColor( button : StrokeColorSelectorButton? ) {
+        let controller = ColorSelectorViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        controller.modalPresentationStyle = .popover
+        controller.popoverPresentationController?.delegate = self
+        controller.popoverPresentationController?.sourceView = button
+        controller.onColorSelected = {
+            [weak self] (color) in
+            button?.pathFillColor = color
+            self?.setToolsColor(color: color, isStroke: true)
+        }
+        
+        present(controller, animated: true, completion: nil)
+    }
+    
+    @objc func onFillColor( button : ColorSelectorButton? ) {
         
         let controller = ColorSelectorViewController(collectionViewLayout: UICollectionViewFlowLayout())
         controller.modalPresentationStyle = .popover
@@ -184,7 +244,8 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         controller.popoverPresentationController?.sourceView = button
         controller.onColorSelected = {
             [weak self] (color) in
-            self?.setToolsColor(color: color)
+            button?.pathFillColor = color
+            self?.setToolsColor(color: color, isStroke: false)
         }
         
         present(controller, animated: true, completion: nil)
@@ -198,6 +259,28 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         controller.onLineWidthSelected = {
             [weak self] (lineWidth) in
             self?.snapshot.graphicProperties.lineWidth = lineWidth
+        }
+        present(controller, animated: true, completion: nil)
+    }
+    
+    @objc func onShapeTools( button : UIView? ) {
+        let controller = ShapeToolViewController()
+        controller.modalPresentationStyle = .popover
+        controller.popoverPresentationController?.delegate = self
+        controller.popoverPresentationController?.sourceView = button
+        controller.graphicProperties = snapshot.graphicProperties
+        controller.onToolSelected = {
+            [weak self] (toolType) in
+            self?.deselectToolbarTools()
+            self?.snapshot.currentToolType = toolType
+            
+            if toolType == TextShape.self {
+                self?.captureTextToolText()
+            } else {
+                self?.scrollView.isScrollEnabled = false
+                self?.snapshot.isUserInteractionEnabled = true
+                self?.snapshot.autoDeselect = true
+            }
         }
         present(controller, animated: true, completion: nil)
     }

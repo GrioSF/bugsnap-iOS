@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BugSnap
 
 /**
     Test view controller with a unwind segue
@@ -29,6 +30,14 @@ class MainViewController: UIViewController {
         let alert = UIAlertController(title: "Alert", message: "test alert", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+    
+    
+    /**
+        Take a snapshot
+    */
+    @IBAction func takeSnapshot() {
+        NotificationCenter.default.post(name: .shakeEventDetected, object: nil)
     }
 
 }

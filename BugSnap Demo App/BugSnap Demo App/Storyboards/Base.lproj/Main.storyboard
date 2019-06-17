@@ -55,6 +55,13 @@
                                     <segue destination="deS-id-sQd" kind="show" id="o0k-UC-0vI"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s4S-tj-Uzw">
+                                <rect key="frame" x="174.5" y="652" width="65" height="30"/>
+                                <state key="normal" title="Snapshot"/>
+                                <connections>
+                                    <action selector="takeSnapshot" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Jiv-0H-U0P"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -62,6 +69,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Hue-AL-vpD" secondAttribute="trailing" id="Ffm-HA-K8f"/>
                             <constraint firstItem="51R-py-SmU" firstAttribute="top" secondItem="LQS-QA-l6x" secondAttribute="bottom" constant="24" id="K4H-ky-05S"/>
                             <constraint firstItem="Hue-AL-vpD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Khu-h3-xqd"/>
+                            <constraint firstItem="s4S-tj-Uzw" firstAttribute="top" secondItem="51R-py-SmU" secondAttribute="bottom" constant="29" id="Rq1-Xr-nk8"/>
                             <constraint firstItem="sE3-H5-h0O" firstAttribute="top" secondItem="Hue-AL-vpD" secondAttribute="bottom" constant="69" id="UiV-7p-3vU"/>
                             <constraint firstItem="51R-py-SmU" firstAttribute="centerX" secondItem="LQS-QA-l6x" secondAttribute="centerX" id="UsR-Sy-gpI"/>
                             <constraint firstItem="sE3-H5-h0O" firstAttribute="centerX" secondItem="Hue-AL-vpD" secondAttribute="centerX" id="asr-43-Xgq"/>
@@ -69,6 +77,7 @@
                             <constraint firstItem="LQS-QA-l6x" firstAttribute="centerX" secondItem="JeD-YI-2ej" secondAttribute="centerX" id="o8r-nM-ZA8"/>
                             <constraint firstItem="LQS-QA-l6x" firstAttribute="top" secondItem="JeD-YI-2ej" secondAttribute="bottom" constant="25" id="oa0-99-eH7"/>
                             <constraint firstItem="JeD-YI-2ej" firstAttribute="centerX" secondItem="sE3-H5-h0O" secondAttribute="centerX" id="u9Y-6a-B62"/>
+                            <constraint firstItem="s4S-tj-Uzw" firstAttribute="centerX" secondItem="51R-py-SmU" secondAttribute="centerX" id="whX-6I-17b"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>

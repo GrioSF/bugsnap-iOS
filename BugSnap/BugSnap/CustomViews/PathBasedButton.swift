@@ -155,7 +155,7 @@ import UIKit
 /**
     Generic button for a tool. All the tools when selected allow to be selected
  */
-@IBDesignable class ToolButton : PathBasedButton {
+@IBDesignable public class ToolButton : PathBasedButton {
     
     /// Override to mark the button as selected
     public override var isSelected: Bool {

@@ -85,12 +85,11 @@ public extension UIApplication {
         }
         
         // Take the snapshot and present the view controller
-        view.snapshot { (image) in
+        view.snapshot( flashing : true) { (image) in
             let snapController = SnapshotViewController()
             snapController.screenCapture = image
             
-            let navigationController = UINavigationController(rootViewController: snapController)
-            navigationController.modalTransitionStyle = .crossDissolve
+            let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
             
             if let controller = UIViewController.topMostViewController {
                 controller.present(navigationController, animated: true, completion: nil)

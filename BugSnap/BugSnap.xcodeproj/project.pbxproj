@@ -15,8 +15,15 @@
 		7F0BCF9722B045A2006B4F26 /* UIViewController+Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9622B045A2006B4F26 /* UIViewController+Snap.swift */; };
 		7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */; };
 		7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */; };
-		7F0BCF9E22B04C1A006B4F26 /* UIWindow+Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9D22B04C1A006B4F26 /* UIWindow+Snap.swift */; };
+		7F0BCF9E22B04C1A006B4F26 /* UIView+Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */; };
 		7F0BCFA122B051C3006B4F26 /* SnapshotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCFA022B051C3006B4F26 /* SnapshotViewController.swift */; };
+		7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */; };
+		7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683D22B4546F0018AC74 /* GeometryExtensions.swift */; };
+		7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E1922B7CE7F0007A02E /* LineShapes.swift */; };
+		7FB62E1D22B7D4900007A02E /* ShapeToolViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E1C22B7D4900007A02E /* ShapeToolViewController.swift */; };
+		7FB62E1F22B7D8050007A02E /* ShapeSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E1E22B7D8050007A02E /* ShapeSelectorButton.swift */; };
+		7FB62E2122B7E0650007A02E /* TextShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2022B7E0650007A02E /* TextShape.swift */; };
+		7FB62E2422B7F4C60007A02E /* UndoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2322B7F4C60007A02E /* UndoButton.swift */; };
 		7FEBAC4F22B180B00022158D /* PathBasedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC4E22B180B00022158D /* PathBasedButton.swift */; };
 		7FEBAC5122B190670022158D /* MarkupButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5022B190670022158D /* MarkupButton.swift */; };
 		7FEBAC5322B19E7C0022158D /* MarkupEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */; };
@@ -59,10 +66,17 @@
 		7F0BCF9622B045A2006B4F26 /* UIViewController+Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Snap.swift"; sourceTree = "<group>"; };
 		7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugSnapAction.swift; sourceTree = "<group>"; };
 		7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportAction.swift; sourceTree = "<group>"; };
-		7F0BCF9D22B04C1A006B4F26 /* UIWindow+Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Snap.swift"; sourceTree = "<group>"; };
+		7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Snap.swift"; sourceTree = "<group>"; };
 		7F0BCFA022B051C3006B4F26 /* SnapshotViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotViewController.swift; sourceTree = "<group>"; };
 		7F87683622B44A5E0018AC74 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
 		7F87683722B44A5E0018AC74 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../../LICENSE; sourceTree = "<group>"; };
+		7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeColorSelectorButton.swift; sourceTree = "<group>"; };
+		7F87683D22B4546F0018AC74 /* GeometryExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryExtensions.swift; sourceTree = "<group>"; };
+		7FB62E1922B7CE7F0007A02E /* LineShapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineShapes.swift; sourceTree = "<group>"; };
+		7FB62E1C22B7D4900007A02E /* ShapeToolViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeToolViewController.swift; sourceTree = "<group>"; };
+		7FB62E1E22B7D8050007A02E /* ShapeSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeSelectorButton.swift; sourceTree = "<group>"; };
+		7FB62E2022B7E0650007A02E /* TextShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextShape.swift; sourceTree = "<group>"; };
+		7FB62E2322B7F4C60007A02E /* UndoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoButton.swift; sourceTree = "<group>"; };
 		7FEBAC4E22B180B00022158D /* PathBasedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathBasedButton.swift; sourceTree = "<group>"; };
 		7FEBAC5022B190670022158D /* MarkupButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkupButton.swift; sourceTree = "<group>"; };
 		7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkupEditorViewController.swift; sourceTree = "<group>"; };
@@ -130,7 +144,6 @@
 				7FEBAC4D22B17FF70022158D /* CustomViews */,
 				7F0BCF9F22B04F9B006B4F26 /* ViewControllers */,
 				7F0BCF9A22B04AF5006B4F26 /* Actions */,
-				7F0BCF8D22B000DA006B4F26 /* Utility */,
 				7F0BCF2D22AFFF53006B4F26 /* BugSnap.h */,
 				7F0BCF2E22AFFF53006B4F26 /* Info.plist */,
 			);
@@ -146,17 +159,6 @@
 			path = BugSnapTests;
 			sourceTree = "<group>";
 		};
-		7F0BCF8D22B000DA006B4F26 /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				7F0BCF8E22B0011D006B4F26 /* UIApplication+Snap.swift */,
-				7F0BCF9022B00C85006B4F26 /* AccelerometerShakeDetector.swift */,
-				7F0BCF9622B045A2006B4F26 /* UIViewController+Snap.swift */,
-				7F0BCF9D22B04C1A006B4F26 /* UIWindow+Snap.swift */,
-			);
-			path = Utility;
-			sourceTree = "<group>";
-		};
 		7F0BCF9A22B04AF5006B4F26 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -169,26 +171,45 @@
 		7F0BCF9F22B04F9B006B4F26 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				7FB62E1B22B7D4500007A02E /* Annotation Editor Menues */,
 				7F0BCFA022B051C3006B4F26 /* SnapshotViewController.swift */,
 				7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */,
-				7FEBAC6D22B3077D0022158D /* ColorSelectorViewController.swift */,
-				7FEBAC7922B4201C0022158D /* LineWidthSelectorViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		7FB62E1B22B7D4500007A02E /* Annotation Editor Menues */ = {
+			isa = PBXGroup;
+			children = (
+				7FEBAC7922B4201C0022158D /* LineWidthSelectorViewController.swift */,
+				7FEBAC6D22B3077D0022158D /* ColorSelectorViewController.swift */,
+				7FB62E1C22B7D4900007A02E /* ShapeToolViewController.swift */,
+			);
+			path = "Annotation Editor Menues";
+			sourceTree = "<group>";
+		};
+		7FB62E2222B7EF370007A02E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				7FEBAC7122B408BC0022158D /* PathBasedCollectionViewCell.swift */,
+				7FEBAC7722B41FD60022158D /* PathBasedTableViewCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		7FEBAC4D22B17FF70022158D /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				7FB62E2222B7EF370007A02E /* Cells */,
 				7FEBAC4E22B180B00022158D /* PathBasedButton.swift */,
+				7FB62E2322B7F4C60007A02E /* UndoButton.swift */,
 				7FEBAC5022B190670022158D /* MarkupButton.swift */,
 				7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */,
-				7FEBAC5C22B1BA4B0022158D /* ShapesView.swift */,
 				7FEBAC6B22B2FF080022158D /* ToolsButtons.swift */,
 				7FEBAC7322B41A5E0022158D /* LineWidthSelectorButton.swift */,
 				7FEBAC6F22B4079B0022158D /* LineWidthButton.swift */,
-				7FEBAC7122B408BC0022158D /* PathBasedCollectionViewCell.swift */,
-				7FEBAC7722B41FD60022158D /* PathBasedTableViewCell.swift */,
+				7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */,
+				7FB62E1E22B7D8050007A02E /* ShapeSelectorButton.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -197,7 +218,11 @@
 			isa = PBXGroup;
 			children = (
 				7FEBAC5E22B1BC810022158D /* GraphicObjects.swift */,
+				7F87683D22B4546F0018AC74 /* GeometryExtensions.swift */,
 				7FEBAC6022B2A3390022158D /* Shapes.swift */,
+				7FB62E2022B7E0650007A02E /* TextShape.swift */,
+				7FB62E1922B7CE7F0007A02E /* LineShapes.swift */,
+				7FEBAC5C22B1BA4B0022158D /* ShapesView.swift */,
 			);
 			path = "Editor Support";
 			sourceTree = "<group>";
@@ -209,6 +234,10 @@
 				7FEBAC6222B2A3F70022158D /* Number+Utilities.swift */,
 				7FEBAC6722B2A42E0022158D /* IrisTransitioningNavigationController.swift */,
 				7FEBAC6522B2A4250022158D /* UIView+Animations.swift */,
+				7F0BCF9022B00C85006B4F26 /* AccelerometerShakeDetector.swift */,
+				7F0BCF9622B045A2006B4F26 /* UIViewController+Snap.swift */,
+				7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */,
+				7F0BCF8E22B0011D006B4F26 /* UIApplication+Snap.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -331,7 +360,7 @@
 				7FEBAC7A22B4201C0022158D /* LineWidthSelectorViewController.swift in Sources */,
 				7FEBAC7022B4079B0022158D /* LineWidthButton.swift in Sources */,
 				7FEBAC5822B1ABE90022158D /* ColorSelectorButton.swift in Sources */,
-				7F0BCF9E22B04C1A006B4F26 /* UIWindow+Snap.swift in Sources */,
+				7F0BCF9E22B04C1A006B4F26 /* UIView+Snap.swift in Sources */,
 				7FEBAC6622B2A4250022158D /* UIView+Animations.swift in Sources */,
 				7FEBAC5F22B1BC810022158D /* GraphicObjects.swift in Sources */,
 				7FEBAC6E22B3077D0022158D /* ColorSelectorViewController.swift in Sources */,
@@ -341,12 +370,19 @@
 				7FEBAC5122B190670022158D /* MarkupButton.swift in Sources */,
 				7F0BCF9122B00C85006B4F26 /* AccelerometerShakeDetector.swift in Sources */,
 				7FEBAC6822B2A42E0022158D /* IrisTransitioningNavigationController.swift in Sources */,
+				7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */,
 				7F0BCF9722B045A2006B4F26 /* UIViewController+Snap.swift in Sources */,
+				7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */,
+				7FB62E1F22B7D8050007A02E /* ShapeSelectorButton.swift in Sources */,
+				7FB62E2122B7E0650007A02E /* TextShape.swift in Sources */,
 				7FEBAC6A22B2A4790022158D /* UIView+IBHelpers.swift in Sources */,
 				7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */,
+				7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */,
 				7FEBAC5D22B1BA4B0022158D /* ShapesView.swift in Sources */,
 				7F0BCF8F22B0011D006B4F26 /* UIApplication+Snap.swift in Sources */,
+				7FB62E2422B7F4C60007A02E /* UndoButton.swift in Sources */,
 				7FEBAC7222B408BC0022158D /* PathBasedCollectionViewCell.swift in Sources */,
+				7FB62E1D22B7D4900007A02E /* ShapeToolViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

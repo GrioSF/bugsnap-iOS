@@ -69,10 +69,13 @@ public class SnapshotViewController: UIViewController {
     }
     
     @objc func onEdit() {
-        let activityController = UIActivityViewController(activityItems: [screenCapture!], applicationActivities: nil)
-
-        
-        present(activityController, animated: true, completion: nil)
+        let controller = MarkupEditorViewController()
+        controller.screenSnapshot = snapshot.image
+        controller.onEditionFinished = {
+            [weak self] (editedImage) in
+            self?.snapshot.image = editedImage
+        }
+        navigationController?.pushViewController(controller, animated: true)
     }
 
 }

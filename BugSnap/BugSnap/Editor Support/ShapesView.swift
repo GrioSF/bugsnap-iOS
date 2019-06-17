@@ -24,6 +24,34 @@ public class ShapesView: UIImageView {
     /// The current properties for the tool
     var graphicProperties = GraphicProperties()
     
+    /// Whether this tool should be deselected at the end of the gesture
+    var autoDeselect = false
+    
+    /// The handler when a tool input gesture has ended
+    var onEndedGesture : ((Bool)->Void)? = nil
+    
+    /// The text to be captured
+    var currentText : String? = "Text"
+    
+    /// Whether this view is dirty
+    var isDirty : Bool {
+        return shapes.count > 0
+    }
+    
+    // MARK: - Exposed Methods
+    
+    /**
+        Removes the last element from the layers stack if any.
+        Returns true if there're more content on the layer stack
+    */
+    func undo() -> Bool {
+        guard shapes.count > 0 else {
+            return false
+        }
+        let layer = shapes.removeLast()
+        layer.removeFromSuperlayer()
+        return shapes.count > 0
+    }
     
     // MARK: - Touches Management
     
@@ -38,7 +66,16 @@ public class ShapesView: UIImageView {
         tool.position = CGPoint(x: tool.bounds.width * 0.5, y: tool.bounds.height * 0.5)
         tool.graphicProperties = graphicProperties
         shapes.append(tool)
+        
+        // Support for text tool
+        if var textTool = tool as? TextShapeProtocol {
+            textTool.text = currentText
+            currentText = nil
+        }
+        
         tool.gestureBegan(point: point)
+        
+        
     }
     
     override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -53,6 +90,9 @@ public class ShapesView: UIImageView {
             let tool =  shapes.last else { return }
         let point = touch.location(in: self)
         tool.gestureCancelled(point: point)
+        
+        currentToolType = autoDeselect ? nil : currentToolType
+        onEndedGesture?(autoDeselect)
     }
     
     override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -63,13 +103,15 @@ public class ShapesView: UIImageView {
         // We save the frame before updating the layer
         let enclosingFrame = tool.enclosingFrame
         CATransaction.begin()
-        CATransaction.disableActions()
+        CATransaction.setDisableActions(true)
         tool.removeFromSuperlayer()
         tool.gestureEnded(point: point)
         tool.bounds = CGRect(origin: CGPoint.zero, size: enclosingFrame.size)
         tool.position = CGPoint(x: enclosingFrame.midX, y: enclosingFrame.midY)
         layer.addSublayer(tool)
         CATransaction.commit()
+        currentToolType = autoDeselect ? nil : currentToolType
+        onEndedGesture?(autoDeselect)
     }
 
 }

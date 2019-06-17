@@ -36,9 +36,11 @@ import UIKit
         designSize = CGSize(width: 120, height: 120)
         path = oval.cgPath
         bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 60, height: 60))
-        pathLineWidth = 2.0
+        pathLineWidth = 1.0
         pathStrokeColor = UIColor.black
-        pathFillColor = UIColor.orange
+        pathFillColor = nil
+        
+        
     }
 
 }
