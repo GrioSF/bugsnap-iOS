@@ -90,7 +90,7 @@ public extension UIApplication {
             snapController.screenCapture = image
             
             let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
-            
+            navigationController.modalPresentationStyle = .formSheet
             if let controller = UIViewController.topMostViewController {
                 controller.present(navigationController, animated: true, completion: nil)
             }

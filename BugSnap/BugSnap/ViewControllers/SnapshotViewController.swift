@@ -30,6 +30,11 @@ public class SnapshotViewController: UIViewController {
         setup()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setupToolbar()
+    }
+    
     // MARK: - Setup
     
     private func setup() {
@@ -47,6 +52,15 @@ public class SnapshotViewController: UIViewController {
         markupButton.addTarget(self, action: #selector(onEdit), for: .touchUpInside)
         let annotationBarButtonItem = UIBarButtonItem(customView: markupButton)
         navigationItem.setRightBarButton(annotationBarButtonItem, animated: false)
+        navigationController?.navigationBar.isTranslucent = false
+    }
+    
+    private func setupToolbar() {
+        navigationController?.setToolbarHidden(false, animated: false)
+        let shareItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onShare(item:)))
+        navigationController?.toolbar.setItems([shareItem,
+                                                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            ], animated: true)
     }
     
     private func setupSnapshot() {
@@ -59,7 +73,7 @@ public class SnapshotViewController: UIViewController {
         snapshot.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         snapshot.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         snapshot.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        snapshot.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        snapshot.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     
     // MARK: - Callback
@@ -76,6 +90,16 @@ public class SnapshotViewController: UIViewController {
             self?.snapshot.image = editedImage
         }
         navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    @objc func onShare( item : UIBarButtonItem? ) {
+        let controller = UIActivityViewController(activityItems: [snapshot.image!], applicationActivities: nil)
+        
+        if UI_USER_INTERFACE_IDIOM() == .pad {
+            controller.popoverPresentationController?.barButtonItem = item
+            controller.modalPresentationStyle = .popover
+        }
+        present(controller, animated: true, completion: nil)
     }
 
 }
