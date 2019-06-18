@@ -67,6 +67,7 @@ public class SnapshotViewController: UIViewController {
         
         // Setup the snapshot
         view.addSubview(snapshot)
+        snapshot.backgroundColor = UIColor.black
         snapshot.image = screenCapture
         snapshot.contentMode = .scaleAspectFit
         snapshot.translatesAutoresizingMaskIntoConstraints = false
@@ -93,6 +94,11 @@ public class SnapshotViewController: UIViewController {
     }
     
     @objc func onShare( item : UIBarButtonItem? ) {
+   
+        let controller = UIAlertController(title: "Permissions", message: "TODO: Require verify permissions!!", preferredStyle: .alert)
+        controller.addAction(UIAlertAction(title: "ok", style: .default, handler: nil))
+        present(controller, animated: true, completion: nil)
+        /*
         let controller = UIActivityViewController(activityItems: [snapshot.image!], applicationActivities: nil)
         
         if UI_USER_INTERFACE_IDIOM() == .pad {
@@ -100,6 +106,12 @@ public class SnapshotViewController: UIViewController {
             controller.modalPresentationStyle = .popover
         }
         present(controller, animated: true, completion: nil)
+         */
+        
+        //JIRARestAPI.login(username: "hgarcia@grio.com", password: "Ullman2017")
+        //JIRARestAPI.allProjects()
+        /*
+         */
     }
 
 }
