@@ -14,6 +14,8 @@
 		7F0BCF8A22B0009B006B4F26 /* BugSnap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0BCF8922B0009B006B4F26 /* BugSnap.framework */; };
 		7F0BCF8B22B0009B006B4F26 /* BugSnap.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0BCF8922B0009B006B4F26 /* BugSnap.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7F0BCF9522B031B6006B4F26 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9422B031B6006B4F26 /* MainViewController.swift */; };
+		7FB62E2922B9667C0007A02E /* LaunchImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FB62E2822B965FC0007A02E /* LaunchImages.xcassets */; };
+		7FB62E2B22B967A80007A02E /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2A22B967A80007A02E /* LaunchViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +42,8 @@
 		7F0BCF8922B0009B006B4F26 /* BugSnap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BugSnap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F0BCF9422B031B6006B4F26 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		7F0BCFA222B0538C006B4F26 /* Design.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Design.storyboard; sourceTree = "<group>"; };
+		7FB62E2822B965FC0007A02E /* LaunchImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LaunchImages.xcassets; sourceTree = "<group>"; };
+		7FB62E2A22B967A80007A02E /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +82,7 @@
 				7F0BCF9222B03188006B4F26 /* Storyboards */,
 				7F0BCF7722B0007D006B4F26 /* AppDelegate.swift */,
 				7F0BCF7E22B0007E006B4F26 /* Assets.xcassets */,
+				7FB62E2822B965FC0007A02E /* LaunchImages.xcassets */,
 				7F0BCF8322B0007E006B4F26 /* Info.plist */,
 			);
 			path = "BugSnap Demo App";
@@ -97,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				7F0BCF9422B031B6006B4F26 /* MainViewController.swift */,
+				7FB62E2A22B967A80007A02E /* LaunchViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -162,6 +168,7 @@
 			files = (
 				7F0BCF8222B0007E006B4F26 /* LaunchScreen.storyboard in Resources */,
 				7F0BCF7F22B0007E006B4F26 /* Assets.xcassets in Resources */,
+				7FB62E2922B9667C0007A02E /* LaunchImages.xcassets in Resources */,
 				7F0BCF7D22B0007D006B4F26 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -174,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F0BCF7822B0007D006B4F26 /* AppDelegate.swift in Sources */,
+				7FB62E2B22B967A80007A02E /* LaunchViewController.swift in Sources */,
 				7F0BCF9522B031B6006B4F26 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -328,7 +336,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.grio.BugSnap-Demo-App";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grio.os.bugsnap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Wildcard Dev";
 				SWIFT_VERSION = 5.0;
@@ -340,17 +348,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = J78V7482YY;
+				DEVELOPMENT_TEAM = 3WBDCZ68AG;
 				INFOPLIST_FILE = "BugSnap Demo App/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.grio.BugSnap-Demo-App";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grio.os.bugsnap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Wildcard Dev";
+				PROVISIONING_PROFILE_SPECIFIER = "OS BugSnap Demo App Store";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
