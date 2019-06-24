@@ -74,19 +74,7 @@ public class Stroke : NSObject {
     }
 }
 
-/**
-    Convenient extension to perform some operations over points
-*/
-public extension CGPoint {
-    
-    /**
-        Converts this point to the new frame of reference with origin
-        - Parameter origin: The new origin for this point
-    */
-    func convert( with origin : CGPoint ) -> CGPoint {
-        return CGPoint(x: x - origin.x, y: y - origin.y)
-    }
-}
+
 
 /**
     Extension of a cgcontext to apply our own graphic properties

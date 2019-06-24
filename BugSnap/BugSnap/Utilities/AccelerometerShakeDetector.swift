@@ -23,7 +23,7 @@ public enum AccelerometerStartResult : String {
 }
 
 /// Notifications to be sent when the shake event has been detected
-extension NSNotification.Name {
+public extension NSNotification.Name {
     
     /// Notification sent with NotificationCenter with no user info and object == nil
     static let shakeEventDetected = NSNotification.Name("shakeEventDetected")

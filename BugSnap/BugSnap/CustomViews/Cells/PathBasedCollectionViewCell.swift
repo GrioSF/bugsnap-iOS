@@ -27,16 +27,16 @@ public class PathBasedCollectionViewCell: UICollectionViewCell {
         This method initia
     */
     func setup( buttonType : PathBasedButton.Type ) {
-        guard shape == nil else { return }
+        
+        shape?.removeFromSuperview()
         
         /// Initialize the button
-        let shape = buttonType.init()
-        shape.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(shape)
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[shape]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["shape":shape]))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[shape]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["shape":shape]))
-        shape.isUserInteractionEnabled = false
-        self.shape = shape
+        shape = buttonType.init()
+        shape!.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(shape!)
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[shape]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["shape":shape!]))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[shape]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["shape":shape!]))
+        shape?.isUserInteractionEnabled = false
     }
     
 }

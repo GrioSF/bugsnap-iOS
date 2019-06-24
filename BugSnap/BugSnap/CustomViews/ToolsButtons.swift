@@ -11,9 +11,19 @@ import UIKit
 /**
  Button with a pencil path to symbolize a stroke button
  */
-@IBDesignable class StrokeTool: ToolButton {
+@IBDesignable public class StrokeTool: ToolButton {
     
     override var pathStrokeColor: UIColor? {
+        get {
+            return super.pathFillColor
+        }
+        set(newVal) {
+            guard newVal != nil else { return }
+            super.pathFillColor = newVal
+        }
+    }
+    
+    override var pathFillColor: UIColor? {
         get {
             return nil
         }
@@ -56,53 +66,193 @@ import UIKit
         
         toolType = StrokeShape.self
         designSize = CGSize(width: 128.0, height: 128.0)
-        pathStrokeColor = nil
+        pathStrokeColor = UIColor.black
         pathFillColor = UIColor.black
+        pathLineWidth = 0.5
+        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        path = pathRef as CGPath
+        cornerRadius = 20.0
+        backgroundColor = UIColor(white: 0.0, alpha: 0.2)
+    }
+}
+
+/**
+    Button with a rectangle path to hint drawing of a rectangle
+ */
+@IBDesignable public class RectangleTool: ToolButton {
+    
+    
+    // MARK: - Override PathBasedButton
+    
+    override public func configureButton() {
+        
+        /*  Shape   */
+        let bezierPath = UIBezierPath(rect: CGRect(x: 5, y: 7, width: 30, height: 26))
+        
+        toolType = RectangleShape.self
+        designSize = CGSize(width: 40.0, height: 40.0)
+        pathLineWidth = 2.0
+        pathStrokeColor = nil
+        pathFillColor = nil
+        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        path = bezierPath.cgPath
+    }
+}
+
+/**
+ Button with an oval path to hint drawing of an oval
+ */
+@IBDesignable public class OvalTool: ToolButton {
+    
+    
+    // MARK: - Override PathBasedButton
+    
+    override public func configureButton() {
+        
+        /*  Shape   */
+        let bezierPath = UIBezierPath(ovalIn: CGRect(x: 5, y: 7, width: 30, height: 26))
+        
+        toolType = OvalShape.self
+        designSize = CGSize(width: 40.0, height: 40.0)
+        pathLineWidth = 2.0
+        pathStrokeColor = nil
+        pathFillColor = nil
+        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        path = bezierPath.cgPath
+    }
+}
+
+/**
+    Button with a line to hint drawing of a line
+*/
+@IBDesignable public class LineTool: ToolButton {
+    
+    override public var pathStrokeColor: UIColor? {
+        didSet {
+            if pathStrokeColor == nil {
+                pathStrokeColor = UIColor.black
+            }
+        }
+    }
+    
+    // MARK: - Override PathBasedButton
+    
+    override public func configureButton() {
+        
+        /*  Shape   */
+        let mutablePath = CGMutablePath()
+        mutablePath.move(to: CGPoint(x: 5, y:20))
+        mutablePath.addLine(to: CGPoint(x:35, y:20))
+        
+        toolType = LineShape.self
+        designSize = CGSize(width: 40.0, height: 40.0)
+        pathLineWidth = 2.0
+        pathStrokeColor = UIColor.black
+        pathFillColor = nil
+        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        path = mutablePath as CGPath
+    }
+}
+
+/**
+    Button with an arrow referencing the forward arrow tool
+*/
+@IBDesignable public class ForwardArrowTool : ToolButton {
+    
+    override public var pathStrokeColor: UIColor? {
+        didSet {
+            if pathStrokeColor == nil {
+                pathStrokeColor = UIColor.black
+            }
+        }
+    }
+    
+    // MARK: - Override PathBasedButton
+    
+    override public func configureButton() {
+        
+        let pathRef = CGMutablePath()
+        pathRef.move(to: CGPoint(x: 15.625, y: 64.375))
+        pathRef.addLine(to: CGPoint(x: 112.375, y: 64.375))
+
+        // Arrow Head
+        pathRef.move(to: CGPoint(x: 98.165, y: 49.79))
+        pathRef.addLine(to: CGPoint(x: 112.375, y: 64))
+        pathRef.addLine(to: CGPoint(x: 98.165, y: 78.21))
+
+        
+        toolType = ArrowShapeForward.self
+        designSize = CGSize(width: 128.0, height: 128.0)
+        pathLineWidth = 4.0
+        pathStrokeColor = UIColor.black
+        pathFillColor = nil
         bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
         path = pathRef as CGPath
     }
 }
 
 /**
-    Button with a pencil path to symbolize a stroke button
+    Button with an arrow referencing the forward arrow tool
  */
-@IBDesignable class RectangleTool: ToolButton {
+@IBDesignable public class BackwardArrowTool : ToolButton {
     
+    override public var pathStrokeColor: UIColor? {
+        didSet {
+            if pathStrokeColor == nil {
+                pathStrokeColor = UIColor.black
+            }
+        }
+    }
     
     // MARK: - Override PathBasedButton
     
     override public func configureButton() {
         
-        /*  Shape   */
-        let bezierPath = UIBezierPath(rect: CGRect(x: 10, y: 14, width: 20, height: 12))
+        let pathRef = CGMutablePath()
+        pathRef.move(to: CGPoint(x: 15.625, y: 64.375))
+        pathRef.addLine(to: CGPoint(x: 112.375, y: 64.375))
         
-        toolType = RectangleShape.self
-        designSize = CGSize(width: 40.0, height: 40.0)
-        pathStrokeColor = nil
-        pathFillColor = UIColor.black
+        // Arrow Head
+        pathRef.move(to: CGPoint(x: 29.835, y: 78.585))
+        pathRef.addLine(to: CGPoint(x: 15.625, y: 64.375))
+        pathRef.addLine(to: CGPoint(x: 29.835, y: 50.165))
+
+        toolType = ArrowShapeBackward.self
+        designSize = CGSize(width: 128.0, height: 128.0)
+        pathLineWidth = 4.0
+        pathStrokeColor = UIColor.black
+        pathFillColor = nil
         bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-        path = bezierPath.cgPath
+        path = pathRef as CGPath
     }
 }
 
 /**
- Button with a pencil path to symbolize a stroke button
- */
-@IBDesignable class OvalTool: ToolButton {
-    
+    Button with a letter referencing to the text tool
+*/
+@IBDesignable public class TextTool : ToolButton {
     
     // MARK: - Override PathBasedButton
     
     override public func configureButton() {
+    
+        let pathRef = CGMutablePath()
+        pathRef.move(to: CGPoint(x: 58.348, y: 49.096))
+        pathRef.addLine(to: CGPoint(x: 58.348, y: 91))
+        pathRef.addLine(to: CGPoint(x: 69.652, y: 91))
+        pathRef.addLine(to: CGPoint(x: 69.652, y: 49.096))
+        pathRef.addLine(to: CGPoint(x: 85.06, y: 49.096))
+        pathRef.addLine(to: CGPoint(x: 85.06, y: 39.592))
+        pathRef.addLine(to: CGPoint(x: 42.94, y: 39.592))
+        pathRef.addLine(to: CGPoint(x: 42.94, y: 49.096))
+        pathRef.closeSubpath()
         
-        /*  Shape   */
-        let bezierPath = UIBezierPath(ovalIn: CGRect(x: 10, y: 12, width: 20, height: 16))
-        
-        toolType = OvalShape.self
-        designSize = CGSize(width: 40.0, height: 40.0)
-        pathStrokeColor = nil
+        toolType = TextShape.self
+        designSize = CGSize(width: 128.0, height: 128.0)
+        pathLineWidth = 4.0
+        pathStrokeColor = UIColor.black
         pathFillColor = UIColor.black
         bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-        path = bezierPath.cgPath
+        path = pathRef as CGPath
     }
 }

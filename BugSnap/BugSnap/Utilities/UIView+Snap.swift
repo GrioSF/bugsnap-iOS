@@ -18,7 +18,7 @@ public extension UIView {
         Takes a snapshot from this window.
         - Parameter completion: The closure to be called with the image captured.
     */
-    func snapshot( completion : @escaping (UIImage?)->Void )  {
+    func snapshot( flashing : Bool = false, completion : @escaping (UIImage?)->Void )  {
         
         
         // Try to capture the view
@@ -26,6 +26,11 @@ public extension UIView {
         drawHierarchy(in: bounds, afterScreenUpdates: false)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+        
+        guard flashing else {
+            completion(image)
+            return
+        }
         
         // Animation to simulate the capture of the screen
         let fxView = UIView()
