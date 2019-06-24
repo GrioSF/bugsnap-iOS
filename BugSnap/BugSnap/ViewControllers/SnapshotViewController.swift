@@ -47,20 +47,22 @@ public class SnapshotViewController: UIViewController {
         // Setup the title and the buttons
         title = "Report Bug 🐞"
         navigationItem.setLeftBarButton(UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDone)), animated: false)
-        
-        let markupButton = MarkupButton()
-        markupButton.addTarget(self, action: #selector(onEdit), for: .touchUpInside)
-        let annotationBarButtonItem = UIBarButtonItem(customView: markupButton)
-        navigationItem.setRightBarButton(annotationBarButtonItem, animated: false)
+        let shareItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onShare(item:)))
+        shareItem.tintColor = UIColor.white
+        navigationItem.setRightBarButton(shareItem, animated: false)
         navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.barTintColor = UIColor(red: 48, green: 48, blue: 48)
+
     }
     
     private func setupToolbar() {
-        navigationController?.setToolbarHidden(false, animated: false)
-        let shareItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onShare(item:)))
-        navigationController?.toolbar.setItems([shareItem,
-                                                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            ], animated: true)
+        
+        let markupButton = MarkupButton()
+        markupButton.addTarget(self, action: #selector(onEdit), for: .touchUpInside)
+//        let annotationBarButtonItem = UIBarButtonItem(customView: markupButton)
+        
+//        navigationController?.setToolbarHidden(false, animated: false)
+       
     }
     
     private func setupSnapshot() {
@@ -94,24 +96,36 @@ public class SnapshotViewController: UIViewController {
     }
     
     @objc func onShare( item : UIBarButtonItem? ) {
-   
-        let controller = UIAlertController(title: "Permissions", message: "TODO: Require verify permissions!!", preferredStyle: .alert)
-        controller.addAction(UIAlertAction(title: "ok", style: .default, handler: nil))
-        present(controller, animated: true, completion: nil)
-        /*
-        let controller = UIActivityViewController(activityItems: [snapshot.image!], applicationActivities: nil)
-        
-        if UI_USER_INTERFACE_IDIOM() == .pad {
-            controller.popoverPresentationController?.barButtonItem = item
-            controller.modalPresentationStyle = .popover
+        let controlller = ShareOptionViewController()
+        controlller.modalPresentationStyle = .overCurrentContext
+        controlller.optionSelected = {
+            [weak self] (option) in
+            switch option {
+            case .email:
+                self?.onShareWithEmail()
+            case .jira:
+                self?.onShareWithJIRA()
+            }
         }
-        present(controller, animated: true, completion: nil)
-         */
+        present(controlller, animated: true, completion: nil)
+    }
+    
+    // MARK: - Presentation Support
+    
+    private func onShareWithJIRA() {
         
-        //JIRARestAPI.login(username: "hgarcia@grio.com", password: "Ullman2017")
-        //JIRARestAPI.allProjects()
-        /*
-         */
+        let jiraLoginViewController = JIRALoginViewController()
+        jiraLoginViewController.snapshot = snapshot.image
+        
+        let navigationController = UINavigationController(rootViewController: jiraLoginViewController)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.setToolbarHidden(true, animated: false)
+        present(navigationController, animated: true, completion: nil)
+        
+    }
+    
+    private func onShareWithEmail() {
+        
     }
 
 }

@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         UIApplication.shared.enableShakeGestureSnap()
+        JIRARestAPI.sharedInstance.serverURL = URL(string:"#put your jira server here")
         
         return true
     }

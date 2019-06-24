@@ -29,6 +29,7 @@
                             </containerView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TestImage" translatesAutoresizingMaskIntoConstraints="NO" id="Ksx-4w-kjN">
                                 <rect key="frame" x="0.0" y="364" width="414" height="532"/>
+                                <color key="backgroundColor" red="0.81686693429946899" green="0.8244209885597229" blue="0.8520466685295105" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sE3-H5-h0O">
                                 <rect key="frame" x="157" y="384" width="100" height="66.5"/>
