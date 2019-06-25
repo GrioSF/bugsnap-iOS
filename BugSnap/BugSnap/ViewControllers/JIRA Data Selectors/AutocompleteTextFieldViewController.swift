@@ -90,10 +90,8 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
         // Setup the project name capture field
         objectName.delegate = self
         objectName.font = UIFont.preferredFont(forTextStyle: .body)
-        objectName.textColor = UIColor.darkGray
-        objectName.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
-        objectName.borderColor = UIColor.gray
-        objectName.borderWidth = 0.5
+        objectName.textColor = UIColor.black
+        objectName.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
         objectName.placeholderInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         objectName.textInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 5)
         objectName.translatesAutoresizingMaskIntoConstraints = false
@@ -102,8 +100,8 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
         objectName.autocapitalizationType = .words
         
         view.addSubview(objectName)
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-20-[field]-20-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[field]-10-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[field]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[field]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
     }
     
     // MARK: - UITextFieldDelegate

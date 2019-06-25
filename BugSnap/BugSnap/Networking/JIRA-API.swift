@@ -9,20 +9,52 @@
 import Foundation
 
 /**
+    Extension of NSMutableData for appending strings.
+    Original Idea from: https://newfivefour.com/swift-form-data-multipart-upload-URLRequest.html
+*/
+extension NSMutableData {
+    
+    /**
+        Appends the string converted with UTF8 (by default) to this instance. If the string can't be converted to a Data object, the method doesn't append anything and fails silently
+        - Parameter string: The string to be appended to the NSMutableData object
+        - Parameter encoding: The encoding the string has. It's assumed is UTF8 and is its default value
+    */
+    func append( string : String , encoding : String.Encoding = .utf8) {
+        if let data = string.data(using: encoding ) {
+            append(data)
+        }
+    }
+}
+
+/**
  Interface with the JIRA Software Server for REST API 3.0 found in:
  https://developer.atlassian.com/cloud/jira/platform/rest/v3/
 */
 public class JIRARestAPI : NSObject {
+    
+    // MARK: - Keys for parsing the error responses
+    
+    enum ErrorMessagesJSONKeys : String {
+        
+        /// The general error messages key
+        case errorMessages
+        
+        /// Errors found in the request answered by JIRA
+        case errors
+        
+        /// A message when the server has an exception
+        case message
+    }
     
     // MARK: - Private Properties
     
     /// The session configuration for the API
     fileprivate let sessionConfiguration = URLSessionConfiguration.default
     
-    // MARK: - Exposed properties
+    /// The current date format for setting the filename of the attachment
+    fileprivate let dateFormat = DateFormatter()
     
-    /// The url session for the connections
-    let urlSession : URLSession!
+    // MARK: - Exposed properties
     
     /// The base URL where the JIRA server is located (this applies also to the cloud server).
     public var serverURL : URL!
@@ -33,8 +65,8 @@ public class JIRARestAPI : NSObject {
     // MARK: - Initialization
     
     fileprivate override init() {
-        
-        urlSession = URLSession(configuration: sessionConfiguration)
+        dateFormat.dateStyle = .short
+        dateFormat.timeStyle = .short
         super.init()
     }
     
@@ -61,9 +93,10 @@ public class JIRARestAPI : NSObject {
     */
     func allProjects( completion : @escaping ([JIRA.Project]?)->Void) {
         
-        var request = URLRequest(url: URL(string: "rest/api/3/project/search?startAt=0&maxResult=10&orderBy=name", relativeTo: serverURL)!)
+        var request = URLRequest(url: URL(string: "rest/api/3/project/search?startAt=0&maxResults=10&orderBy=name", relativeTo: serverURL)!)
         request.httpMethod = "GET"
         
+        let urlSession = URLSession(configuration: sessionConfiguration)
         let task = urlSession.dataTask(with: request) { (data, response, error) in
             if let responseData = data {
                 //let stringData = String(data: responseData, encoding: .utf8)
@@ -94,6 +127,7 @@ public class JIRARestAPI : NSObject {
         
         var request = URLRequest(url: URL(string: "rest/api/3/issue/createmeta?projectIds=\(project.identifier!)&expand=projects.issuetypes.fields", relativeTo: serverURL)!)
         request.httpMethod = "GET"
+        let urlSession = URLSession(configuration: sessionConfiguration)
         let task = urlSession.dataTask(with: request) { (data, response, error) in
             if let responseData = data {
                 //let stringData = String(data: responseData, encoding: .utf8)
@@ -120,6 +154,7 @@ public class JIRARestAPI : NSObject {
     func autocomplete(type: JIRAObjectType, with url: URL, completion : @escaping ([JIRA.Object]?)->Void ) {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        let urlSession = URLSession(configuration: sessionConfiguration)
         let task = urlSession.dataTask(with: request) { (data, response, error) in
             if let responseData = data {
                 //let stringData = String(data: responseData, encoding: .utf8)
@@ -138,5 +173,173 @@ public class JIRARestAPI : NSObject {
             }
         }
         task.resume()
+    }
+    
+    /**
+        Creates an issue with the data in the fields given by the issue type
+        - Parameter fields: The fields building up the issue
+        - Parameter completion: The handler for the result of the operation
+    */
+    func createIssue( fields : [JIRA.IssueField] , completion : @escaping (JIRA.Object? ,[String]? )->Void ) {
+        
+        // Assembly of JSON
+        var root = [AnyHashable:Any]()
+        var fieldsDictionary = [String:Any]()
+
+        // Serialization of fields
+        for field in fields {
+            guard let json = field.serializeToJSONObject(),
+                  let key = field.key else { continue }
+            fieldsDictionary[key] = json
+        }
+        root["fields"] = fieldsDictionary
+        
+        var request = URLRequest(url: URL(string: "rest/api/3/issue/", relativeTo: serverURL)!)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: root, options: .prettyPrinted)
+        
+        let urlSession = URLSession(configuration: sessionConfiguration)
+        let task = urlSession.dataTask(with: request) { (data, response, error) in
+            
+            var issue : JIRA.Object? = nil  // The issue created
+            var messages : [String]? = nil  // The errors
+            
+            if let responseData = data,
+               error == nil {
+                //let stringData = String(data: responseData, encoding: .utf8)
+                if let json = try? JSONSerialization.jsonObject(with: responseData, options: .allowFragments) {
+                    messages = JIRARestAPI.errorsInResponse(json: json)
+                    if let dictionary = json as? [AnyHashable:Any],
+                       messages == nil {
+                        issue = JIRA.Object()
+                        issue?.load(from: dictionary)
+                    }
+                    
+                    
+                }
+            } else
+            if let connectionError = error {
+                messages = [connectionError.localizedDescription]
+            }
+            
+            DispatchQueue.main.async {
+                completion(issue,messages)
+            }
+        }
+        task.resume()
+    }
+    
+    /**
+        Uploads the snapshot as an attachment of an issue
+        - Parameter issue: The issue for adding the attachment
+        - Parameter snapshot: The snapshot captured for attaching in the issue
+        - Parameter completion: Whether the operation completed successfully or there were some errors. The completion handler will have the array of errors if any, otherwise it can be assumed the operation completed successfully
+    */
+    func attach( snapshot : UIImage, issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
+        
+        let boundary = "Boundary-\(UUID().uuidString)"
+        var request = URLRequest(url: URL(string: "rest/api/3/issue/\(issue.key!)/attachments", relativeTo: serverURL)!)
+        request.httpMethod = "POST"
+        request.addValue("no-check", forHTTPHeaderField: "X-Atlassian-Token") // Required as per the doc
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        if let imageData = snapshot.jpegData(compressionQuality: 1.0) {
+            let appName = Bundle.main.infoDictionary?["CFBundleName"] ?? "BugSnap"
+            let filename = "\(appName).jpg".replacingOccurrences(of: " ", with: "")
+            let bodyData = JIRARestAPI.buildAttachmentHTTPBody(data: imageData, boundary: boundary, filename : filename)
+            request.setValue(String(bodyData.count), forHTTPHeaderField: "Content-Length")
+            request.httpBody = bodyData
+        }
+        
+        let urlSession = URLSession(configuration: sessionConfiguration)
+        let task = urlSession.dataTask(with: request) { (data, response, error) in
+            var messages : [String]? = nil  // The errors
+            var attachment : JIRA.IssueField.Attachment? = nil
+            if let responseData = data,
+                error == nil {
+                //let stringData = String(data: responseData, encoding: .utf8)
+                if let json = try? JSONSerialization.jsonObject(with: responseData, options: .allowFragments) {
+                    messages = JIRARestAPI.errorsInResponse(json: json)
+                    if let dictionary = json as? [AnyHashable:Any],
+                        messages == nil {
+                        attachment = JIRA.IssueField.Attachment()
+                        attachment?.load(from: dictionary)
+                    }
+                }
+            } else if let connectionError = error {
+                messages = [connectionError.localizedDescription]
+            }
+            
+            DispatchQueue.main.async {
+                completion(attachment, messages)
+            }
+        }
+        task.resume()
+    }
+    
+    // MARK: - Support for Answer Processing
+    
+    /**
+        Builds a Data object using the image and configuration given
+        - Parameter data: The data to be sent
+        - Parameter boundary: The boundary to be written in the HTTP Body
+        - Parameter mimeType: The mimeType describing the data being sent (defaults to image/jpg) for the current implementation
+        - Parameter filename: The name for the file that will contain the data. The API requires the field to be named file. It defaults to bugsnap.jpg
+        - Returns: A Data object built with the the data and the HTTP Protocol strings for multipart/form-data
+    */
+    static func buildAttachmentHTTPBody( data : Data, boundary : String, mimeType : String = "image/jpg", filename : String  = "bugsnap.jpg") -> Data {
+        let body = NSMutableData()
+        
+        body.append(string: "--\(boundary)\r\n")
+        body.append(string: "Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n")
+        body.append(string: "Content-Type: \(mimeType)\r\n\r\n")
+        body.append(data)
+        body.append(string: "\r\n")
+        body.append(string: "--\(boundary)--\r\n")
+        
+        
+        return body as Data
+    }
+    
+    /**
+        Search for errors in the service response
+        - Parameter json: The json object built from the response data if any
+        - Returns: An array of errors coming from the server. If no error is found then the array is nil
+    */
+    private static func errorsInResponse( json : Any ) -> [String]? {
+        guard let jsonDictionary = json as? [AnyHashable:Any] else { return nil }
+        
+        var responseErrors = [String]()
+        
+        if let errorMessages = jsonDictionary[ErrorMessagesJSONKeys.errorMessages.rawValue] as? [Any] {
+            // Add the error messages
+            errorMessages.forEach {
+                guard let string = $0 as? String else { return }
+                responseErrors.append(string)
+            }
+        }
+        
+        
+        if let errors = jsonDictionary[ErrorMessagesJSONKeys.errors.rawValue] as? [AnyHashable:Any] {
+            // Add the messages for the fields
+            for (k,v) in errors {
+                if let key = k as? String,
+                    let value = v as? String {
+                    responseErrors.append("\(key):\(value)")
+                }
+            }
+        }
+        
+        if let message = jsonDictionary[ErrorMessagesJSONKeys.message.rawValue] as? String {
+            responseErrors.append(message)
+        }
+        
+        //  Check if we have an error
+        if responseErrors.count < 1 {
+            return nil
+        }
+        
+        return responseErrors
     }
 }

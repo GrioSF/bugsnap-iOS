@@ -86,14 +86,26 @@ public extension UIApplication {
         
         // Take the snapshot and present the view controller
         view.snapshot( flashing : true) { (image) in
-            let snapController = SnapshotViewController()
-            snapController.screenCapture = image
             
-            let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
-            navigationController.modalPresentationStyle = .formSheet
+            let confirm = UIAlertController(title: "Successful Screenshot", message: "Would you like to report a bug with Bugsnap?", preferredStyle: .alert)
+            confirm.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            confirm.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (_) in
+                let snapController = SnapshotViewController()
+                snapController.screenCapture = image
+                let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
+                navigationController.modalPresentationStyle = .formSheet
+                if let controller = UIViewController.topMostViewController {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                        controller.present(navigationController, animated: true, completion: nil)
+                    })
+                }
+            }))
+            
             if let controller = UIViewController.topMostViewController {
-                controller.present(navigationController, animated: true, completion: nil)
+                controller.present(confirm, animated: true, completion: nil)
             }
+            
+            
         }
     }
 }

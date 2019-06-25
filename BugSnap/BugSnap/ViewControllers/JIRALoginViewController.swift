@@ -166,12 +166,8 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         
         JIRARestAPI.sharedInstance.setupConnection(userName: userNameField.text ?? "", apiToken: apiTokenField.text ?? "")
         
-        let controller = JIRAIssueCreatorViewController()
+        let controller = JIRAIssueFormViewController()
         controller.snapshot = snapshot
-        controller.onDone = {
-            [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-        }
         navigationController?.pushViewController(controller, animated: true)
     }
     

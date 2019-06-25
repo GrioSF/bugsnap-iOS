@@ -20,6 +20,13 @@
 		7F66ABC222C151F200806661 /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */; };
 		7F66ABC422C1538700806661 /* JIRALoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC322C1538700806661 /* JIRALoginViewController.swift */; };
 		7F66ABC622C1595600806661 /* ShareOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC522C1595600806661 /* ShareOptionViewController.swift */; };
+		7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */; };
+		7F66ABCA22C28D7D00806661 /* JIRA+Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC922C28D7D00806661 /* JIRA+Project.swift */; };
+		7F66ABCC22C28DEA00806661 /* JIRA+IssueField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABCB22C28DEA00806661 /* JIRA+IssueField.swift */; };
+		7F66ABCE22C28E3100806661 /* JIRA+User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABCD22C28E3100806661 /* JIRA+User.swift */; };
+		7F66ABD022C28F0200806661 /* JIRA+AtlassianDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABCF22C28F0200806661 /* JIRA+AtlassianDocument.swift */; };
+		7F66ABD222C2C2B700806661 /* JIRA+Attachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABD122C2C2B700806661 /* JIRA+Attachment.swift */; };
+		7F66ABD422C2CACD00806661 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABD322C2CACD00806661 /* LoadingViewController.swift */; };
 		7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */; };
 		7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683D22B4546F0018AC74 /* GeometryExtensions.swift */; };
 		7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E1922B7CE7F0007A02E /* LineShapes.swift */; };
@@ -29,7 +36,7 @@
 		7FB62E2422B7F4C60007A02E /* UndoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2322B7F4C60007A02E /* UndoButton.swift */; };
 		7FB62E2622B8363C0007A02E /* JIRA-API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2522B8363C0007A02E /* JIRA-API.swift */; };
 		7FB62E3022B981AB0007A02E /* JIRAIssueCreatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */; };
-		7FB62E3522B995020007A02E /* JIRAObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E3422B995020007A02E /* JIRAObjects.swift */; };
+		7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E3422B995020007A02E /* JIRA+Object.swift */; };
 		7FEB197B22BC050300E9C8B5 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */; };
 		7FEB197D22BC264800E9C8B5 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */; };
 		7FEB197F22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */; };
@@ -80,6 +87,13 @@
 		7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		7F66ABC322C1538700806661 /* JIRALoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRALoginViewController.swift; sourceTree = "<group>"; };
 		7F66ABC522C1595600806661 /* ShareOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareOptionViewController.swift; sourceTree = "<group>"; };
+		7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueFormViewController.swift; sourceTree = "<group>"; };
+		7F66ABC922C28D7D00806661 /* JIRA+Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+Project.swift"; sourceTree = "<group>"; };
+		7F66ABCB22C28DEA00806661 /* JIRA+IssueField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+IssueField.swift"; sourceTree = "<group>"; };
+		7F66ABCD22C28E3100806661 /* JIRA+User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+User.swift"; sourceTree = "<group>"; };
+		7F66ABCF22C28F0200806661 /* JIRA+AtlassianDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+AtlassianDocument.swift"; sourceTree = "<group>"; };
+		7F66ABD122C2C2B700806661 /* JIRA+Attachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+Attachment.swift"; sourceTree = "<group>"; };
+		7F66ABD322C2CACD00806661 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		7F87683622B44A5E0018AC74 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
 		7F87683722B44A5E0018AC74 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../../LICENSE; sourceTree = "<group>"; };
 		7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeColorSelectorButton.swift; sourceTree = "<group>"; };
@@ -91,7 +105,7 @@
 		7FB62E2322B7F4C60007A02E /* UndoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoButton.swift; sourceTree = "<group>"; };
 		7FB62E2522B8363C0007A02E /* JIRA-API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA-API.swift"; sourceTree = "<group>"; };
 		7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueCreatorViewController.swift; sourceTree = "<group>"; };
-		7FB62E3422B995020007A02E /* JIRAObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAObjects.swift; sourceTree = "<group>"; };
+		7FB62E3422B995020007A02E /* JIRA+Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+Object.swift"; sourceTree = "<group>"; };
 		7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
 		7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocompleteTextFieldViewController.swift; sourceTree = "<group>"; };
@@ -198,6 +212,8 @@
 				7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */,
 				7F66ABC322C1538700806661 /* JIRALoginViewController.swift */,
 				7F66ABC522C1595600806661 /* ShareOptionViewController.swift */,
+				7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */,
+				7F66ABD322C2CACD00806661 /* LoadingViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -240,7 +256,12 @@
 		7FB62E3322B994D90007A02E /* JIRA */ = {
 			isa = PBXGroup;
 			children = (
-				7FB62E3422B995020007A02E /* JIRAObjects.swift */,
+				7FB62E3422B995020007A02E /* JIRA+Object.swift */,
+				7F66ABC922C28D7D00806661 /* JIRA+Project.swift */,
+				7F66ABCB22C28DEA00806661 /* JIRA+IssueField.swift */,
+				7F66ABCD22C28E3100806661 /* JIRA+User.swift */,
+				7F66ABCF22C28F0200806661 /* JIRA+AtlassianDocument.swift */,
+				7F66ABD122C2C2B700806661 /* JIRA+Attachment.swift */,
 			);
 			path = JIRA;
 			sourceTree = "<group>";
@@ -403,15 +424,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FEBAC4F22B180B00022158D /* PathBasedButton.swift in Sources */,
+				7F66ABD222C2C2B700806661 /* JIRA+Attachment.swift in Sources */,
 				7FEBAC7822B41FD60022158D /* PathBasedTableViewCell.swift in Sources */,
 				7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */,
 				7F0BCFA122B051C3006B4F26 /* SnapshotViewController.swift in Sources */,
-				7FB62E3522B995020007A02E /* JIRAObjects.swift in Sources */,
+				7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */,
 				7FEBAC6122B2A3390022158D /* Shapes.swift in Sources */,
 				7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */,
+				7F66ABD022C28F0200806661 /* JIRA+AtlassianDocument.swift in Sources */,
 				7F66ABC622C1595600806661 /* ShareOptionViewController.swift in Sources */,
 				7FEBAC7A22B4201C0022158D /* LineWidthSelectorViewController.swift in Sources */,
 				7FEBAC7022B4079B0022158D /* LineWidthButton.swift in Sources */,
+				7F66ABCC22C28DEA00806661 /* JIRA+IssueField.swift in Sources */,
 				7FEB197D22BC264800E9C8B5 /* PaddedTextField.swift in Sources */,
 				7FEBAC5822B1ABE90022158D /* ColorSelectorButton.swift in Sources */,
 				7F0BCF9E22B04C1A006B4F26 /* UIView+Snap.swift in Sources */,
@@ -428,11 +452,15 @@
 				7F0BCF9122B00C85006B4F26 /* AccelerometerShakeDetector.swift in Sources */,
 				7FEBAC6822B2A42E0022158D /* IrisTransitioningNavigationController.swift in Sources */,
 				7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */,
+				7F66ABCE22C28E3100806661 /* JIRA+User.swift in Sources */,
+				7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */,
 				7F0BCF9722B045A2006B4F26 /* UIViewController+Snap.swift in Sources */,
 				7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */,
 				7FB62E1F22B7D8050007A02E /* ShapeSelectorButton.swift in Sources */,
 				7FB62E2122B7E0650007A02E /* TextShape.swift in Sources */,
+				7F66ABD422C2CACD00806661 /* LoadingViewController.swift in Sources */,
 				7FEBAC6A22B2A4790022158D /* UIView+IBHelpers.swift in Sources */,
+				7F66ABCA22C28D7D00806661 /* JIRA+Project.swift in Sources */,
 				7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */,
 				7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */,
 				7FEBAC5D22B1BA4B0022158D /* ShapesView.swift in Sources */,
