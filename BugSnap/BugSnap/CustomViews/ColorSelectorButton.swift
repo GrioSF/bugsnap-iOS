@@ -15,27 +15,28 @@ import UIKit
 */
 @IBDesignable public class ColorSelectorButton: PathBasedButton {
     
-    /// The color when the color is actually selected
-    @IBInspectable var selectedColor : UIColor = UIColor.black {
-        didSet {
-            pathStrokeColor = isSelected ? selectedColor : nil
-        }
-    }
     
     /// Whether this button is selected, automatically changes the stroke color
     @IBInspectable public override var isSelected: Bool {
         didSet {
-            pathStrokeColor = isSelected ? selectedColor : nil
+            if isSelected {
+                cornerRadius = bounds.width * 0.5
+                borderWidth = 1.0
+                borderColor = UIColor.white
+            } else {
+                borderColor = nil
+                borderWidth = 0.0
+            }
         }
     }
     
     // MARK: - Override PathBasedButton
     
     override public func configureButton() {
-        let oval = UIBezierPath(ovalIn: CGRect(origin: CGPoint(x: 20, y: 20), size: CGSize(width: 80, height: 80)))
-        designSize = CGSize(width: 120, height: 120)
+        let oval = UIBezierPath(ovalIn: CGRect(origin: CGPoint(x: 10, y: 10), size: CGSize(width: 80, height: 80)))
+        designSize = CGSize(width: 100, height: 100)
         path = oval.cgPath
-        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 60, height: 60))
+        bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: 38.0, height: 38.0))
         pathLineWidth = 1.0
         pathStrokeColor = UIColor.black
         pathFillColor = nil

@@ -44,6 +44,7 @@ public extension UIViewController {
         let controller = LoadingViewController()
         controller.modalPresentationStyle = .overCurrentContext
         controller.modalTransitionStyle = .crossDissolve
+        controller.message = message
         present(controller, animated: true, completion: nil)
         return controller
     }

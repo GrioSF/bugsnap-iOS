@@ -57,12 +57,7 @@ public class SnapshotViewController: UIViewController {
     
     private func setupToolbar() {
         
-        let markupButton = MarkupButton()
-        markupButton.addTarget(self, action: #selector(onEdit), for: .touchUpInside)
-//        let annotationBarButtonItem = UIBarButtonItem(customView: markupButton)
-        
-//        navigationController?.setToolbarHidden(false, animated: false)
-       
+   
     }
     
     private func setupSnapshot() {

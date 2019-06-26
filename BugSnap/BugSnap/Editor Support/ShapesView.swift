@@ -25,10 +25,13 @@ public class ShapesView: UIImageView {
     var graphicProperties = GraphicProperties()
     
     /// Whether this tool should be deselected at the end of the gesture
-    var autoDeselect = false
+    var autoDeselect = true
     
     /// The handler when a tool input gesture has ended
     var onEndedGesture : ((Bool)->Void)? = nil
+    
+    /// The handler when the gesture has begun
+    var onBeganGesture : (()->Void)? = nil
     
     /// The text to be captured
     var currentText : String? = "Text"
@@ -74,7 +77,7 @@ public class ShapesView: UIImageView {
         }
         
         tool.gestureBegan(point: point)
-        
+        onBeganGesture?()
         
     }
     

@@ -30,33 +30,51 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     /// The content view for the scroll view
     private var snapshot = ShapesView()
     
-    /// The undo button for enabling it or disable it
-    private var undoButton : UndoButton!
+    /// The current menu for a tool
+    private weak var currentMenuController : ToolOptionsViewController?
+    
+    /// The buttons present in the toolbar
+    private var toolbarButtons = [ToolbarSelectableButton]()
+    
+    /// The last tool selected
+    private var lastToolSelected : ToolbarSelectableButton? = nil
+    
+    /// The brush size
+    private var brushSize = CGFloat(1.0)
     
     // MARK: - View Life Cycle
     
     override public func viewDidLoad() {
         super.viewDidLoad()
         
+        snapshot.graphicProperties.strokeColor = UIColor(red: 0, green: 0, blue: 0)
+        snapshot.graphicProperties.lineWidth = 1.0
         snapshot.image = screenSnapshot ?? UIImage(named: "TestImage")
         snapshot.onEndedGesture = {
             [weak self] (autoDeselected) in
             
             if autoDeselected {
+                self?.snapshot.currentToolType = nil
                 self?.scrollView.isScrollEnabled = true
                 self?.snapshot.isUserInteractionEnabled = false
-                // Reset the auto deselection whenever this is called.
-                self?.snapshot.autoDeselect = false
+                self?.lastToolSelected?.isSelected = false
+                self?.dismissPreviousToolOptions()
             }
-            self?.undoButton.isEnabled = self?.snapshot.isDirty ?? false
-            
         }
-        setup()        
+        snapshot.onBeganGesture = {
+            [weak self] in
+            self?.dismissPreviousToolOptions()
+        }
+        setup()
+        navigationController?.setToolbarHidden(false, animated: false)
+        navigationController?.toolbar.isTranslucent = false
+        navigationController?.toolbar.barStyle = .default
+        navigationController?.toolbar.barTintColor = navigationController?.navigationBar.barTintColor
     }
     
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        undoButton.isEnabled = snapshot.isDirty
+        
     }
     
     override public func viewDidAppear(_ animated: Bool) {
@@ -78,13 +96,23 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     }
     
     private func setupNavigationBar() {
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDone))
-        undoButton = UndoButton()
-        let undoButtonItem = customViewControl(control: undoButton, selector: #selector(onUndo(button:)))
-        navigationItem.setLeftBarButton(doneButton, animated: false)
-        navigationItem.setRightBarButton(undoButtonItem, animated: false)
+        
+        // Setup the navigation bar
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.barTintColor = UIColor(red: 48, green: 48, blue: 48)
+        
+        // Setup the right buttom item
+        let shareItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onShare(item:)))
+        shareItem.tintColor = UIColor.white
+        navigationItem.setRightBarButton(shareItem, animated: false)
+        
+        // Setup the dismiss button
+        navigationItem.setLeftBarButton(customViewControl(control: DismissButton(), selector: #selector(onDismiss)), animated: false)
         navigationController?.setToolbarHidden(false, animated: false)
-        title = "Markup"
+        
+        let trashButton = TrashButton()
+        trashButton.addTarget(self, action: #selector(onTrash), for: .touchUpInside)
+        navigationItem.titleView = trashButton
     }
     
     private func setupScrollView() {
@@ -111,16 +139,25 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     }
     
     private func setupToolbar() {
-        navigationController?.toolbar.setItems([toolButton(button: StrokeTool()),
+        guard toolbarButtons.count == 0 else { return }
+        
+        let strokeButton = DrawToolButton()
+        let textButton = TextToolButton()
+        let shapesButton = ShapesToolButton()
+        
+        toolbarButtons.append(contentsOf: [strokeButton,textButton,shapesButton])
+        toolbarButtons.forEach {
+            $0.isSelected = false
+        }
+        
+        navigationController?.toolbar.setItems([UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                                                customViewControl(control: strokeButton, selector: #selector(onStroke(button:))),
                                                 UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-                                                customViewControl(control: LineWidthSelectorButton(), selector: #selector(onLineWidth(button:))),
-                                                customViewControl(control: StrokeColorSelectorButton(), selector: #selector(onStrokeColor(button:))),
-                                                customViewControl(control: ColorSelectorButton(), selector: #selector(onFillColor(button:))),
+                                                customViewControl(control: textButton, selector: #selector(onText(button:))),
                                                 UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-                                                customViewControl(control: ShapeSelectorButton(), selector: #selector(onShapeTools(button:)))
+                                                customViewControl(control: shapesButton, selector: #selector(onShapes(button:))),
+                                                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
             ], animated: true)
-        setToolsColor(color: UIColor.red, isStroke: true)
-        setToolsColor(color: nil, isStroke: false)
     }
     
     private func customViewControl( control : UIControl, selector : Selector ) -> UIBarButtonItem {
@@ -128,44 +165,9 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         return UIBarButtonItem(customView: control)
     }
     
-    private func toolButton ( button : ToolButton ) -> UIBarButtonItem {
-        button.addTarget(self, action: #selector(onTool(button:)), for: .touchUpInside)
-        return UIBarButtonItem(customView: button)
-    }
-    
-    private func setToolsColor( color : UIColor? , isStroke : Bool = true) {
-        if let items = navigationController?.toolbar.items {
-            items.forEach { if $0.customView?.isKind(of: ToolButton.self) ?? false {
-                    if isStroke {
-                        ($0.customView as? ToolButton)?.pathStrokeColor = color
-                    } else {
-                        ($0.customView as? ToolButton)?.pathFillColor = color
-                    }
-                }
-            }
-        }
-        if isStroke {
-            snapshot.graphicProperties.strokeColor = color
-        } else {
-            snapshot.graphicProperties.fillColor = color
-        }
-        
-    }
     
     // MARK: - Support
     
-    private func deselectToolbarTools() {
-        guard let items = navigationController?.toolbar.items else { return }
-        
-        // Toggle the selection
-        for item in items {
-            if let control = item.customView as? ToolButton,
-                control.isSelected {
-                control.isSelected = false
-                break
-            }
-        }
-    }
     
     private func captureTextToolText() {
         let controller = UIAlertController(title: "Text Tool", message: "Enter your text", preferredStyle: .alert)
@@ -181,7 +183,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         controller.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
             let textField = controller.textFields?.first!
             self.snapshot.currentText = textField?.text
-            self.deselectToolbarTools()
             self.scrollView.isScrollEnabled = false
             self.snapshot.isUserInteractionEnabled = true
             self.snapshot.autoDeselect = true
@@ -191,98 +192,60 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     // MARK: - UICallback
     
-    @objc func onDone() {
+    @objc func onDismiss() {
         scrollView.isUserInteractionEnabled = false
         snapshot.snapshot { [weak self] (image) in
-            self?.onEditionFinished?(image)
             self?.navigationController?.popViewController(animated: true)
         }
     }
     
-    @objc func onUndo( button : PathBasedButton ) {
-        button.isEnabled = snapshot.undo()
+    @objc func onTrash() {
+        
     }
     
-    @objc func onTool( button : ToolButton ) {
+    @objc func onStroke( button : ToolbarSelectableButton) {
+        let controller = StrokeOptionsViewController()
+        handleToolAction(button: button, optionsController: controller)
         
-        // Toggle
-        guard !button.isSelected else {
-            button.isSelected = false
-            snapshot.currentToolType = nil
-            scrollView.isScrollEnabled = true
-            snapshot.isUserInteractionEnabled = false
-            return
+        controller.lineWidth = brushSize
+        controller.onLineWidthChangedHandler = {
+            [weak self] (lineWidth) in
+            self?.brushSize = lineWidth
+            self?.snapshot.graphicProperties.lineWidth = lineWidth
         }
         
-        // Select this tool
-        deselectToolbarTools()
-        button.isSelected = true
-        snapshot.currentToolType = button.toolType
+        snapshot.currentToolType = StrokeShape.self
+        snapshot.autoDeselect = false
         scrollView.isScrollEnabled = false
         snapshot.isUserInteractionEnabled = true
     }
     
-    @objc func onStrokeColor( button : StrokeColorSelectorButton? ) {
-        let controller = ColorSelectorViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        controller.modalPresentationStyle = .popover
-        controller.popoverPresentationController?.delegate = self
-        controller.popoverPresentationController?.sourceView = button
-        controller.onColorSelected = {
-            [weak self] (color) in
-            button?.pathFillColor = color
-            self?.setToolsColor(color: color, isStroke: true)
-        }
+    @objc func onText( button : ToolbarSelectableButton ) {
+        handleToolAction(button: button, optionsController: StrokeOptionsViewController())
         
-        present(controller, animated: true, completion: nil)
+        snapshot.currentToolType = nil
+        snapshot.autoDeselect = true
+        scrollView.isScrollEnabled = false
+        snapshot.isUserInteractionEnabled = true
     }
     
-    @objc func onFillColor( button : ColorSelectorButton? ) {
+    @objc func onShapes( button : ToolbarSelectableButton ) {
+        let controller = ShapesOptionsViewController()
+        handleToolAction(button: button, optionsController: controller)
         
-        let controller = ColorSelectorViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        controller.modalPresentationStyle = .popover
-        controller.popoverPresentationController?.delegate = self
-        controller.popoverPresentationController?.sourceView = button
-        controller.onColorSelected = {
-            [weak self] (color) in
-            button?.pathFillColor = color
-            self?.setToolsColor(color: color, isStroke: false)
+        controller.onShapeSelectedHandler = {
+            [weak self] (shapeType) in
+            self?.snapshot.graphicProperties.lineWidth = 2.0
+            self?.snapshot.currentToolType = shapeType
+            self?.snapshot.autoDeselect = true
+            self?.scrollView.isScrollEnabled = false
+            self?.snapshot.isUserInteractionEnabled = true
         }
-        
-        present(controller, animated: true, completion: nil)
     }
+   
     
-    @objc func onLineWidth( button : UIView? ) {
-        let controller = LineWidthSelectorViewController()
-        controller.modalPresentationStyle = .popover
-        controller.popoverPresentationController?.delegate = self
-        controller.popoverPresentationController?.sourceView = button
-        controller.onLineWidthSelected = {
-            [weak self] (lineWidth) in
-            self?.snapshot.graphicProperties.lineWidth = lineWidth
-        }
-        present(controller, animated: true, completion: nil)
-    }
-    
-    @objc func onShapeTools( button : UIView? ) {
-        let controller = ShapeToolViewController()
-        controller.modalPresentationStyle = .popover
-        controller.popoverPresentationController?.delegate = self
-        controller.popoverPresentationController?.sourceView = button
-        controller.graphicProperties = snapshot.graphicProperties
-        controller.onToolSelected = {
-            [weak self] (toolType) in
-            self?.deselectToolbarTools()
-            self?.snapshot.currentToolType = toolType
-            
-            if toolType == TextShape.self {
-                self?.captureTextToolText()
-            } else {
-                self?.scrollView.isScrollEnabled = false
-                self?.snapshot.isUserInteractionEnabled = true
-                self?.snapshot.autoDeselect = true
-            }
-        }
-        present(controller, animated: true, completion: nil)
+    @objc func onShare( item : UIBarButtonItem? ) {
+        onShareWithJIRA()
     }
     
     
@@ -296,5 +259,70 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     public func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.none
+    }
+    
+    
+    // MARK: - Presentation Support
+    
+    private func handleToolAction(button : ToolbarSelectableButton, optionsController : ToolOptionsViewController ) {
+        
+        guard !button.isSelected else {
+            if currentMenuController == nil {
+                showToolsOptionsController(optionsController: optionsController)
+            } else {
+                dismissPreviousToolOptions()
+            }
+            return
+        }
+        dismissPreviousToolOptions()
+        if lastToolSelected != nil {
+            lastToolSelected?.isSelected = false
+        }
+        button.isSelected = true
+        lastToolSelected = button
+        showToolsOptionsController(optionsController: optionsController)
+    }
+    
+    private func showToolsOptionsController( optionsController : ToolOptionsViewController ) {
+        optionsController.show(parent: self)
+        currentMenuController = optionsController
+        
+        // Handle the color change which is generic
+        optionsController.onColorSelectedHandler =  {
+            [weak self] (color) in
+            self?.snapshot.graphicProperties.strokeColor = color
+        }
+        optionsController.colorSelected = snapshot.graphicProperties.strokeColor ?? UIColor(red: 0, green: 0, blue: 0)
+    }
+    
+    private func dismissPreviousToolOptions() {
+        if let controller = currentMenuController {
+            controller.hide()
+        }
+    }
+    
+    private func onShareWithJIRA() {
+        let loading = self.navigationController?.presentLoading(message: "Generating image...")
+        snapshot.snapshot { [weak self] (newImage) in
+            loading?.dismiss(animated: true, completion: {
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                    self?.presentJIRACapture(image: newImage)
+                })
+            })
+        }
+    }
+    
+    private func onShareWithEmail() {
+        
+    }
+    
+    private func presentJIRACapture( image : UIImage? ) {
+        let jiraLoginViewController = JIRALoginViewController()
+        jiraLoginViewController.snapshot = image
+        
+        let navigationController = UINavigationController(rootViewController: jiraLoginViewController)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.setToolbarHidden(true, animated: false)
+        present(navigationController, animated: true, completion: nil)
     }
 }
