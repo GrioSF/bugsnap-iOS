@@ -25,7 +25,7 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     // MARK: - UI Properties
     
     /// The scroll view to support zooming into the image
-    private var scrollView = UIScrollView()
+    private var scrollView = ShapeEditorScrollView()
     
     /// The content view for the scroll view
     private var snapshot = ShapesView()
@@ -55,8 +55,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
             
             if autoDeselected {
                 self?.snapshot.currentToolType = nil
-                self?.scrollView.isScrollEnabled = true
-                self?.snapshot.isUserInteractionEnabled = false
                 self?.lastToolSelected?.isSelected = false
                 self?.dismissPreviousToolOptions()
             }
@@ -65,6 +63,8 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
             [weak self] in
             self?.dismissPreviousToolOptions()
         }
+        //scrollView.isScrollEnabled = false
+        snapshot.isUserInteractionEnabled = true
         setup()
         navigationController?.setToolbarHidden(false, animated: false)
         navigationController?.toolbar.isTranslucent = false
@@ -124,9 +124,9 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         scrollView.maximumZoomScale = UIScreen.main.scale
         scrollView.minimumZoomScale = 1.0
-        scrollView.bouncesZoom = true
-        scrollView.bounces = false
         scrollView.delegate = self
+        scrollView.canCancelContentTouches = false
+        scrollView.delaysContentTouches = false
     }
     
     private func setupImageView() {
@@ -183,8 +183,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         controller.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
             let textField = controller.textFields?.first!
             self.snapshot.currentText = textField?.text
-            self.scrollView.isScrollEnabled = false
-            self.snapshot.isUserInteractionEnabled = true
             self.snapshot.autoDeselect = true
         }))
         present(controller, animated: true, completion: nil)
@@ -216,8 +214,7 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         
         snapshot.currentToolType = StrokeShape.self
         snapshot.autoDeselect = false
-        scrollView.isScrollEnabled = false
-        snapshot.isUserInteractionEnabled = true
+        
     }
     
     @objc func onText( button : ToolbarSelectableButton ) {
@@ -225,8 +222,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         
         snapshot.currentToolType = nil
         snapshot.autoDeselect = true
-        scrollView.isScrollEnabled = false
-        snapshot.isUserInteractionEnabled = true
     }
     
     @objc func onShapes( button : ToolbarSelectableButton ) {
@@ -238,8 +233,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
             self?.snapshot.graphicProperties.lineWidth = 2.0
             self?.snapshot.currentToolType = shapeType
             self?.snapshot.autoDeselect = true
-            self?.scrollView.isScrollEnabled = false
-            self?.snapshot.isUserInteractionEnabled = true
         }
     }
    

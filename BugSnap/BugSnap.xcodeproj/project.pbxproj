@@ -36,6 +36,7 @@
 		7F66ABE222C3C04700806661 /* ToolOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABE122C3C04700806661 /* ToolOptionsViewController.swift */; };
 		7F66ABE422C3C71600806661 /* ToolbarSelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABE322C3C71600806661 /* ToolbarSelectableButton.swift */; };
 		7F66ABE622C3E02C00806661 /* ShapesOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABE522C3E02C00806661 /* ShapesOptionsViewController.swift */; };
+		7F66ABE822C4610C00806661 /* ShapeEditorScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABE722C4610C00806661 /* ShapeEditorScrollView.swift */; };
 		7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */; };
 		7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683D22B4546F0018AC74 /* GeometryExtensions.swift */; };
 		7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E1922B7CE7F0007A02E /* LineShapes.swift */; };
@@ -111,6 +112,7 @@
 		7F66ABE122C3C04700806661 /* ToolOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolOptionsViewController.swift; sourceTree = "<group>"; };
 		7F66ABE322C3C71600806661 /* ToolbarSelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarSelectableButton.swift; sourceTree = "<group>"; };
 		7F66ABE522C3E02C00806661 /* ShapesOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapesOptionsViewController.swift; sourceTree = "<group>"; };
+		7F66ABE722C4610C00806661 /* ShapeEditorScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeEditorScrollView.swift; sourceTree = "<group>"; };
 		7F87683622B44A5E0018AC74 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
 		7F87683722B44A5E0018AC74 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../../LICENSE; sourceTree = "<group>"; };
 		7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeColorSelectorButton.swift; sourceTree = "<group>"; };
@@ -234,6 +236,27 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
+		7F66ABE922C5150200806661 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				7F66ABDB22C2E53600806661 /* DismissButton.swift */,
+				7F66ABDD22C2E85300806661 /* TrashButton.swift */,
+				7F66ABD522C2E1EF00806661 /* DrawToolButton.swift */,
+				7F66ABD722C2E2CB00806661 /* TextToolButton.swift */,
+				7F66ABD922C2E37E00806661 /* ShapesToolButton.swift */,
+				7FEBAC4E22B180B00022158D /* PathBasedButton.swift */,
+				7FB62E2322B7F4C60007A02E /* UndoButton.swift */,
+				7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */,
+				7FEBAC6B22B2FF080022158D /* ToolsButtons.swift */,
+				7FEBAC7322B41A5E0022158D /* LineWidthSelectorButton.swift */,
+				7FEBAC6F22B4079B0022158D /* LineWidthButton.swift */,
+				7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */,
+				7FB62E1E22B7D8050007A02E /* ShapeSelectorButton.swift */,
+				7F66ABE322C3C71600806661 /* ToolbarSelectableButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
 		7FB62E1B22B7D4500007A02E /* Annotation Editor Menues */ = {
 			isa = PBXGroup;
 			children = (
@@ -288,22 +311,9 @@
 		7FEBAC4D22B17FF70022158D /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				7F66ABE922C5150200806661 /* Buttons */,
 				7FB62E2222B7EF370007A02E /* Cells */,
-				7FEBAC4E22B180B00022158D /* PathBasedButton.swift */,
-				7FB62E2322B7F4C60007A02E /* UndoButton.swift */,
-				7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */,
-				7FEBAC6B22B2FF080022158D /* ToolsButtons.swift */,
-				7FEBAC7322B41A5E0022158D /* LineWidthSelectorButton.swift */,
-				7FEBAC6F22B4079B0022158D /* LineWidthButton.swift */,
-				7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */,
-				7FB62E1E22B7D8050007A02E /* ShapeSelectorButton.swift */,
 				7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */,
-				7F66ABE322C3C71600806661 /* ToolbarSelectableButton.swift */,
-				7F66ABD522C2E1EF00806661 /* DrawToolButton.swift */,
-				7F66ABD722C2E2CB00806661 /* TextToolButton.swift */,
-				7F66ABD922C2E37E00806661 /* ShapesToolButton.swift */,
-				7F66ABDB22C2E53600806661 /* DismissButton.swift */,
-				7F66ABDD22C2E85300806661 /* TrashButton.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -317,6 +327,7 @@
 				7FB62E2022B7E0650007A02E /* TextShape.swift */,
 				7FB62E1922B7CE7F0007A02E /* LineShapes.swift */,
 				7FEBAC5C22B1BA4B0022158D /* ShapesView.swift */,
+				7F66ABE722C4610C00806661 /* ShapeEditorScrollView.swift */,
 			);
 			path = "Editor Support";
 			sourceTree = "<group>";
@@ -452,6 +463,7 @@
 				7F66ABD222C2C2B700806661 /* JIRA+Attachment.swift in Sources */,
 				7F66ABDC22C2E53600806661 /* DismissButton.swift in Sources */,
 				7FEBAC7822B41FD60022158D /* PathBasedTableViewCell.swift in Sources */,
+				7F66ABE822C4610C00806661 /* ShapeEditorScrollView.swift in Sources */,
 				7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */,
 				7F0BCFA122B051C3006B4F26 /* SnapshotViewController.swift in Sources */,
 				7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */,

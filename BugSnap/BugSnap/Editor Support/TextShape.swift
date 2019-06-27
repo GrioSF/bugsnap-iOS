@@ -35,6 +35,12 @@ public class TextShape: CALayer, ShapeProtocol&ShapeGestureHandler&TextShapeProt
     
     public var initialPoint = CGPoint.zero
     
+    public var isSelected: Bool = false {
+        didSet {
+            
+        }
+    }
+    
     
     // MARK: - ShapeProtocol Implementation
     
@@ -69,6 +75,10 @@ public class TextShape: CALayer, ShapeProtocol&ShapeGestureHandler&TextShapeProt
     }
     
     public var handler: ShapeGestureHandler? { return self}
+    
+    public func implementScale(scale: CGSize) {
+        
+    }
     
     // MARK: - ShapeGestureHandler methods
     

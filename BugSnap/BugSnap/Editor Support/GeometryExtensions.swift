@@ -56,3 +56,17 @@ public extension CGRect {
         return CGRect(x: 0, y: 0, width: size.width, height: size.height)
     }
 }
+
+/**
+    Convenient extension to obtain information about a layer while is being manipulated
+*/
+public extension CALayer {
+    
+    /// The frame for the layer after applying the transform
+    var transformedFrame : CGRect {
+        var frame = CGRect(x: position.x - bounds.width * anchorPoint.x, y: position.y - bounds.height * anchorPoint.y, width: bounds.width, height: bounds.height)
+        let affineTransform = CATransform3DGetAffineTransform(transform)
+        frame = frame.applying(affineTransform)
+        return frame
+    }
+}
