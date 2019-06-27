@@ -73,7 +73,6 @@ public class LoadingViewController: UIViewController {
         loadingLabel.numberOfLines = 0
         loadingLabel.textColor = UIColor.darkGray
         loadingLabel.translatesAutoresizingMaskIntoConstraints = false
-        loadingLabel.text = ""
         
         contentView.addSubview(loadingLabel)
         loadingLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true

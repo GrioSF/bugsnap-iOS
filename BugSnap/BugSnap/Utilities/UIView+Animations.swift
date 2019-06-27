@@ -249,4 +249,15 @@ extension UIView {
         }
     }
     
+    /**
+        Animates the background color of the view to the color specified with the duration specified (by default 0.3 secs)
+        - Parameter color: The target color for the background of this view
+        - Parameter duration: The duration of the animation. Defaults to 0.3
+    */
+    func fade( to color: UIColor, duration : TimeInterval = 0.3 ) {
+        UIView.animate(withDuration: duration, delay: 0.0, options: [.beginFromCurrentState,.curveEaseInOut], animations: {
+            self.backgroundColor = color
+        }, completion: nil)
+    }
+    
 }

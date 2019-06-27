@@ -86,6 +86,36 @@ public class JIRARestAPI : NSObject {
             "Accept" : "application/json" ]
     }
     
+    /**
+        Retrieves a single project accessible by the user in order to test the user configuration
+        - Parameter completion: Handler with an array of errors or nil if there wasn't any
+    */
+    func pingProjectCall( completion : @escaping ([String]?)->Void ) {
+        var request = URLRequest(url: URL(string: "rest/api/3/project/search?startAt=0&maxResults=1&orderBy=name", relativeTo: serverURL)!)
+        request.httpMethod = "GET"
+        
+        let urlSession = URLSession(configuration: sessionConfiguration)
+        let task = urlSession.dataTask(with: request) { (data, response, error) in
+            var messages : [String]? = nil
+            if let responseData = data,
+                error == nil {
+                //let stringData = String(data: responseData, encoding: .utf8)
+                if let json = try? JSONSerialization.jsonObject(with: responseData, options: .allowFragments) {
+                    messages = JIRARestAPI.errorsInResponse(json: json)
+                } else if let httpResponse = response as? HTTPURLResponse,
+                    !(200...299).contains(httpResponse.statusCode) {
+                    messages = ["\(httpResponse.statusCode) - \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))"]
+                }
+            } else if let connectionError = error {
+                messages = [connectionError.localizedDescription]
+            }
+            
+            DispatchQueue.main.async {
+                completion(messages)
+            }
+        }
+        task.resume()
+    }
     
     /**
         Retrieves all the projects accessibles with the current user configuration.

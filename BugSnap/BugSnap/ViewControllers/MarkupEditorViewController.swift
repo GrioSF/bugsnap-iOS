@@ -238,7 +238,14 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
    
     
     @objc func onShare( item : UIBarButtonItem? ) {
-        onShareWithJIRA()
+        let loading = self.navigationController?.presentLoading(message: "Generating image...")
+        snapshot.snapshot { [weak self] (newImage) in
+            loading?.dismiss(animated: true, completion: {
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                    self?.presentJIRACapture(image: newImage)
+                })
+            })
+        }
     }
     
     
@@ -294,28 +301,18 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         }
     }
     
-    private func onShareWithJIRA() {
-        let loading = self.navigationController?.presentLoading(message: "Generating image...")
-        snapshot.snapshot { [weak self] (newImage) in
-            loading?.dismiss(animated: true, completion: {
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
-                    self?.presentJIRACapture(image: newImage)
-                })
-            })
-        }
-    }
-    
-    private func onShareWithEmail() {
-        
-    }
-    
     private func presentJIRACapture( image : UIImage? ) {
         let jiraLoginViewController = JIRALoginViewController()
         jiraLoginViewController.snapshot = image
+        jiraLoginViewController.preferredContentSize = CGSize(width: min(view.bounds.width * 0.8,400.0), height: min(view.bounds.height*0.5,300))
+        present(jiraLoginViewController, animated: false, completion: nil)
         
-        let navigationController = UINavigationController(rootViewController: jiraLoginViewController)
-        navigationController.setNavigationBarHidden(true, animated: false)
-        navigationController.setToolbarHidden(true, animated: false)
-        present(navigationController, animated: true, completion: nil)
+        jiraLoginViewController.onSuccess = {
+            [weak self] in
+            
+            let controller = JIRAIssueFormViewController()
+            controller.modalTransitionStyle = .crossDissolve
+            self?.present(controller, animated: true, completion: nil)
+        }
     }
 }

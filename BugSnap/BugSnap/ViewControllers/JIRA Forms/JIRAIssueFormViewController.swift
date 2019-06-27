@@ -13,7 +13,7 @@ import UIKit
     This is a simple form that allows to select the project, the issue type and capture the summary and description.
     No presentation is made about the annotated screenshot.
 */
-public class JIRAIssueFormViewController: UIViewController {
+public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Exposed properties
     
@@ -29,7 +29,7 @@ public class JIRAIssueFormViewController: UIViewController {
     fileprivate var contentView = UIView()
     
     /// The title for the form
-    private var promptLabel = UILabel()
+    private var promptLabel = FormTitleLabel(text: "Add Issue Details and Confirm")
     
     /// The view controller for autocomplete
     private var autocomplete = AutocompleteTextFieldViewController()
@@ -38,16 +38,16 @@ public class JIRAIssueFormViewController: UIViewController {
     private var issueTypeSelector = UILabel()
     
     /// The summary capture field
-    private var summaryField = PaddedTextField()
+    private var summaryField = FormTextField()
     
     /// The description capture field
     private var descriptionField = UITextView()
     
     /// The cancel button
-    private var cancelButton = UIButton()
+    private var cancelButton = CancelFormButton(title: "Cancel")
     
     /// The confirm button
-    private var confirmButton = UIButton()
+    private var confirmButton = SubmitFormButton(title: "Add Ticket")
     
     // MARK: - Data Fields
     
@@ -108,13 +108,6 @@ public class JIRAIssueFormViewController: UIViewController {
     }
     
     private func setupTitle() {
-        promptLabel.backgroundColor = UIColor.clear
-        promptLabel.textColor = UIColor.darkGray
-        promptLabel.textAlignment = .center
-        promptLabel.numberOfLines = 0
-        promptLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 16.0)
-        promptLabel.translatesAutoresizingMaskIntoConstraints = false
-        promptLabel.text = "Add Issue Details and Confirm"
         
         contentView.addSubview(promptLabel)
         promptLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
@@ -124,12 +117,7 @@ public class JIRAIssueFormViewController: UIViewController {
     }
     
     private func setupProjectField() {
-        let label = UILabel()
-        label.textColor = UIColor(red: 137, green: 137, blue: 137)
-        label.textAlignment = .left
-        label.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Project*"
+        let label = FieldNameLabel(text: "Project*")
         
         contentView.addSubview(label)
         label.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
@@ -155,12 +143,7 @@ public class JIRAIssueFormViewController: UIViewController {
     }
     
     private func setupIssueType() {
-        let label = UILabel()
-        label.textColor = UIColor(red: 137, green: 137, blue: 137)
-        label.textAlignment = .left
-        label.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Issue Type*"
+        let label = FieldNameLabel(text: "Issue Type*")
         
         contentView.addSubview(label)
         label.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
@@ -186,29 +169,16 @@ public class JIRAIssueFormViewController: UIViewController {
     }
     
     private func setupSummary() {
-        let label = UILabel()
-        label.textColor = UIColor(red: 137, green: 137, blue: 137)
-        label.textAlignment = .left
-        label.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Summary*"
+        let label = FieldNameLabel(text: "Summary*")
         
         contentView.addSubview(label)
         label.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         label.topAnchor.constraint(equalTo: issueTypeSelector.bottomAnchor, constant: 20.0).isActive = true
         
-        summaryField.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
-        summaryField.font = label.font
-        summaryField.textColor = UIColor.black
-        summaryField.textAlignment = .left
-        summaryField.translatesAutoresizingMaskIntoConstraints = false
         summaryField.text = ""
-        summaryField.keyboardType = .emailAddress
-        summaryField.autocapitalizationType = .none
-        summaryField.textInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        //summaryField.delegate = self
         summaryField.isEnabled = false
-        
+        summaryField.keyboardType = .emailAddress
+        summaryField.delegate = self
         
         contentView.addSubview(summaryField)
         summaryField.leadingAnchor.constraint(equalTo: label.leadingAnchor).isActive = true
@@ -218,12 +188,7 @@ public class JIRAIssueFormViewController: UIViewController {
     }
     
     private func setupDescription() {
-        let label = UILabel()
-        label.textColor = UIColor(red: 137, green: 137, blue: 137)
-        label.textAlignment = .left
-        label.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Description"
+        let label = FieldNameLabel(text: "Description")
         
         contentView.addSubview(label)
         label.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
@@ -237,7 +202,7 @@ public class JIRAIssueFormViewController: UIViewController {
         descriptionField.text = ""
         descriptionField.keyboardType = .asciiCapable
         descriptionField.autocapitalizationType = .none
-        descriptionField.isEditable = true
+        descriptionField.isEditable = false
         
         
         contentView.addSubview(descriptionField)
@@ -248,12 +213,7 @@ public class JIRAIssueFormViewController: UIViewController {
     }
     
     private func setupLowerButtons() {
-        confirmButton.backgroundColor = UIColor(red: 49, green: 113, blue: 246)
-        confirmButton.setTitleColor(UIColor.white, for: .normal)
-        confirmButton.setTitle("Add Ticket", for: .normal)
-        confirmButton.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        confirmButton.translatesAutoresizingMaskIntoConstraints = false
-        confirmButton.cornerRadius = 2.0
+        
         confirmButton.addTarget(self, action: #selector(onConfirm), for: .primaryActionTriggered)
         
         view.addSubview(confirmButton)
@@ -262,11 +222,6 @@ public class JIRAIssueFormViewController: UIViewController {
         confirmButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15.0 ).isActive = true
         
-        cancelButton.backgroundColor = UIColor.white
-        cancelButton.setTitleColor(UIColor(red: 137, green: 137, blue: 137), for: .normal)
-        cancelButton.setTitle("Cancel", for: .normal)
-        cancelButton.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.addTarget(self, action: #selector(onCancel), for: .primaryActionTriggered)
         
         view.addSubview(cancelButton)
@@ -328,7 +283,7 @@ public class JIRAIssueFormViewController: UIViewController {
     }
     
     @objc func onBack() {
-        navigationController?.popViewController(animated: true)
+        //navigationController?.popViewController(animated: true)
     }
     
     @objc func onCancel() {
@@ -370,6 +325,13 @@ public class JIRAIssueFormViewController: UIViewController {
                 self?.uploadImage(issue: issueObject)
             }
         }
+    }
+    
+    // MARK: - UITextFieldDelegate
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
     // MARK: - Support

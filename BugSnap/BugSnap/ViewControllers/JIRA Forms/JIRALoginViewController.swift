@@ -18,25 +18,34 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
     /// The snapshot for the issue
     var snapshot : UIImage? = nil
     
+    /// The handler if the login process was successful
+    var onSuccess : (()->Void)? = nil
+    
     // MARK: - UI Elements
     
     /// The label for the prompt
-    fileprivate var promptLabel = UILabel()
+    fileprivate var promptLabel = FormTitleLabel(text: "Please enter Jira username\nand API key")
     
     /// The field for the user name
-    fileprivate var userNameField = PaddedTextField()
+    fileprivate var userNameField = FormTextField()
     
     /// The field for the api token
-    fileprivate var apiTokenField = PaddedTextField()
+    fileprivate var apiTokenField = FormTextField()
     
     /// The button for submitting
-    fileprivate var submitButton = UIButton()
+    fileprivate var submitButton = SubmitFormButton(title: "Confirm")
+    
+    /// The button for cancelling
+    fileprivate var cancelButton = CancelFormButton(title: "Cancel")
     
     /// The button for dismissing this view controller
     fileprivate var backButton = UIButton()
     
     /// Whether the resigning first responder comes from user interaction
     fileprivate var keyboardHidingComesFromField = false
+    
+    /// Whether the login process was successful
+    fileprivate var loginSuccessful = false
 
     
     // MARK: - View Life cycle
@@ -47,9 +56,22 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         buildUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //view.fade(to: UIColor(white: 0.0, alpha: 0.3))
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)
+        //view.fade(to: .clear)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if loginSuccessful {
+            onSuccess?()
+        }
     }
     
     // MARK: - Build UI
@@ -59,16 +81,10 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         buildUserNameField()
         buildAPITokenField()
         buildSubmitButton()
+        buildCancelButton()
     }
     
     private func buildLabel() {
-        promptLabel.backgroundColor = UIColor.clear
-        promptLabel.textColor = UIColor.darkGray
-        promptLabel.textAlignment = .center
-        promptLabel.numberOfLines = 0
-        promptLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 16.0)
-        promptLabel.translatesAutoresizingMaskIntoConstraints = false
-        promptLabel.text = "Please enter Jira username\nand API key"
         
         view.addSubview(promptLabel)
         promptLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -78,28 +94,17 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func buildUserNameField() {
-        let label = UILabel()
-        label.textColor = UIColor(red: 137, green: 137, blue: 137)
-        label.textAlignment = .left
-        label.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Username"
+        
+        let label = FieldNameLabel(text: "Username")
         
         view.addSubview(label)
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         label.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 30.0).isActive = true
         
-        userNameField.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
-        userNameField.font = label.font
-        userNameField.textColor = UIColor.black
-        userNameField.textAlignment = .left
-        userNameField.translatesAutoresizingMaskIntoConstraints = false
         userNameField.text = UserDefaults.standard.jiraUserName ?? ""
         userNameField.keyboardType = .emailAddress
         userNameField.autocapitalizationType = .none
-        userNameField.textInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         userNameField.delegate = self
-        
         
         view.addSubview(userNameField)
         userNameField.leadingAnchor.constraint(equalTo: label.leadingAnchor).isActive = true
@@ -109,26 +114,16 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func buildAPITokenField() {
-        let label = UILabel()
-        label.textColor = UIColor(red: 137, green: 137, blue: 137)
-        label.textAlignment = .left
-        label.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "API Key"
+        
+        let label = FieldNameLabel(text: "API Key")
         
         view.addSubview(label)
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         label.topAnchor.constraint(equalTo: userNameField.bottomAnchor, constant: 15.0).isActive = true
         
-        apiTokenField.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
-        apiTokenField.font = label.font
-        apiTokenField.textColor = UIColor.black
-        apiTokenField.textAlignment = .left
-        apiTokenField.translatesAutoresizingMaskIntoConstraints = false
         apiTokenField.text = UserDefaults.standard.jiraApiToken ?? ""
         apiTokenField.autocorrectionType = .no
         apiTokenField.autocapitalizationType = .none
-        apiTokenField.textInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         apiTokenField.delegate = self
         
         view.addSubview(apiTokenField)
@@ -139,19 +134,23 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func buildSubmitButton() {
-        submitButton.backgroundColor = UIColor(red: 49, green: 113, blue: 246)
-        submitButton.setTitleColor(UIColor.white, for: .normal)
-        submitButton.setTitle("Confirm", for: .normal)
-        submitButton.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.cornerRadius = 2.0
         submitButton.addTarget(self, action: #selector(onConfirm), for: .primaryActionTriggered)
         
         view.addSubview(submitButton)
-        submitButton.widthAnchor.constraint(equalToConstant: 200.0).isActive = true
+        submitButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: -20.0).isActive = true
+        submitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         submitButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
-        submitButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         submitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15.0 ).isActive = true
+    }
+    
+    private func buildCancelButton() {
+        cancelButton.addTarget(self, action: #selector(onCancel), for: .primaryActionTriggered)
+        
+        view.addSubview(cancelButton)
+        cancelButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        cancelButton.centerYAnchor.constraint(equalTo: submitButton.centerYAnchor).isActive = true
+        cancelButton.heightAnchor.constraint(equalTo: submitButton.heightAnchor).isActive = true
+        cancelButton.trailingAnchor.constraint(equalTo: submitButton.leadingAnchor, constant: -10.0).isActive = true
     }
     
     // MARK: - UI Callback
@@ -165,10 +164,22 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         }
         
         JIRARestAPI.sharedInstance.setupConnection(userName: userNameField.text ?? "", apiToken: apiTokenField.text ?? "")
-        
-        let controller = JIRAIssueFormViewController()
-        controller.snapshot = snapshot
-        navigationController?.pushViewController(controller, animated: true)
+        let loadingController = presentLoading(message: "Wait a sec, authenticating...")
+        JIRARestAPI.sharedInstance.pingProjectCall {
+            [weak self] (messages) in
+            loadingController.dismiss(animated: true, completion: {
+                if let errors = messages, errors.count > 0 {
+                    self?.presentOperationErrors(errors: errors, title: "Review your credentails")
+                } else {
+                    self?.loginSuccessful = true
+                    self?.dismiss(animated: true, completion: nil)
+                }
+            })
+        }
+    }
+    
+    @objc func onCancel() {
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - UITextFieldDelegate
