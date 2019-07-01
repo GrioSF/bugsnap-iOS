@@ -20,6 +20,9 @@ public protocol ShapeGestureHandler : NSObject {
     /// Whether this shape is selected
     var isSelected : Bool { get set }
     
+    /// Whether this shape supports multiple dragging sessions
+    var isComposed : Bool { get }
+    
     /**
         Method to be called when the gesture began. The method should set the initial point in order to be consistent with the rest
         of the methods.
@@ -144,7 +147,9 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
                 borderWidth = 1.0
                 borderColor = UIColor.darkGray.cgColor
                 
-                selectionHandler = CAShapeLayer()
+                if selectionHandler == nil {
+                    selectionHandler = CAShapeLayer()
+                }
                 selectionHandler?.path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: 10, height: 10)).cgPath
                 selectionHandler?.fillColor = UIColor(red: 55, green: 123, blue: 246).cgColor
                 selectionHandler?.position = bounds.bottomRight.convert(with: CGPoint(x: 5.0, y: 5.0))
@@ -154,6 +159,7 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
                 borderWidth = 0.0
                 borderColor = nil
                 selectionHandler?.removeFromSuperlayer()
+                selectionHandler = nil 
             }
         }
     }
@@ -174,6 +180,10 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
     }
     
     public var handler: ShapeGestureHandler? { return self }
+    
+    public var isComposed : Bool {
+        return false
+    }
     
     
     public func implementScale(scale theScale: CGSize) {
@@ -207,6 +217,12 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
     private func scale( pointPtr : UnsafeMutablePointer<CGPoint> , with scale : CGSize ) -> CGPoint {
         let point = pointPtr.pointee
         return CGPoint(x: point.x*scale.width, y: point.y*scale.height)
+    }
+    
+    // MARK: - Overriding
+    
+    public override func removeFromSuperlayer() {
+        super.removeFromSuperlayer()
     }
     
     // MARK: - ShapeGestureHandler methods
@@ -284,6 +300,10 @@ public class StrokeShape : Shape {
     
     /// The stroke that will compose the path
     var stroke = Stroke()
+    
+    public override var isComposed: Bool {
+        return true
+    }
     
     // MARK: - Overrides to build the shape
     

@@ -39,6 +39,15 @@ public extension CGPoint {
     func translate( to point: CGPoint ) -> CGPoint {
         return CGPoint(x: x+point.x, y: y+point.y)
     }
+    
+    /**
+        Euclidean distance between two points
+        - Parameter point: The other point to compute the distance
+    */
+    func distance( to point : CGPoint ) -> Double {
+        let vector = convert(with: point)
+        return sqrt(Double(vector.x*vector.x + vector.y*vector.y))
+    }
 }
 
 /**

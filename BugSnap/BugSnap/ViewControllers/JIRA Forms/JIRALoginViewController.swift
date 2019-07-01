@@ -11,17 +11,17 @@ import UIKit
 /**
     Simple form for signin in to JIRA
 */
-class JIRALoginViewController: UIViewController, UITextFieldDelegate {
+public class JIRALoginViewController: ScrolledViewController, UITextFieldDelegate {
     
     // MARK: - Exposed Properties
-    
-    /// The snapshot for the issue
-    var snapshot : UIImage? = nil
     
     /// The handler if the login process was successful
     var onSuccess : (()->Void)? = nil
     
     // MARK: - UI Elements
+    
+    /// The view containing the form
+    fileprivate var formView  = UIView()
     
     /// The label for the prompt
     fileprivate var promptLabel = FormTitleLabel(text: "Please enter Jira username\nand API key")
@@ -50,24 +50,23 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - View Life cycle
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.clear
         buildUI()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        //view.fade(to: UIColor(white: 0.0, alpha: 0.3))
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        view.fade(to: UIColor(white: 0.0, alpha: 0.3))
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)
-        //view.fade(to: .clear)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
+    public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         if loginSuccessful {
             onSuccess?()
@@ -77,6 +76,7 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Build UI
     
     private func buildUI() {
+        buildFormView()
         buildLabel()
         buildUserNameField()
         buildAPITokenField()
@@ -84,21 +84,33 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         buildCancelButton()
     }
     
+    private func buildFormView() {
+        formView.backgroundColor = UIColor.white
+        formView.cornerRadius = 5.0
+        formView.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(formView)
+        formView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        formView.widthAnchor.constraint(equalToConstant: 300.0).isActive = true
+        formView.heightAnchor.constraint(equalToConstant: 300.0).isActive = true
+        formView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 40.0).isActive = true
+    }
+    
     private func buildLabel() {
         
-        view.addSubview(promptLabel)
-        promptLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        promptLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
-        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
-        promptLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.0).isActive = true
+        formView.addSubview(promptLabel)
+        promptLabel.textAlignment = .left
+        promptLabel.leadingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: formView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
+        promptLabel.topAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.topAnchor, constant: 20.0).isActive = true
     }
     
     private func buildUserNameField() {
         
         let label = FieldNameLabel(text: "Username")
         
-        view.addSubview(label)
-        label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        formView.addSubview(label)
+        label.leadingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         label.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 30.0).isActive = true
         
         userNameField.text = UserDefaults.standard.jiraUserName ?? ""
@@ -106,9 +118,9 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         userNameField.autocapitalizationType = .none
         userNameField.delegate = self
         
-        view.addSubview(userNameField)
+        formView.addSubview(userNameField)
         userNameField.leadingAnchor.constraint(equalTo: label.leadingAnchor).isActive = true
-        userNameField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
+        userNameField.trailingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         userNameField.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
         userNameField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
     }
@@ -117,8 +129,8 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         
         let label = FieldNameLabel(text: "API Key")
         
-        view.addSubview(label)
-        label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        formView.addSubview(label)
+        label.leadingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         label.topAnchor.constraint(equalTo: userNameField.bottomAnchor, constant: 15.0).isActive = true
         
         apiTokenField.text = UserDefaults.standard.jiraApiToken ?? ""
@@ -126,9 +138,9 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
         apiTokenField.autocapitalizationType = .none
         apiTokenField.delegate = self
         
-        view.addSubview(apiTokenField)
+        formView.addSubview(apiTokenField)
         apiTokenField.leadingAnchor.constraint(equalTo: label.leadingAnchor).isActive = true
-        apiTokenField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
+        apiTokenField.trailingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         apiTokenField.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
         apiTokenField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
     }
@@ -136,18 +148,18 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
     private func buildSubmitButton() {
         submitButton.addTarget(self, action: #selector(onConfirm), for: .primaryActionTriggered)
         
-        view.addSubview(submitButton)
-        submitButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: -20.0).isActive = true
-        submitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
+        formView.addSubview(submitButton)
+        submitButton.leadingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.centerXAnchor, constant: -20.0).isActive = true
+        submitButton.trailingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         submitButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
-        submitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15.0 ).isActive = true
+        submitButton.bottomAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.bottomAnchor, constant: -15.0 ).isActive = true
     }
     
     private func buildCancelButton() {
         cancelButton.addTarget(self, action: #selector(onCancel), for: .primaryActionTriggered)
         
-        view.addSubview(cancelButton)
-        cancelButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        formView.addSubview(cancelButton)
+        cancelButton.leadingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         cancelButton.centerYAnchor.constraint(equalTo: submitButton.centerYAnchor).isActive = true
         cancelButton.heightAnchor.constraint(equalTo: submitButton.heightAnchor).isActive = true
         cancelButton.trailingAnchor.constraint(equalTo: submitButton.leadingAnchor, constant: -10.0).isActive = true
@@ -172,25 +184,31 @@ class JIRALoginViewController: UIViewController, UITextFieldDelegate {
                     self?.presentOperationErrors(errors: errors, title: "Review your credentails")
                 } else {
                     self?.loginSuccessful = true
-                    self?.dismiss(animated: true, completion: nil)
+                    self?.view.fade(to: .clear) {
+                        (_) in
+                        self?.dismiss(animated: true, completion: nil)
+                    }
                 }
             })
         }
     }
     
     @objc func onCancel() {
-        dismiss(animated: true, completion: nil)
+        view.fade(to: .clear) {
+            [weak self] (_) in
+            self?.dismiss(animated: true, completion: nil)
+        }
     }
     
     // MARK: - UITextFieldDelegate
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         keyboardHidingComesFromField = true
         textField.resignFirstResponder()
         return true
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
+    public func textFieldDidEndEditing(_ textField: UITextField) {
         if keyboardHidingComesFromField {
             if textField == userNameField {
                 apiTokenField.becomeFirstResponder()

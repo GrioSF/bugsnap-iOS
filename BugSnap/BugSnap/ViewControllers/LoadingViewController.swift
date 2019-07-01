@@ -28,27 +28,24 @@ public class LoadingViewController: UIViewController {
     fileprivate let contentView = UIView()
     
     /// the label for the message
-    fileprivate let loadingLabel = UILabel()
+    fileprivate let loadingLabel = FieldNameLabel()
 
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        modalTransitionStyle = .crossDissolve
         setup()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        UIView.animate(withDuration: 0.3) {
-            self.view.backgroundColor = UIColor(white: 0.0, alpha: 0.3)
-        }
+        view.fade(to: UIColor(white: 0.0, alpha: 0.3))
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        UIView.animate(withDuration: 0.3) {
-            self.view.backgroundColor = UIColor(white: 0.0, alpha: 0.0)
-        }
+        view.fade(to: .clear)
     }
     
     // MARK: - Setup
@@ -63,16 +60,13 @@ public class LoadingViewController: UIViewController {
         
         contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         contentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        contentView.widthAnchor.constraint(lessThanOrEqualToConstant: 300.0).isActive = true
+        contentView.widthAnchor.constraint(lessThanOrEqualToConstant: 200.0).isActive = true
         contentView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 40.0).isActive = true
         contentView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -40.0).isActive = true
         contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50.0).isActive = true
         
         loadingLabel.textAlignment = .center
-        loadingLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
         loadingLabel.numberOfLines = 0
-        loadingLabel.textColor = UIColor.darkGray
-        loadingLabel.translatesAutoresizingMaskIntoConstraints = false
         
         contentView.addSubview(loadingLabel)
         loadingLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true

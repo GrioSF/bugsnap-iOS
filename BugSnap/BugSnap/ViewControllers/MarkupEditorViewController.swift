@@ -12,12 +12,16 @@ import UIKit
     The main view controller for annotating the image.
  
 */
-public class MarkupEditorViewController: UIViewController, UIPopoverPresentationControllerDelegate, UIScrollViewDelegate {
+public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate, UITextFieldDelegate {
     
     // MARK: - Exposed Properties
     
     /// The screen snapshot
-    var screenSnapshot : UIImage? = nil
+    var screenSnapshot : UIImage? = nil {
+        didSet {
+            snapshot.image = screenSnapshot
+        }
+    }
     
     /// The handler when the edition has finished
     var onEditionFinished : ((UIImage?)->Void)? = nil
@@ -63,6 +67,7 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
             [weak self] in
             self?.dismissPreviousToolOptions()
         }
+        
         //scrollView.isScrollEnabled = false
         snapshot.isUserInteractionEnabled = true
         setup()
@@ -70,11 +75,12 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
         navigationController?.toolbar.isTranslucent = false
         navigationController?.toolbar.barStyle = .default
         navigationController?.toolbar.barTintColor = navigationController?.navigationBar.barTintColor
+        navigationController?.hidesBottomBarWhenPushed = false
     }
     
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        navigationController?.setToolbarHidden(false, animated: animated)
     }
     
     override public func viewDidAppear(_ animated: Bool) {
@@ -139,12 +145,11 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     }
     
     private func setupToolbar() {
-        guard toolbarButtons.count == 0 else { return }
-        
         let strokeButton = DrawToolButton()
         let textButton = TextToolButton()
         let shapesButton = ShapesToolButton()
         
+        toolbarButtons.removeAll()
         toolbarButtons.append(contentsOf: [strokeButton,textButton,shapesButton])
         toolbarButtons.forEach {
             $0.isSelected = false
@@ -166,39 +171,18 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     }
     
     
-    // MARK: - Support
-    
-    
-    private func captureTextToolText() {
-        let controller = UIAlertController(title: "Text Tool", message: "Enter your text", preferredStyle: .alert)
-        controller.addTextField { (textField) in
-            textField.text = "Text"
-            textField.font = UIFont.systemFont(ofSize: 16.0, weight: .semibold)
-            
-        }
-        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
-            (_) in
-            self.snapshot.currentToolType = nil
-        }))
-        controller.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-            let textField = controller.textFields?.first!
-            self.snapshot.currentText = textField?.text
-            self.snapshot.autoDeselect = true
-        }))
-        present(controller, animated: true, completion: nil)
-    }
-    
     // MARK: - UICallback
     
     @objc func onDismiss() {
-        scrollView.isUserInteractionEnabled = false
-        snapshot.snapshot { [weak self] (image) in
-            self?.navigationController?.popViewController(animated: true)
+        if presentingViewController != nil {
+            dismiss(animated: true, completion: nil)
+        } else if navigationController?.viewControllers.count ?? 0 > 1 {
+            navigationController?.popViewController(animated: true)
         }
     }
     
     @objc func onTrash() {
-        
+        snapshot.deleteSelectedShape()
     }
     
     @objc func onStroke( button : ToolbarSelectableButton) {
@@ -218,9 +202,16 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     }
     
     @objc func onText( button : ToolbarSelectableButton ) {
-        handleToolAction(button: button, optionsController: StrokeOptionsViewController())
+        let controller = TextOptionsViewController()
+        handleToolAction(button: button, optionsController: controller)
         
-        snapshot.currentToolType = nil
+        controller.fontSize = snapshot.graphicProperties.fontSize
+        controller.onFontSizeChangedHandler = {
+            [weak self] (fontSize) in
+            self?.snapshot.graphicProperties.fontSize = fontSize
+        }
+        
+        snapshot.currentToolType = TextShape.self
         snapshot.autoDeselect = true
     }
     
@@ -232,8 +223,8 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
             [weak self] (shapeType) in
             self?.snapshot.graphicProperties.lineWidth = 2.0
             self?.snapshot.currentToolType = shapeType
-            self?.snapshot.autoDeselect = true
         }
+        snapshot.autoDeselect = false
     }
    
     
@@ -260,7 +251,6 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     public func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.none
     }
-    
     
     // MARK: - Presentation Support
     
@@ -303,14 +293,15 @@ public class MarkupEditorViewController: UIViewController, UIPopoverPresentation
     
     private func presentJIRACapture( image : UIImage? ) {
         let jiraLoginViewController = JIRALoginViewController()
-        jiraLoginViewController.snapshot = image
-        jiraLoginViewController.preferredContentSize = CGSize(width: min(view.bounds.width * 0.8,400.0), height: min(view.bounds.height*0.5,300))
-        present(jiraLoginViewController, animated: false, completion: nil)
+        jiraLoginViewController.modalPresentationStyle = .overCurrentContext
+        jiraLoginViewController.modalTransitionStyle = .coverVertical
+        present(jiraLoginViewController, animated: true, completion: nil)
         
         jiraLoginViewController.onSuccess = {
             [weak self] in
             
             let controller = JIRAIssueFormViewController()
+            controller.snapshot = image
             controller.modalTransitionStyle = .crossDissolve
             self?.present(controller, animated: true, completion: nil)
         }

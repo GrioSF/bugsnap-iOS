@@ -79,7 +79,8 @@ public extension UIApplication {
         
         guard Thread.current.isMainThread,
             applicationState != .background,
-            let view = keyWindow else {
+            let view = keyWindow,
+            let topMost = UIViewController.topMostViewController else {
                 NSLog("Tried to enable shake gesture on either a secondary thread or in a non active state")
                 return
         }
@@ -87,25 +88,19 @@ public extension UIApplication {
         // Take the snapshot and present the view controller
         view.snapshot( flashing : true) { (image) in
             
-            let confirm = UIAlertController(title: "Successful Screenshot", message: "Would you like to report a bug with Bugsnap?", preferredStyle: .alert)
-            confirm.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            confirm.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (_) in
-                let snapController = SnapshotViewController()
-                snapController.screenCapture = image
-                let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
-                navigationController.modalPresentationStyle = .formSheet
-                if let controller = UIViewController.topMostViewController {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-                        controller.present(navigationController, animated: true, completion: nil)
-                    })
-                }
-            }))
+            let loading = topMost.presentLoading(message: "Loading image...")
             
-            if let controller = UIViewController.topMostViewController {
-                controller.present(confirm, animated: true, completion: nil)
-            }
+            let snapController = MarkupEditorViewController()
+            snapController.screenSnapshot = image
+            let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
+            navigationController.modalPresentationStyle = .formSheet
+            snapController.view.backgroundColor = UIColor.black
             
-            
+            loading.dismiss(animated: true, completion: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                    topMost.present(navigationController, animated: true, completion: nil)
+                })
+            })
         }
     }
 }

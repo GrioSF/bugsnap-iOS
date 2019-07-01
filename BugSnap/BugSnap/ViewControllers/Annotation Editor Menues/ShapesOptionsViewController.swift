@@ -14,6 +14,12 @@ class ShapesOptionsViewController: ToolOptionsViewController {
 
     /// the handler for actually selecting the shape
     var onShapeSelectedHandler : ((ShapeToolType)->Void)? = nil
+
+    /// The previously selected tool
+    var previouslySelectedTool : ShapeToolType? = nil
+    
+    /// The previously selected button
+    private var previouslySelectedButton : ToolButton? = nil
     
     // MARK: - View Life Cycle
     
@@ -86,37 +92,13 @@ class ShapesOptionsViewController: ToolOptionsViewController {
             container.addSubview($0)
             $0.centerXAnchor.constraint(equalTo: container.centerXAnchor).isActive = true
             $0.centerYAnchor.constraint(equalTo: container.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: 38.0).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: 32.0).isActive = true
             $0.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
             
             stackView.addArrangedSubview(container)
+            
+            $0.isSelected = $0.toolType == previouslySelectedTool
         }
-        
-        
-        
-        
-        /*
-        slider.tintColor = UIColor(red: 96, green: 205, blue: 177)
-        slider.minimumValue = 1.0
-        slider.maximumValue = 30.0
-        slider.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentView.addSubview(slider)
-        slider.centerYAnchor.constraint(equalTo: label.centerYAnchor).isActive = true
-        slider.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 80.0).isActive = true
-        slider.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50.0).isActive = true
-        slider.addTarget(self, action: #selector(onLineWidthChanged(sender:)), for: .valueChanged)
-        
-        lineWidthView.translatesAutoresizingMaskIntoConstraints = false
-        lineWidthView.backgroundColor = UIColor.black
-        lineWidthView.cornerRadius = 15.0
-        
-        contentView.addSubview(lineWidthView)
-        lineWidthView.widthAnchor.constraint(equalToConstant: 30.0).isActive = true
-        lineWidthView.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
-        lineWidthView.centerYAnchor.constraint(equalTo: slider.centerYAnchor).isActive = true
-        lineWidthView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10.0).isActive = true
-        */
     }
     
     // MARK: - UI Callback
@@ -124,6 +106,12 @@ class ShapesOptionsViewController: ToolOptionsViewController {
     @objc func onShapeTool( gesture : UITapGestureRecognizer ) {
         if let toolButton = gesture.view?.subviews.first as? ToolButton,
             let shapeType = toolButton.toolType {
+            
+            if previouslySelectedButton != nil {
+                previouslySelectedButton?.isSelected = false
+            }
+            toolButton.isSelected = true
+            previouslySelectedButton = toolButton
             onShapeSelectedHandler?(shapeType)
         }
     }

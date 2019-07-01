@@ -1,35 +1,36 @@
 //
-//  StrokeOptionsViewController.swift
+//  TextOptionsViewController.swift
 //  BugSnap
 //
-//  Created by Héctor García Peña on 6/26/19.
+//  Created by Héctor García Peña on 6/27/19.
 //  Copyright © 2019 Héctor García Peña. All rights reserved.
 //
 
 import UIKit
 
 /**
-    A floating view that will contain color options and the brush size for the stroke tool
+    View controller presenting the options for text writing, which is basically
+    the color and the font size (no option for selecting the font yet).
 */
-public class StrokeOptionsViewController: ToolOptionsViewController {
-    
+class TextOptionsViewController: ToolOptionsViewController {
+
     // MARK: - Exposed properties
     
     /// Handler when the line width changed
-    var onLineWidthChangedHandler : ((CGFloat)->Void)? = nil
+    var onFontSizeChangedHandler : ((CGFloat)->Void)? = nil
     
-    /// The line width controlled by this view controller
-    var lineWidth : CGFloat = 1.0 {
+    /// The font size managed by this view controller
+    var fontSize : CGFloat = 14.0 {
         didSet {
-            slider.value = Float(lineWidth)
-            updateLineWidth(width: lineWidth)
+            slider.value = Float(fontSize)
+            //updateLineWidth(width: lineWidth)
         }
     }
     
     // MARK: - UI Properties
     
     /// The line width circle
-    private var lineWidthView = UIView()
+    private var fontSizeView = UILabel()
     
     /// The slider
     private var slider = UISlider()
@@ -49,7 +50,7 @@ public class StrokeOptionsViewController: ToolOptionsViewController {
         label.font = UIFont(name: "HelveticaNeue-Medium", size: 12.0)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Brush Size"
+        label.text = "Text Size"
         label.sizeToFit()
         label.setNeedsDisplay()
         
@@ -58,37 +59,38 @@ public class StrokeOptionsViewController: ToolOptionsViewController {
         label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0).isActive = true
         
         slider.tintColor = UIColor(red: 96, green: 205, blue: 177)
-        slider.minimumValue = 4.0
-        slider.maximumValue = 44.0
+        slider.minimumValue = 14.0
+        slider.maximumValue = 36.0
         slider.translatesAutoresizingMaskIntoConstraints = false
         
         contentView.addSubview(slider)
         slider.centerYAnchor.constraint(equalTo: label.centerYAnchor).isActive = true
         slider.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 80.0).isActive = true
         slider.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50.0).isActive = true
-        slider.addTarget(self, action: #selector(onLineWidthChanged(sender:)), for: .valueChanged)
+        slider.addTarget(self, action: #selector(onFontSizeChanged(sender:)), for: .valueChanged)
         
-        lineWidthView.translatesAutoresizingMaskIntoConstraints = false
-        lineWidthView.backgroundColor = UIColor.black
-        lineWidthView.cornerRadius = 15.0
+        fontSizeView.translatesAutoresizingMaskIntoConstraints = false
+        fontSizeView.textColor = UIColor.black
+        fontSizeView.text = "T"
+        fontSizeView.textAlignment = .center
+        fontSizeView.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: fontSize)
         
-        contentView.addSubview(lineWidthView)
-        lineWidthView.widthAnchor.constraint(equalToConstant: 30.0).isActive = true
-        lineWidthView.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
-        lineWidthView.centerYAnchor.constraint(equalTo: slider.centerYAnchor).isActive = true
-        lineWidthView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10.0).isActive = true
+        contentView.addSubview(fontSizeView)
+        fontSizeView.centerYAnchor.constraint(equalTo: slider.centerYAnchor).isActive = true
+        fontSizeView.leadingAnchor.constraint(equalTo: slider.trailingAnchor, constant: 15.0).isActive = true
     }
     
     // MARK: - UICallback
     
-    @objc func onLineWidthChanged( sender : UISlider ) {
-        updateLineWidth(width: CGFloat(sender.value))
-        onLineWidthChangedHandler?(CGFloat(sender.value))
+    @objc func onFontSizeChanged( sender : UISlider ) {
+        let fontSize =  CGFloat(sender.value)
+        updateFontSize(pointSize: fontSize)
+        onFontSizeChangedHandler?(fontSize)
     }
     
     // MARK: - Support
-    private func updateLineWidth( width : CGFloat ) {
-        let scale = width / lineWidthView.bounds.width
-        lineWidthView.transform = CGAffineTransform(scaleX: scale, y: scale)
+    private func updateFontSize( pointSize : CGFloat ) {
+        fontSizeView.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: pointSize)
     }
+
 }

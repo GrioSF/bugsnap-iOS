@@ -16,10 +16,8 @@
 		7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */; };
 		7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */; };
 		7F0BCF9E22B04C1A006B4F26 /* UIView+Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */; };
-		7F0BCFA122B051C3006B4F26 /* SnapshotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCFA022B051C3006B4F26 /* SnapshotViewController.swift */; };
 		7F66ABC222C151F200806661 /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */; };
 		7F66ABC422C1538700806661 /* JIRALoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC322C1538700806661 /* JIRALoginViewController.swift */; };
-		7F66ABC622C1595600806661 /* ShareOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC522C1595600806661 /* ShareOptionViewController.swift */; };
 		7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */; };
 		7F66ABCA22C28D7D00806661 /* JIRA+Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC922C28D7D00806661 /* JIRA+Project.swift */; };
 		7F66ABCC22C28DEA00806661 /* JIRA+IssueField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABCB22C28DEA00806661 /* JIRA+IssueField.swift */; };
@@ -42,6 +40,8 @@
 		7F66ABF222C51BA700806661 /* AbstractFormButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABF122C51BA700806661 /* AbstractFormButton.swift */; };
 		7F66ABF422C51CDD00806661 /* FormsButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABF322C51CDD00806661 /* FormsButtons.swift */; };
 		7F66ABF622C51F5C00806661 /* FormTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABF522C51F5C00806661 /* FormTextField.swift */; };
+		7F66ABF822C5336D00806661 /* ScrolledViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABF722C5336D00806661 /* ScrolledViewController.swift */; };
+		7F66ABFA22C55C5E00806661 /* TextOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABF922C55C5E00806661 /* TextOptionsViewController.swift */; };
 		7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */; };
 		7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F87683D22B4546F0018AC74 /* GeometryExtensions.swift */; };
 		7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E1922B7CE7F0007A02E /* LineShapes.swift */; };
@@ -97,10 +97,8 @@
 		7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugSnapAction.swift; sourceTree = "<group>"; };
 		7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportAction.swift; sourceTree = "<group>"; };
 		7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Snap.swift"; sourceTree = "<group>"; };
-		7F0BCFA022B051C3006B4F26 /* SnapshotViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotViewController.swift; sourceTree = "<group>"; };
 		7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		7F66ABC322C1538700806661 /* JIRALoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRALoginViewController.swift; sourceTree = "<group>"; };
-		7F66ABC522C1595600806661 /* ShareOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareOptionViewController.swift; sourceTree = "<group>"; };
 		7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueFormViewController.swift; sourceTree = "<group>"; };
 		7F66ABC922C28D7D00806661 /* JIRA+Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+Project.swift"; sourceTree = "<group>"; };
 		7F66ABCB22C28DEA00806661 /* JIRA+IssueField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+IssueField.swift"; sourceTree = "<group>"; };
@@ -123,6 +121,8 @@
 		7F66ABF122C51BA700806661 /* AbstractFormButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractFormButton.swift; sourceTree = "<group>"; };
 		7F66ABF322C51CDD00806661 /* FormsButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormsButtons.swift; sourceTree = "<group>"; };
 		7F66ABF522C51F5C00806661 /* FormTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormTextField.swift; sourceTree = "<group>"; };
+		7F66ABF722C5336D00806661 /* ScrolledViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrolledViewController.swift; sourceTree = "<group>"; };
+		7F66ABF922C55C5E00806661 /* TextOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextOptionsViewController.swift; sourceTree = "<group>"; };
 		7F87683622B44A5E0018AC74 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
 		7F87683722B44A5E0018AC74 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../../LICENSE; sourceTree = "<group>"; };
 		7F87683B22B44BE50018AC74 /* StrokeColorSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeColorSelectorButton.swift; sourceTree = "<group>"; };
@@ -236,10 +236,9 @@
 				7F66ABEF22C5183400806661 /* JIRA Forms */,
 				7FB62E2E22B980360007A02E /* JIRA Data Selectors */,
 				7FB62E1B22B7D4500007A02E /* Annotation Editor Menues */,
-				7F0BCFA022B051C3006B4F26 /* SnapshotViewController.swift */,
 				7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */,
-				7F66ABC522C1595600806661 /* ShareOptionViewController.swift */,
 				7F66ABD322C2CACD00806661 /* LoadingViewController.swift */,
+				7F66ABF722C5336D00806661 /* ScrolledViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -301,6 +300,7 @@
 				7F66ABE122C3C04700806661 /* ToolOptionsViewController.swift */,
 				7F66ABDF22C3A50300806661 /* StrokeOptionsViewController.swift */,
 				7F66ABE522C3E02C00806661 /* ShapesOptionsViewController.swift */,
+				7F66ABF922C55C5E00806661 /* TextOptionsViewController.swift */,
 				7FEBAC7922B4201C0022158D /* LineWidthSelectorViewController.swift */,
 				7FEBAC6D22B3077D0022158D /* ColorSelectorViewController.swift */,
 				7FB62E1C22B7D4900007A02E /* ShapeToolViewController.swift */,
@@ -505,12 +505,10 @@
 				7FEBAC7822B41FD60022158D /* PathBasedTableViewCell.swift in Sources */,
 				7F66ABE822C4610C00806661 /* ShapeEditorScrollView.swift in Sources */,
 				7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */,
-				7F0BCFA122B051C3006B4F26 /* SnapshotViewController.swift in Sources */,
 				7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */,
 				7FEBAC6122B2A3390022158D /* Shapes.swift in Sources */,
 				7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */,
 				7F66ABD022C28F0200806661 /* JIRA+AtlassianDocument.swift in Sources */,
-				7F66ABC622C1595600806661 /* ShareOptionViewController.swift in Sources */,
 				7FEBAC7A22B4201C0022158D /* LineWidthSelectorViewController.swift in Sources */,
 				7FEBAC7022B4079B0022158D /* LineWidthButton.swift in Sources */,
 				7F66ABF222C51BA700806661 /* AbstractFormButton.swift in Sources */,
@@ -533,6 +531,7 @@
 				7FB62E3022B981AB0007A02E /* JIRAIssueCreatorViewController.swift in Sources */,
 				7F0BCF9122B00C85006B4F26 /* AccelerometerShakeDetector.swift in Sources */,
 				7FEBAC6822B2A42E0022158D /* IrisTransitioningNavigationController.swift in Sources */,
+				7F66ABF822C5336D00806661 /* ScrolledViewController.swift in Sources */,
 				7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */,
 				7F66ABD822C2E2CB00806661 /* TextToolButton.swift in Sources */,
 				7F66ABCE22C28E3100806661 /* JIRA+User.swift in Sources */,
@@ -558,6 +557,7 @@
 				7FEBAC7222B408BC0022158D /* PathBasedCollectionViewCell.swift in Sources */,
 				7F66ABF422C51CDD00806661 /* FormsButtons.swift in Sources */,
 				7FB62E1D22B7D4900007A02E /* ShapeToolViewController.swift in Sources */,
+				7F66ABFA22C55C5E00806661 /* TextOptionsViewController.swift in Sources */,
 				7FB62E2622B8363C0007A02E /* JIRA-API.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

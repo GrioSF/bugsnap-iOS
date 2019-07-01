@@ -210,6 +210,18 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         descriptionField.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         descriptionField.heightAnchor.constraint(equalToConstant: 140.0).isActive = true
         descriptionField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
+        
+        let toolbar = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        let doneButton = SubmitFormButton(title: "Submit")
+        doneButton.addTarget(self, action: #selector(onConfirm), for: .primaryActionTriggered)
+        toolbar.contentView.addSubview(doneButton)
+        doneButton.trailingAnchor.constraint(equalTo: toolbar.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -20.0).isActive = true
+        doneButton.centerYAnchor.constraint(equalTo: toolbar.contentView.centerYAnchor).isActive = true
+        doneButton.widthAnchor.constraint(equalToConstant: 50.0).isActive = true
+        doneButton.heightAnchor.constraint(equalToConstant: 36.0).isActive = true
+        
+        toolbar.frame = CGRect(x: 0, y: 0, width: 200.0, height: 42.0)
+        descriptionField.inputAccessoryView = toolbar
     }
     
     private func setupLowerButtons() {
@@ -292,11 +304,14 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     }
     
     @objc func onConfirm() {
+        
+        // hide the keyboard
+        view.endEditing(true)
         guard let fields = issueTypeSelected?.fields else {
             presentOperationErrors(errors: ["The issue type doesn't seem to have any fields setup in the metadata. Please select again the issue type."])
             return
         }
-        loadingViewController = navigationController?.presentLoading()
+        loadingViewController = presentLoading(message: "Building issue...")
         
         fields.forEach {
             if ($0.key ?? "") == "summary" && summaryField.text?.count ?? 0 > 0 {
@@ -310,7 +325,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
             }
         }
         
-        loadingViewController?.message = "Creating \(String(describing: issueTypeSelected?.name)) in JIRA"
+        loadingViewController?.message = "Creating \(issueTypeSelected?.name ?? "Unknown" ) in JIRA"
         
         // TODO: Check if a we're missing a required object
         JIRARestAPI.sharedInstance.createIssue(fields: fields) {
@@ -330,7 +345,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     // MARK: - UITextFieldDelegate
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+        descriptionField.becomeFirstResponder()
         return true
     }
     
@@ -344,11 +359,20 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         JIRARestAPI.sharedInstance.attach(snapshot: snapshot!, issue: issue) { [weak self] (_, errors) in
             
             self?.loadingViewController?.dismiss(animated: true, completion: {
+                
+                var block : (()->Void)! // block for preenting after the loading view controller is dismissed
+                
                 if let messages = errors {
-                    self?.presentOperationErrors(errors: messages)
+                    block = {
+                        self?.presentOperationErrors(errors: messages)
+                    }
                 } else {
-                    self?.showSuccess(issue: issue)
+                    block = {
+                        self?.showSuccess(issue: issue)
+                    }
                 }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: block)
             })
         }
     }

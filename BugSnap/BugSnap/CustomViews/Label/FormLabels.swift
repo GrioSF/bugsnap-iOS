@@ -19,10 +19,10 @@ import UIKit
     public override func configureLabel() {
         super.configureLabel()
         backgroundColor = UIColor.clear
-        textColor = UIColor.darkGray
+        textColor = UIColor.black
         textAlignment = .center
         numberOfLines = 0
-        font = UIFont(name: "HelveticaNeue-Medium", size: 16.0)
+        font = UIFont(name: "HelveticaNeue", size: 16.0)
         translatesAutoresizingMaskIntoConstraints = false
     }
     
