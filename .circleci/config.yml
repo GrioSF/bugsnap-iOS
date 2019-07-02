@@ -1,0 +1,72 @@
+# iOS CircleCI 2.0 configuration file
+version: 2
+jobs:
+
+  test-library:
+    macos:
+      xcode: "10.2.0"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: test
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output
+      - store_artifacts:
+          path: ~/Library/Logs/scan
+          destination: scan-logs
+      - store_test_results:
+          path: fastlane/test_output
+
+  beta:
+    macos:
+      xcode: "10.2.0"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: beta
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output/Bugsnap.ipa
+
+  release:
+    macos:
+      xcode: "10.2.0"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: release
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_test_results:
+          path: output/Bugsnap.ipa
+
+workflows:
+  version: 2
+
+  test-build:
+    jobs:
+      - test-library
+      - beta:
+          requires:
+            - test-library
+          filters:
+            tags:
+              only: /^v.*/
