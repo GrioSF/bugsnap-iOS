@@ -11,6 +11,8 @@ import UIKit
 /**
     Main screen to capture the data about an issue that will be submitted to JIRA.
     Basically this view controller is the top container of multiple controls that will allow to select different information about the issue, in this sense this is a composite instead of relying all the information on this view controller.
+ 
+    TODO: This screen is incomplete but is a good idea to implement dynamic fields creation.
 */
 public class JIRAIssueCreatorViewController: UIViewController {
     

@@ -79,21 +79,28 @@ public extension UIApplication {
         
         guard Thread.current.isMainThread,
             applicationState != .background,
-            let view = keyWindow else {
+            let view = keyWindow,
+            let topMost = UIViewController.topMostViewController else {
                 NSLog("Tried to enable shake gesture on either a secondary thread or in a non active state")
                 return
         }
         
         // Take the snapshot and present the view controller
         view.snapshot( flashing : true) { (image) in
-            let snapController = SnapshotViewController()
-            snapController.screenCapture = image
             
+            let loading = topMost.presentLoading(message: "Loading image...")
+            
+            let snapController = MarkupEditorViewController()
+            snapController.screenSnapshot = image
             let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
             navigationController.modalPresentationStyle = .formSheet
-            if let controller = UIViewController.topMostViewController {
-                controller.present(navigationController, animated: true, completion: nil)
-            }
+            snapController.view.backgroundColor = UIColor.black
+            
+            loading.dismiss(animated: true, completion: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                    topMost.present(navigationController, animated: true, completion: nil)
+                })
+            })
         }
     }
 }

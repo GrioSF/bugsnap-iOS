@@ -18,11 +18,13 @@ public struct GraphicProperties {
     var strokeColor : UIColor? = UIColor.black
     
     /// The line width
-    var lineWidth : CGFloat? = 2.0
+    var lineWidth : CGFloat? = 4.0
     
     /// The fill color if we're using a closed path
     var fillColor : UIColor? = nil
     
+    /// The font size used in points
+    var fontSize : CGFloat = 14.0 
 }
 
 /**

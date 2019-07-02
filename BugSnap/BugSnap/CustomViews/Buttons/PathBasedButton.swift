@@ -163,10 +163,9 @@ import UIKit
             if isSelected {
                 layer.cornerRadius = bounds.width * 0.5
                 layer.masksToBounds = true
-                layer.borderWidth = 1.0
-                layer.borderColor = UIColor.black.cgColor
+                backgroundColor = UIColor(white: 0.0, alpha: 0.3)
             } else {
-                layer.borderWidth = 0.0
+                backgroundColor = UIColor.clear
             }
         }
     }

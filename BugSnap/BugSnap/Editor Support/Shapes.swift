@@ -17,6 +17,12 @@ public protocol ShapeGestureHandler : NSObject {
     /// The initial point when gesture has started. This is useful in a lot of situations when draggin in the UI
     var initialPoint : CGPoint { get set }
     
+    /// Whether this shape is selected
+    var isSelected : Bool { get set }
+    
+    /// Whether this shape supports multiple dragging sessions
+    var isComposed : Bool { get }
+    
     /**
         Method to be called when the gesture began. The method should set the initial point in order to be consistent with the rest
         of the methods.
@@ -63,6 +69,14 @@ public protocol ShapeProtocol : NSObject {
     
     /// The implementation for the gesture handler
     var handler : ShapeGestureHandler? { get }
+    
+    /**
+        Implementation of scaling of this shape.
+        In this method the points of the shape should be scaled in order to comply with the new scale provided.
+        - Parameter scale: Scale of the shape to be applied
+    */
+    func implementScale( scale : CGSize )
+    
 }
 
 /**
@@ -106,6 +120,11 @@ typealias ShapeToolType = ShapeTool.Type
 */
 public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
     
+    // MARK: - Auxiliary layer
+    
+    /// The current selection handler
+    private var selectionHandler : CAShapeLayer? = nil
+    
     
     // MARK: - ShapeGestureHandler Properties
     
@@ -119,6 +138,29 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
     public var rotation: CGFloat? = nil {
         didSet {
             implementTransform()
+        }
+    }
+    
+    public var isSelected: Bool = false {
+        didSet {
+            if isSelected {
+                borderWidth = 1.0
+                borderColor = UIColor.darkGray.cgColor
+                
+                if selectionHandler == nil {
+                    selectionHandler = CAShapeLayer()
+                }
+                selectionHandler?.path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: 10, height: 10)).cgPath
+                selectionHandler?.fillColor = UIColor(red: 55, green: 123, blue: 246).cgColor
+                selectionHandler?.position = bounds.bottomRight.convert(with: CGPoint(x: 5.0, y: 5.0))
+                addSublayer(selectionHandler!)
+                
+            } else {
+                borderWidth = 0.0
+                borderColor = nil
+                selectionHandler?.removeFromSuperlayer()
+                selectionHandler = nil 
+            }
         }
     }
     
@@ -137,7 +179,51 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
         }
     }
     
-    public var handler: ShapeGestureHandler? { return self}
+    public var handler: ShapeGestureHandler? { return self }
+    
+    public var isComposed : Bool {
+        return false
+    }
+    
+    
+    public func implementScale(scale theScale: CGSize) {
+        
+        let mutablePath = CGMutablePath()
+        path?.applyWithBlock({ (unsafePathElement) in
+            let pathElement = unsafePathElement.pointee
+            switch pathElement.type {
+                case .moveToPoint:
+                    mutablePath.move(to: scale(pointPtr: pathElement.points, with: theScale))
+                case .addLineToPoint:
+                    mutablePath.addLine(to: scale(pointPtr: pathElement.points, with: theScale))
+                case .closeSubpath:
+                    mutablePath.closeSubpath()
+                case .addQuadCurveToPoint:
+                    let control = scale(pointPtr: pathElement.points, with: theScale)
+                    let point = scale(pointPtr: pathElement.points.successor(), with: theScale)
+                    mutablePath.addQuadCurve(to: point, control: control)
+                case .addCurveToPoint:
+                    let controlA = scale(pointPtr: pathElement.points, with: theScale)
+                    let controlB = scale(pointPtr: pathElement.points.successor(), with: theScale)
+                    let point = scale(pointPtr: pathElement.points.successor().successor(), with: theScale)
+                    mutablePath.addCurve(to: point, control1: controlA, control2: controlB)
+                default:
+                    break
+            }
+        })
+        path = mutablePath
+    }
+    
+    private func scale( pointPtr : UnsafeMutablePointer<CGPoint> , with scale : CGSize ) -> CGPoint {
+        let point = pointPtr.pointee
+        return CGPoint(x: point.x*scale.width, y: point.y*scale.height)
+    }
+    
+    // MARK: - Overriding
+    
+    public override func removeFromSuperlayer() {
+        super.removeFromSuperlayer()
+    }
     
     // MARK: - ShapeGestureHandler methods
     
@@ -214,6 +300,10 @@ public class StrokeShape : Shape {
     
     /// The stroke that will compose the path
     var stroke = Stroke()
+    
+    public override var isComposed: Bool {
+        return true
+    }
     
     // MARK: - Overrides to build the shape
     

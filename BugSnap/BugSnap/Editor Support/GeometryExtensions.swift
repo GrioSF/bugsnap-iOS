@@ -39,6 +39,15 @@ public extension CGPoint {
     func translate( to point: CGPoint ) -> CGPoint {
         return CGPoint(x: x+point.x, y: y+point.y)
     }
+    
+    /**
+        Euclidean distance between two points
+        - Parameter point: The other point to compute the distance
+    */
+    func distance( to point : CGPoint ) -> Double {
+        let vector = convert(with: point)
+        return sqrt(Double(vector.x*vector.x + vector.y*vector.y))
+    }
 }
 
 /**
@@ -54,5 +63,19 @@ public extension CGRect {
     /// Returns a rect with the same dimensions but anchored in the origin
     var originAnchoredRect : CGRect {
         return CGRect(x: 0, y: 0, width: size.width, height: size.height)
+    }
+}
+
+/**
+    Convenient extension to obtain information about a layer while is being manipulated
+*/
+public extension CALayer {
+    
+    /// The frame for the layer after applying the transform
+    var transformedFrame : CGRect {
+        var frame = CGRect(x: position.x - bounds.width * anchorPoint.x, y: position.y - bounds.height * anchorPoint.y, width: bounds.width, height: bounds.height)
+        let affineTransform = CATransform3DGetAffineTransform(transform)
+        frame = frame.applying(affineTransform)
+        return frame
     }
 }

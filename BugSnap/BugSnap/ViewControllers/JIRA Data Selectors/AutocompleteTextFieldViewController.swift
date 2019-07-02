@@ -19,7 +19,7 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
     // MARK: - Controls
     
     /// The capture field for the project name
-    fileprivate var objectName = PaddedTextField()
+    fileprivate var objectName = FormTextField()
     
     /// The accessory view for the projectName
     fileprivate var accessoryView = UIStackView()
@@ -89,21 +89,13 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
         
         // Setup the project name capture field
         objectName.delegate = self
-        objectName.font = UIFont.preferredFont(forTextStyle: .body)
-        objectName.textColor = UIColor.darkGray
-        objectName.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
-        objectName.borderColor = UIColor.gray
-        objectName.borderWidth = 0.5
-        objectName.placeholderInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-        objectName.textInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 5)
-        objectName.translatesAutoresizingMaskIntoConstraints = false
         objectName.inputAccessoryView = accessoryView
         objectName.autocorrectionType = .no
         objectName.autocapitalizationType = .words
         
         view.addSubview(objectName)
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-20-[field]-20-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[field]-10-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[field]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[field]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
     }
     
     // MARK: - UITextFieldDelegate
@@ -172,29 +164,12 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
         accessoryView.isHidden = false
         
         for i in 0...maxLabels {
-            let label = UILabel()
-            label.text = objects[i].name ?? ""
-            label.font = UIFont.preferredFont(forTextStyle: .body)
-            label.backgroundColor = UIColor(red: 208, green: 210, blue: 217)
-            label.textColor = UIColor.darkText
-            label.isUserInteractionEnabled = true
-            label.textAlignment = .center
-            label.sizeToFit()
+            let label = AutoSuggestLabel(text: objects[i].name ?? "")
             label.tag = i
-            
-            let gesture = UITapGestureRecognizer(target: self, action: #selector(onSuggestion(gesture:)))
-            gesture.numberOfTapsRequired = 1
-            label.addGestureRecognizer(gesture)
+            label.addTap(target: self, action: #selector(onSuggestion(gesture:)))
             
             if i >= 0 && i < maxLabels {
-                let separator = UIView()
-                separator.backgroundColor = UIColor.gray
-                separator.translatesAutoresizingMaskIntoConstraints = false
-                label.addSubview(separator)
-                separator.widthAnchor.constraint(equalToConstant: 1.0).isActive = true
-                separator.topAnchor.constraint(equalTo: label.topAnchor, constant: 5.0).isActive = true
-                separator.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: -5.0).isActive = true
-                separator.trailingAnchor.constraint(equalTo: label.trailingAnchor).isActive = true
+                label.addSeparator()
             }
             
             accessoryView.addArrangedSubview(label)
@@ -213,10 +188,6 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
                 objectName.text = object!.name
             }
         }
-        /*
-        JIRARestAPI.sharedInstance.fetchCreateIssueMetadata(project: project!) {
-            (_) in
-        }*/
         onObjectSelected?(selectedObject)
     }
     

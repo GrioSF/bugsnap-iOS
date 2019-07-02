@@ -87,7 +87,7 @@ import UIKit
     override public func configureButton() {
         
         /*  Shape   */
-        let bezierPath = UIBezierPath(rect: CGRect(x: 5, y: 7, width: 30, height: 26))
+        let bezierPath = UIBezierPath(rect: CGRect(x: 8, y: 12, width: 24, height: 16))
         
         toolType = RectangleShape.self
         designSize = CGSize(width: 40.0, height: 40.0)
