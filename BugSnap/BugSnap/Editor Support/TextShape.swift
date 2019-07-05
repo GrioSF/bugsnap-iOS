@@ -121,6 +121,15 @@ public class TextShape: CALayer, ShapeProtocol, ShapeGestureHandler , TextShapeP
     
     public var enclosingFrame: CGRect = CGRect.zero
     
+    public var selectionFrame: CGRect {
+        
+        if frame.width < 40.0 || frame.height < 40.0 {
+            return CGRect(x: frame.origin.x - 20.0, y: frame.origin.y - 20.0, width: frame.width + 40.0, height: frame.height + 40.0)
+        } else {
+            return frame
+        }
+    }
+    
     public var rotation: CGFloat? = nil {
         didSet {
             implementTransform()
@@ -177,7 +186,7 @@ public class TextShape: CALayer, ShapeProtocol, ShapeGestureHandler , TextShapeP
     public override func removeFromSuperlayer() {
         
         UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState,.curveEaseIn], animations: {
-            self.underlyingTextCapture.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+            self.underlyingTextCapture.alpha = 0.0
         }) { (_) in
             self.underlyingTextCapture.removeFromSuperview()
             super.removeFromSuperlayer()

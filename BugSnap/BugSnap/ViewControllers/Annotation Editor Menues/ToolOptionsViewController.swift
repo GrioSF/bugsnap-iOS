@@ -23,12 +23,26 @@ public class ToolOptionsViewController: UIViewController {
     var onColorSelectedHandler : ((UIColor?)->Void)? = nil
     
     /// The height for this view controller. This height should be set before showing the view controller
-    var height = CGFloat(100.0)
+    var height = CGFloat(120.0)
     
     /// The color selected
     var colorSelected = UIColor(red: 0, green: 0, blue: 0) {
         didSet {
             selectColor(color: colorSelected)
+        }
+    }
+    
+    /// Whether this control is docked
+    var isDocked : Bool {
+        get {
+            return !view.transform.isIdentity
+        }
+        set(newVal) {
+            if newVal {
+                dock()
+            } else {
+                undock()
+            }
         }
     }
     
@@ -80,6 +94,29 @@ public class ToolOptionsViewController: UIViewController {
     }
     
     /**
+        Just leaves the handler for allowing to pull up the UI.
+    */
+    private func dock() {
+        guard parent != nil else { return }
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState,.curveEaseInOut], animations: {
+            self.view.transform = CGAffineTransform(translationX: 0.0, y: self.height - 40.0)
+        }) { (_) in
+        }
+    }
+    
+    /**
+        Leaves the view fully exposed (undocks it)
+    */
+    private func undock() {
+        guard parent != nil else { return }
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState,.curveEaseInOut], animations: {
+            self.view.transform = CGAffineTransform.identity
+        }) { (_) in
+        }
+    }
+    
+    
+    /**
         Hides itself and it's removed from the parent view controller
     */
     func hide() {
@@ -108,7 +145,7 @@ public class ToolOptionsViewController: UIViewController {
         view.addSubview(fxView)
         
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":fxView]))
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":fxView]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-20-[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":fxView]))
         contentView = fxView.contentView
     }
     
@@ -230,7 +267,7 @@ public class ToolOptionsViewController: UIViewController {
                     restorePosition()
                     return
                 }
-                hide()
+                dock()
             case .cancelled:
                 restorePosition()
             default :

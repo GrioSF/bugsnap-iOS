@@ -79,17 +79,37 @@ public class ShapesView: UIImageView {
     func deleteSelectedShape() {
         guard let shape = selectedShape else { return }
         selectedShape = nil
-        shape.removeFromSuperlayer()
         shapes.removeAll {
             return $0 === shape
         }
+        
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0.4)
+        CATransaction.setCompletionBlock {
+            shape.removeFromSuperlayer()
+        }
+        shape.opacity = 0.0
+        CATransaction.commit()
     }
     
     // MARK: - Support for the container scroll view
     
     func touchesShouldBegin( _ touches: Set<UITouch>, with event: UIEvent?) -> Bool {
         
+        if touches.count > 1 {
+            deleteSelectedShape()
+            return false
+        }
+        
         if let _ = selectedShape as? TextShapeProtocol {
+            
+            if let touch = touches.first,
+                let shape = selectedShape,
+               !shape.selectionFrame.contains(touch.location(in: self)){
+                deselectSelectedShape()
+                return false
+            }
+            
             return true
         }
         
@@ -107,12 +127,12 @@ public class ShapesView: UIImageView {
             let isScale = scaleFrame.contains(point)
             
             // Check if we can select this shape
-            if isScale || frame.contains(point) {
+            if isScale || shape.selectionFrame.contains(point) {
                 return true
             }
         }
         
-        
+        deselectSelectedShape()
         return false
     }
     
@@ -121,6 +141,12 @@ public class ShapesView: UIImageView {
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first
                else { return }
+        
+        if touches.count > 1,
+           let scroll = superview as? UIScrollView {
+            scroll.touchesShouldCancel(in: self)
+            return 
+        }
         
         let point = touch.location(in: self)
         initialPoint = point
@@ -144,7 +170,7 @@ public class ShapesView: UIImageView {
             let isScale = scaleFrame.contains(point)
             
             // Check if we can select this shape
-            if isScale || frame.contains(point) {
+            if isScale || shape.selectionFrame.contains(point) {
                 selectedShape?.isSelected = false
                 shape.isSelected = true
                 selectedShape = shape
@@ -210,15 +236,17 @@ public class ShapesView: UIImageView {
             selectedShape == nil  && currentToolType != nil {
             
             // Remove the potential shape, and try to select a shape
-            guard ((initialPoint.distance(to: point) > 10.0 || numberMovedEvents > 2) &&
-                !(tool is TextShapeProtocol) ) ||
-                (tool is TextShapeProtocol) else {
+            guard ((
+                (tool.enclosingFrame.size.width > 10.0 || tool.enclosingFrame.size.height > 10.0) // Check the size of the shape
+                || initialPoint.distance(to: point) > 5.0 ) &&                    // Check the movement
+                !(tool is TextShapeProtocol) ) ||               // Check whether is not a text shape
+                // Check we had a text shape, but we're selecting
+                (tool is TextShapeProtocol && (tool as! TextShapeProtocol).text?.count ?? 0 == 0) else {
                 
                 tool.removeFromSuperlayer()
                 shapes.removeLast()
                 for shape in shapes.reversed() {
-                    let frame = shape.frame
-                    if frame.contains(point) {
+                    if shape.selectionFrame.contains(point) {
                         selectedShape = shape
                         shape.isSelected = true
                         scalingShape = false
@@ -239,6 +267,11 @@ public class ShapesView: UIImageView {
             CATransaction.commit()
             currentToolType = autoDeselect ? nil : currentToolType
             onEndedGesture?(autoDeselect)
+            
+            if tool is TextShapeProtocol {
+                selectedShape = tool
+            }
+            
         } else if selectedShape !=  nil {
             applyShapeTransform(point: point)
             
@@ -251,6 +284,21 @@ public class ShapesView: UIImageView {
             
         }
         
+    }
+    
+    // MARK: - Selection support
+
+    private func deselectSelectedShape() {
+        if selectedShape != nil {
+            
+            if let textShape = selectedShape as? TextShapeProtocol,
+                textShape.isFirstResponder {
+                endEditing(false)
+            }
+            
+            selectedShape?.isSelected = false
+            selectedShape = nil
+        }
     }
     
     // MARK: - Shape creation support

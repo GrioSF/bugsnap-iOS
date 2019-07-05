@@ -72,7 +72,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         }
         snapshot.onBeganGesture = {
             [weak self] in
-            self?.dismissPreviousToolOptions()
+            self?.dismissPreviousToolOptions(isDocking: true)
         }
         
         //scrollView.isScrollEnabled = false
@@ -175,6 +175,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         
         scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[snapshot]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["snapshot":snapshot]))
         scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[snapshot]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["snapshot":snapshot]))
+        scrollView.clipsToBounds = false
         snapshot.alpha = 0.0
     }
     
@@ -297,16 +298,21 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     private func handleToolAction(button : ToolbarSelectableButton, optionsController : ToolOptionsViewController ) {
         
         guard !button.isSelected else {
-            if currentMenuController == nil {
-                showToolsOptionsController(optionsController: optionsController)
+            
+            if let menu = currentMenuController {
+                menu.isDocked = !menu.isDocked
+                
+            // For some reason the menu is not available, show it again
             } else {
-                dismissPreviousToolOptions()
+                showToolsOptionsController(optionsController: optionsController)
             }
+            
             return
         }
-        dismissPreviousToolOptions()
+        
         if lastToolSelected != nil {
             lastToolSelected?.isSelected = false
+            dismissPreviousToolOptions()
         }
         button.isSelected = true
         lastToolSelected = button
@@ -314,6 +320,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     }
     
     private func showToolsOptionsController( optionsController : ToolOptionsViewController ) {
+        guard currentMenuController == nil else { return }
         optionsController.show(parent: self)
         currentMenuController = optionsController
         
@@ -325,9 +332,14 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         optionsController.colorSelected = snapshot.graphicProperties.strokeColor ?? UIColor(red: 0, green: 0, blue: 0)
     }
     
-    private func dismissPreviousToolOptions() {
+    private func dismissPreviousToolOptions( isDocking : Bool = false) {
         if let controller = currentMenuController {
-            controller.hide()
+            if isDocking {
+                controller.isDocked = true
+            } else {
+                controller.hide()
+                currentMenuController = nil
+            }
         }
     }
     

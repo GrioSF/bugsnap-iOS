@@ -67,6 +67,9 @@ public protocol ShapeProtocol : NSObject {
     /// The graphic properties for rendering the object
     var graphicProperties : GraphicProperties! { get set }
     
+    /// The selection frame for a shape
+    var selectionFrame : CGRect { get }
+    
     /// The implementation for the gesture handler
     var handler : ShapeGestureHandler? { get }
     
@@ -134,6 +137,15 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
     // MARK: - ShapeProtocol Implementation
     
     public var enclosingFrame: CGRect = CGRect.zero
+    
+    public var selectionFrame: CGRect {
+        
+        if frame.width < 40.0 || frame.height < 40.0 {
+            return CGRect(x: frame.origin.x - 20.0, y: frame.origin.y - 20.0, width: frame.width + 40.0, height: frame.height + 40.0)
+        } else {
+            return frame
+        }
+    }
     
     public var rotation: CGFloat? = nil {
         didSet {
@@ -212,6 +224,38 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
             }
         })
         path = mutablePath
+    }
+    
+    public func implementTranslation( translation point : CGPoint ) {
+        let mutablePath = CGMutablePath()
+        path?.applyWithBlock({ (unsafePathElement) in
+            let pathElement = unsafePathElement.pointee
+            switch pathElement.type {
+            case .moveToPoint:
+                mutablePath.move(to: translate(pointPtr: pathElement.points, with: point))
+            case .addLineToPoint:
+                mutablePath.addLine(to: translate(pointPtr: pathElement.points, with: point))
+            case .closeSubpath:
+                mutablePath.closeSubpath()
+            case .addQuadCurveToPoint:
+                let control = translate(pointPtr: pathElement.points, with: point)
+                let point = translate(pointPtr: pathElement.points.successor(), with: point)
+                mutablePath.addQuadCurve(to: point, control: control)
+            case .addCurveToPoint:
+                let controlA = translate(pointPtr: pathElement.points, with: point)
+                let controlB = translate(pointPtr: pathElement.points.successor(), with: point)
+                let point = translate(pointPtr: pathElement.points.successor().successor(), with: point)
+                mutablePath.addCurve(to: point, control1: controlA, control2: controlB)
+            default:
+                break
+            }
+        })
+        path = mutablePath
+    }
+    
+    private func translate( pointPtr : UnsafeMutablePointer<CGPoint>, with translation : CGPoint ) -> CGPoint {
+        let point = pointPtr.pointee
+        return CGPoint(x: point.x+translation.x, y: point.y+translation.y)
     }
     
     private func scale( pointPtr : UnsafeMutablePointer<CGPoint> , with scale : CGSize ) -> CGPoint {
@@ -295,11 +339,8 @@ public class StrokeShape : Shape {
     
     // MARK: - Properties
     
-    /// The points building the stroke
-    var points = [CGPoint]()
-    
     /// The stroke that will compose the path
-    var stroke = Stroke()
+    var stroke = CGMutablePath()
     
     public override var isComposed: Bool {
         return true
@@ -308,31 +349,21 @@ public class StrokeShape : Shape {
     // MARK: - Overrides to build the shape
     
     override public func startPath(point: CGPoint) {
-        points.removeAll()
-        stroke.start(with: point)
+        stroke.move(to: point)
     }
     
     override public func updatePath(point: CGPoint) {
-        stroke.append(point: point)
-        points.append(point)
-        path = stroke.path as CGPath?
+        stroke.addLine(to: point)
+        path = stroke as CGPath?
     }
     
     override public func updatedFrame(point: CGPoint) -> CGRect {
-        return stroke.enclosingFrame
+        return stroke.boundingBox
     }
     
     override public func normalizePath() {
         let frame = enclosingFrame
-        let pointsCopy = points
-    
-        startPath(point: pointsCopy.first!.convert(with: frame.origin))
-        for point in pointsCopy[1...] {
-            let converted = point.convert(with: frame.origin)
-            stroke.append(point: converted)
-            points.append(converted)
-        }
-        path = stroke.path as CGPath?
+        implementTranslation(translation: CGPoint(x: -frame.origin.x, y: -frame.origin.y))
         enclosingFrame = enclosingFrame.originAnchoredRect
     }
 }
