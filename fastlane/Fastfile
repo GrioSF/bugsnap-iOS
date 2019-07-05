@@ -1,0 +1,55 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    build_app(scheme: "BugSnap Demo App")
+    upload_to_testflight
+  end
+
+  desc "Push a new release build to AppStore"
+  lane :release do
+    capture_screenshots
+    build_app
+    upload_to_app_store       # Upload the screenshots and the binary to iTunes
+    slack                     # Let your team-mates know the new version is live
+  end
+  
+  desc "Bump the build number and commit the changes to git"
+  lane :buildbump do
+    version = get_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
+    build = increment_build_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
+    commit_version_bump(
+      xcodeproj:"BugSnap Demo App/BugSnap Demo App.xcodeproj",
+      message: "[ver++] v#{version} (#{build})"
+    )
+  end
+  
+  desc "Bump the version number and commit the changes to git"
+  lane :versionbump do
+    version = increment_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
+    build = increment_build_number(
+      xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj",
+      build_number: 1
+    )
+    commit_version_bump(
+      xcodeproj:"BugSnap Demo App/BugSnap Demo App.xcodeproj",
+      message: "[ver++] v#{version} (#{build})"
+    )
+  end
+end
