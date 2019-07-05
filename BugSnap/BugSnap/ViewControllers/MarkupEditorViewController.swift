@@ -43,6 +43,12 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     /// The last tool selected
     private var lastToolSelected : ToolbarSelectableButton? = nil
     
+    /// The constraints for the scroll view for portrait
+    private var portraitConstraints = [NSLayoutConstraint]()
+    
+    /// The constraints for the scroll view for landscape
+    private var landscapeConstraints = [NSLayoutConstraint]()
+    
     /// The brush size
     private var brushSize = CGFloat(1.0)
     
@@ -50,6 +56,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
         
         snapshot.graphicProperties.strokeColor = UIColor(red: 0, green: 0, blue: 0)
         snapshot.graphicProperties.lineWidth = 1.0
@@ -81,11 +88,17 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setToolbarHidden(false, animated: animated)
+        view.backgroundColor = UIColor(red: 192, green: 192, blue: 192)
+        navigationController?.view.backgroundColor = view.backgroundColor
     }
     
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setupToolbar()
+        setupMinimumZoomScale()
+        UIView.animate(withDuration: 0.3) {
+            self.snapshot.alpha = 1.0
+        }
     }
     
     override public func viewWillDisappear(_ animated: Bool) {
@@ -124,15 +137,35 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     private func setupScrollView() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
-        scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        
+        let window = UIApplication.shared.keyWindow!
+        scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40.0).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40.0).isActive = true
+        scrollView.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        portraitConstraints.append(contentsOf: [
+            scrollView.widthAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: window.bounds.width/window.bounds.height)
+            ])
+        
+        landscapeConstraints.append(contentsOf: [
+            scrollView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8)
+            ])
+
         scrollView.maximumZoomScale = UIScreen.main.scale
         scrollView.minimumZoomScale = 1.0
         scrollView.delegate = self
         scrollView.canCancelContentTouches = false
         scrollView.delaysContentTouches = false
+        scrollView.insetsLayoutMarginsFromSafeArea = false
+        
+        if let window = UIApplication.shared.keyWindow,
+            window.bounds.width > window.bounds.height {
+            landscapeConstraints.forEach { $0.isActive = true }
+        } else {
+            portraitConstraints.forEach { $0.isActive = true }
+        }
     }
     
     private func setupImageView() {
@@ -142,6 +175,13 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         
         scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[snapshot]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["snapshot":snapshot]))
         scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[snapshot]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["snapshot":snapshot]))
+        snapshot.alpha = 0.0
+    }
+    
+    private func setupMinimumZoomScale() {
+        let minimumScale = min(scrollView.bounds.width/snapshot.image!.size.width,scrollView.bounds.height/snapshot.image!.size.height)
+        scrollView.minimumZoomScale = minimumScale
+        scrollView.setZoomScale(minimumScale, animated: false)
     }
     
     private func setupToolbar() {
