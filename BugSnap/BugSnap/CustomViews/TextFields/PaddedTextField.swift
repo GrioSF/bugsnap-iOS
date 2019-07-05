@@ -48,5 +48,21 @@ import UIKit
         let frame = super.editingRect(forBounds: bounds)
         return frame.inset(by: textInsets)
     }
+}
+/**
+    UITextView that has a padding useful for having some margin
+ */
+@IBDesignable public class PaddedTextView : UITextView {
+    // MARK: - Padding
 
+    
+    /// The insets for the text edition
+    @IBInspectable var textInsets = UIEdgeInsets.zero {
+        didSet {
+            let currentInset = contentInset
+            contentInset = UIEdgeInsets(top: currentInset.top, left: textInsets.left-4, bottom: currentInset.bottom, right: currentInset.right)
+            setNeedsDisplay()
+            setNeedsLayout()
+        }
+    }
 }

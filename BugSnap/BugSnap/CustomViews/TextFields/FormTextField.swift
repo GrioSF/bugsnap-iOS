@@ -51,6 +51,7 @@ import UIKit
         autocapitalizationType = .none
         textInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         translatesAutoresizingMaskIntoConstraints = false
+        returnKeyType = .continue
     }
 
 }

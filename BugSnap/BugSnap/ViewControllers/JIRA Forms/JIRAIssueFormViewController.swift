@@ -35,13 +35,13 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     private var autocomplete = AutocompleteTextFieldViewController()
     
     /// The issue type selector
-    private var issueTypeSelector = UILabel()
+    private var issueTypeSelector = FormTextField()
     
     /// The summary capture field
     private var summaryField = FormTextField()
     
     /// The description capture field
-    private var descriptionField = UITextView()
+    private var descriptionField = PaddedTextView()
     
     /// The cancel button
     private var cancelButton = CancelFormButton(title: "Cancel")
@@ -155,6 +155,8 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         issueTypeSelector.textAlignment = .left
         issueTypeSelector.translatesAutoresizingMaskIntoConstraints = false
         issueTypeSelector.text = ""
+        issueTypeSelector.isEnabled = false
+        issueTypeSelector.placeholder = "Tap to select issue type"
         issueTypeSelector.isUserInteractionEnabled = false
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(onSelectIssueType))
@@ -179,6 +181,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         summaryField.isEnabled = false
         summaryField.keyboardType = .emailAddress
         summaryField.delegate = self
+        summaryField.returnKeyType = .continue
         
         contentView.addSubview(summaryField)
         summaryField.leadingAnchor.constraint(equalTo: label.leadingAnchor).isActive = true
@@ -194,6 +197,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         label.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         label.topAnchor.constraint(equalTo: summaryField.bottomAnchor, constant: 20.0).isActive = true
         
+        descriptionField.textInsets = summaryField.textInsets
         descriptionField.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
         descriptionField.font = label.font
         descriptionField.textColor = UIColor.black
@@ -212,8 +216,9 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         descriptionField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
         
         let toolbar = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-        let doneButton = SubmitFormButton(title: "Submit")
-        doneButton.addTarget(self, action: #selector(onConfirm), for: .primaryActionTriggered)
+        let doneButton = SubmitFormButton(title: "Done")
+        doneButton.cornerRadius = 5.0
+        doneButton.addTarget(self, action: #selector(onDismissDescription), for: .primaryActionTriggered)
         toolbar.contentView.addSubview(doneButton)
         doneButton.trailingAnchor.constraint(equalTo: toolbar.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -20.0).isActive = true
         doneButton.centerYAnchor.constraint(equalTo: toolbar.contentView.centerYAnchor).isActive = true
@@ -301,6 +306,10 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     @objc func onCancel() {
         // TODO: Add confirm
         dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func onDismissDescription() {
+        descriptionField.resignFirstResponder()
     }
     
     @objc func onConfirm() {

@@ -143,6 +143,7 @@ public class JIRALoginViewController: ScrolledViewController, UITextFieldDelegat
         apiTokenField.trailingAnchor.constraint(equalTo: formView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         apiTokenField.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
         apiTokenField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
+        apiTokenField.returnKeyType = .go
     }
     
     private func buildSubmitButton() {
