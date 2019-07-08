@@ -73,7 +73,7 @@ public extension JIRA {
                 case .style:
                     style = dictionary[$0.rawValue] as? String
                 case .avatars:
-                    print("avatars")
+                    break
                 case .category:
                     if let categoryDictionary = dictionary[$0.rawValue] as? [AnyHashable:Any] {
                         category = Category()

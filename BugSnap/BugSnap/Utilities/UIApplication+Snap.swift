@@ -25,7 +25,7 @@ public extension UIApplication {
         If the accelerometer is already initiated this method won't do anything. The accelerometer call should be done in the main thread and in foreground (this is validated), otherwise it won't do anything.
         - Parameter timeToSettle: This is the time to wait the device to settle after the shake movement was detected.
     */
-    func enableShakeGestureSnap( timeToSettle : TimeInterval = 1.1) {
+    @objc func enableShakeGestureSnap( timeToSettle : TimeInterval = 1.1) {
         
         // Check if we're in the main thread and if we're in the foreground
         guard Thread.current.isMainThread,
