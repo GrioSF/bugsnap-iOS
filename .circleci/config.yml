@@ -1,10 +1,12 @@
 # iOS CircleCI 2.0 configuration file
+# Documentation: https://circleci.com/docs/2.0/testing-ios/
+
 version: 2
 jobs:
 
   test-library:
     macos:
-      xcode: "10.2.0"
+      xcode: "10.2.1"
     working_directory: /Users/distiller/project
     environment:
       FL_OUTPUT_DIR: output
@@ -26,7 +28,7 @@ jobs:
 
   beta:
     macos:
-      xcode: "10.2.0"
+      xcode: "10.2.1"
     working_directory: /Users/distiller/project
     environment:
       FL_OUTPUT_DIR: output
@@ -43,7 +45,7 @@ jobs:
 
   release:
     macos:
-      xcode: "10.2.0"
+      xcode: "10.2.1"
     working_directory: /Users/distiller/project
     environment:
       FL_OUTPUT_DIR: output
@@ -68,5 +70,7 @@ workflows:
           requires:
             - test-library
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/

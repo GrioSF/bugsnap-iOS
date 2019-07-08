@@ -25,6 +25,7 @@ platform :ios do
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
+    match(type: "adhoc")
     build_app(scheme: "BugSnap Demo App")
     upload_to_testflight
   end
@@ -32,11 +33,12 @@ platform :ios do
   desc "Push a new release build to AppStore"
   lane :release do
     capture_screenshots
+    match(type: "appstore")
     build_app
     upload_to_app_store       # Upload the screenshots and the binary to iTunes
     slack                     # Let your team-mates know the new version is live
   end
-  
+
   desc "Bump the build number and commit the changes to git"
   lane :buildbump do
     version = get_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
@@ -46,7 +48,7 @@ platform :ios do
       message: "[ver++] v#{version} (#{build})"
     )
   end
-  
+
   desc "Bump the version number and commit the changes to git"
   lane :versionbump do
     version = increment_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
