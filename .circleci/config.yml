@@ -71,6 +71,6 @@ workflows:
             - test-library
           filters:
             branches:
-              ignore: /.*/
+              only: /^jrogiers.*/
             tags:
               only: /^v.*/
