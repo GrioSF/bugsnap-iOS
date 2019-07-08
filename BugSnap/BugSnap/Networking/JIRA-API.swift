@@ -46,6 +46,32 @@ public class JIRARestAPI : NSObject {
         case message
     }
     
+    // MARK : - Keys to load values from a plist
+    enum ConnectionParametersKeys : String, CaseIterable {
+        
+        /// The url for the instance of JIRA
+        case url = "JIRA.URL"
+        
+        /// the key for the email of the JIRA user
+        case user = "JIRA.User"
+        
+        /// The API key for the user given by JIRA.USER
+        case apiKey = "JIRA.APIKey"
+    }
+    
+    public enum ConfigurationErrorKeys : Int {
+        
+        /// The user name is empty or missing
+        case missingUserName = -1001
+        
+        /// The api key for connnecting to JIRA is empty or missing
+        case missingApiKey = -1002
+        
+        /// The URL for connecting to JIRA is missing or malformed
+        case missingURL = -1003
+        
+    }
+    
     // MARK: - Private Properties
     
     /// The session configuration for the API
@@ -57,10 +83,10 @@ public class JIRARestAPI : NSObject {
     // MARK: - Exposed properties
     
     /// The base URL where the JIRA server is located (this applies also to the cloud server).
-    public var serverURL : URL!
+    @objc public var serverURL : URL!
     
     /// The singleton instance
-    public static let sharedInstance = JIRARestAPI()
+    @objc public static let sharedInstance = JIRARestAPI()
     
     // MARK: - Initialization
     
@@ -75,7 +101,7 @@ public class JIRARestAPI : NSObject {
         - Parameter userName: the user name for JIRA
         - Parameter apiKey: The API token Key for JIRA
     */
-    func setupConnection( userName : String, apiToken : String ) {
+    @objc public func setupConnection( userName : String, apiToken : String ) {
         
         UserDefaults.standard.jiraApiToken = apiToken
         UserDefaults.standard.jiraUserName = userName
@@ -85,6 +111,57 @@ public class JIRARestAPI : NSObject {
         sessionConfiguration.httpAdditionalHeaders = ["Authorization":"Basic \(utf8encoded!.base64EncodedString())",
             "Accept" : "application/json" ]
     }
+    
+    /**
+        Loads the JIRA REST API configuration from the main Info.plist for the app.
+        This method uses the main bundle Info.plist to load the parameters for the connection with JIRA with the following keys:
+        - JIRA.URL: The url where JIRA resides (cloud service)
+        - JIRA.User: The email of the JIRA user setup for the project
+        - JIRA.APIKey: The key setup for the same user setup in **JIRA.User**
+        Throws a swift exception if those values can't be loaded
+    */
+    @objc public func loadConnectionParameters() throws {
+        
+        var userName = ""
+        var apiToken = ""
+        ConnectionParametersKeys.allCases.forEach {
+            let value = (Bundle.main.infoDictionary?[ $0.rawValue ] as? String ?? "").trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            switch $0 {
+                case .url :
+                    serverURL = URL(string: value)
+                case .user:
+                    userName = value
+                case .apiKey:
+                    apiToken = value
+            }
+        }
+        
+        if userName.count < 1 {
+            throw NSError(domain: NSPOSIXErrorDomain, code: ConfigurationErrorKeys.missingUserName.rawValue, userInfo: [
+                NSLocalizedFailureReasonErrorKey: "The user name for authentication with JIRA is empty",
+                NSLocalizedDescriptionKey:"Empty User Name for connecting to JIRA"
+                ])
+        }
+        
+        if apiToken.count < 1 {
+            throw NSError(domain: NSPOSIXErrorDomain, code: ConfigurationErrorKeys.missingApiKey.rawValue, userInfo: [
+                NSLocalizedFailureReasonErrorKey: "Missing API Key",
+                NSLocalizedDescriptionKey:"The API Token is empty or not found. This is necessary for basic authentication with JIRA"
+                ])
+        }
+        
+        if serverURL == nil {
+            throw NSError(domain: NSPOSIXErrorDomain, code: ConfigurationErrorKeys.missingURL.rawValue, userInfo: [
+                NSLocalizedFailureReasonErrorKey: "Missing JIRA URL",
+                NSLocalizedDescriptionKey:"The URL for connecting to JIRA is empty, missing or malformed"
+                ])
+        }
+        
+        // Setup the api token
+        setupConnection(userName: userName, apiToken: apiToken)
+        
+    }
+    
     
     /**
         Retrieves a single project accessible by the user in order to test the user configuration

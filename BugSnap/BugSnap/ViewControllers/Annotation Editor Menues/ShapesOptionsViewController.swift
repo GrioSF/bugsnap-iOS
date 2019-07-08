@@ -49,9 +49,9 @@ class ShapesOptionsViewController: ToolOptionsViewController {
         let tools : [ToolButton] = [
             OvalTool(),
             RectangleTool(),
-            LineTool(),
-            ForwardArrowTool(),
-            BackwardArrowTool()
+            //LineTool(),
+            ForwardArrowTool()
+            //BackwardArrowTool()
         ]
         
         let buttonSize = 36.0

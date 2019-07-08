@@ -276,6 +276,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
             let option = UIAlertAction(title: type.name, style: .default, handler: { [weak self] (_) in
                 self?.issueTypeSelected(issueType: type )
                 self?.autocomplete.isLocked = true
+                self?.summaryField.becomeFirstResponder()
             })
             controller.addAction(option)
         }
@@ -320,6 +321,13 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
             presentOperationErrors(errors: ["The issue type doesn't seem to have any fields setup in the metadata. Please select again the issue type."])
             return
         }
+        guard let summaryLength = summaryField.text?.trimmingCharacters(in: CharacterSet.whitespaces).count,
+            summaryLength > 0 else {
+            presentOperationErrors(errors: ["You must capture a non empty summary field"], title: "Missing Data", button: "Ok")
+            return
+        }
+            
+        
         loadingViewController = presentLoading(message: "Building issue...")
         
         fields.forEach {
@@ -354,8 +362,14 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     // MARK: - UITextFieldDelegate
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        descriptionField.becomeFirstResponder()
-        return true
+        
+        let result = textField.text?.trimmingCharacters(in: CharacterSet.whitespaces).count ?? 0 > 0
+        
+        if result {
+            descriptionField.becomeFirstResponder()
+        }
+        
+        return result
     }
     
     // MARK: - Support
