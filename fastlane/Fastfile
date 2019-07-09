@@ -51,7 +51,10 @@ platform :ios do
       match(type: "development")
     end
 
-    build_app(scheme: "BugSnap Demo App")
+    build_app(
+      scheme: "BugSnap Demo App",
+      configuration: "Debug"
+    )
 
     if is_ci?
       delete_keychain(name: keychain_name)
@@ -86,7 +89,11 @@ platform :ios do
       match(type: "appstore")
     end
 
-    build_app(scheme: "BugSnap Demo App")
+    build_app(
+      scheme: "BugSnap Demo App",
+      configuration: "Release"
+    )
+
     upload_to_testflight
 
     if is_ci?
@@ -124,7 +131,11 @@ platform :ios do
       match(type: "appstore")
     end
 
-    build_app
+    build_app(
+      scheme: "BugSnap Demo App",
+      configuration: "Release"
+    )
+
     upload_to_app_store       # Upload the screenshots and the binary to iTunes
     slack                     # Let your team-mates know the new version is live
 
