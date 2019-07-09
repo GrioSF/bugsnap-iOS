@@ -45,7 +45,9 @@ platform :ios do
         keychain_name: keychain_name,
         keychain_password: keychain_password,
         readonly: true,
-        type: "development"
+        type: "development",
+        keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
+        keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
       )
     else
       match(type: "development")
@@ -83,7 +85,9 @@ platform :ios do
         keychain_name: keychain_name,
         keychain_password: keychain_password,
         readonly: true,
-        type: "appstore"
+        type: "appstore",
+        keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
+        keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
       )
     else
       match(type: "appstore")
@@ -125,7 +129,9 @@ platform :ios do
         keychain_name: keychain_name,
         keychain_password: keychain_password,
         readonly: true,
-        type: "appstore"
+        type: "appstore",
+        keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
+        keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
       )
     else
       match(type: "appstore")
