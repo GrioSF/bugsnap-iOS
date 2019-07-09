@@ -16,14 +16,6 @@
 default_platform(:ios)
 
 platform :ios do
-  if is_ci?
-    create_keychain(
-      name: ENV["MATCH_KEYCHAIN_NAME"],
-      password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-      timeout: 1200
-    )
-  end
-    
   desc "Test Library"
   lane :test do
     run_tests(scheme: "BugSnap",
@@ -33,18 +25,77 @@ platform :ios do
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    match(type: "adhoc")
+    if is_ci?
+      # Fetch the keychain env variables
+      keychain_name = ENV["MATCH_KEYCHAIN_NAME"]
+      keychain_password = ENV["MATCH_KEYCHAIN_PASSWORD"]
+
+      # Create a temporary keychain to
+      # store the certificates.
+      create_keychain(
+        name: keychain_name,
+        password: keychain_password,
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        add_to_search_list: true
+      )
+
+      match(
+        keychain_name: keychain_name,
+        keychain_password: keychain_password,
+        readonly: true,
+        type: "adhoc"
+      )
+    else
+      match(type: "adhoc")
+    end
+
     build_app(scheme: "BugSnap Demo App")
     upload_to_testflight
+
+    if is_ci?
+      delete_keychain(name: keychain_name)
+    end
   end
 
   desc "Push a new release build to AppStore"
   lane :release do
     capture_screenshots
-    match(type: "appstore")
+
+    if is_ci?
+      # Fetch the keychain env variables
+      keychain_name = ENV["MATCH_KEYCHAIN_NAME"]
+      keychain_password = ENV["MATCH_KEYCHAIN_PASSWORD"]
+
+      # Create a temporary keychain to
+      # store the certificates.
+      create_keychain(
+        name: keychain_name,
+        password: keychain_password,
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        add_to_search_list: true
+      )
+
+      match(
+        keychain_name: keychain_name,
+        keychain_password: keychain_password,
+        readonly: true,
+        type: "appstore"
+      )
+    else
+      match(type: "appstore")
+    end
+
     build_app
     upload_to_app_store       # Upload the screenshots and the binary to iTunes
     slack                     # Let your team-mates know the new version is live
+
+    if is_ci?
+      delete_keychain(name: keychain_name)
+    end
   end
 
   desc "Bump the build number and commit the changes to git"
