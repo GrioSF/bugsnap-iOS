@@ -23,6 +23,41 @@ platform :ios do
     )
   end
 
+  desc "Build Dev ipa"
+  lane :development do
+    if is_ci?
+      # Fetch the keychain env variables
+      keychain_name = ENV["MATCH_KEYCHAIN_NAME"]
+      keychain_password = ENV["MATCH_KEYCHAIN_PASSWORD"]
+
+      # Create a temporary keychain to
+      # store the certificates.
+      create_keychain(
+        name: keychain_name,
+        password: keychain_password,
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        add_to_search_list: true
+      )
+
+      match(
+        keychain_name: keychain_name,
+        keychain_password: keychain_password,
+        readonly: true,
+        type: "development"
+      )
+    else
+      match(type: "development")
+    end
+
+    build_app(scheme: "BugSnap Demo App")
+
+    if is_ci?
+      delete_keychain(name: keychain_name)
+    end
+  end
+
   desc "Push a new beta build to TestFlight"
   lane :beta do
     if is_ci?

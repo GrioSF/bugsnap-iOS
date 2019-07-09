@@ -26,6 +26,23 @@ jobs:
       - store_test_results:
           path: fastlane/test_output
 
+  development:
+    macos:
+      xcode: "10.2.1"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: development
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output/Bugsnap.ipa
+
   beta:
     macos:
       xcode: "10.2.1"
@@ -66,11 +83,19 @@ workflows:
   test-build:
     jobs:
       - test-library
-      - beta:
+      - development:
           requires:
             - test-library
           filters:
             branches:
               only: /^jrogiers.*/
+            tags:
+              ignore: /.*/
+      - release:
+          requires:
+            - test-library
+          filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
