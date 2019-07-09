@@ -1,4 +1,4 @@
-git_url("git@github.com:GrioSF/opensource-credentials.git")
+git_url("git@github.com:GrioSF/grio-ios-credentials.git")
 
 storage_mode("git")
 
