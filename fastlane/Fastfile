@@ -45,10 +45,10 @@ platform :ios do
         keychain_name: keychain_name,
         keychain_password: keychain_password,
         readonly: true,
-        type: "adhoc"
+        type: "appstore"
       )
     else
-      match(type: "adhoc")
+      match(type: "appstore")
     end
 
     build_app(scheme: "BugSnap Demo App")
