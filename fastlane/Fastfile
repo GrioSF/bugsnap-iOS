@@ -51,6 +51,7 @@ platform :ios do
 
     build_app(
       scheme: "BugSnap Demo App",
+      export_method: "development",
       configuration: "Debug"
     )
   end
