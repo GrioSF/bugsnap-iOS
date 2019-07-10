@@ -40,7 +40,7 @@ platform :ios do
 
   private_lane :destroy_keychain do
     if is_ci?
-      delete_keychain(name: keychain_name)
+      delete_keychain(name: ENV["MATCH_KEYCHAIN_NAME"])
     end
   end
 
