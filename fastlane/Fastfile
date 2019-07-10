@@ -65,8 +65,10 @@ platform :ios do
 
     build_app(
       scheme: "BugSnap Demo App",
-      export_method: "development",
-      configuration: "Debug"
+      output_directory: "output",
+      output_name: "Bugsnap.ipa",
+      configuration: "Debug",
+      export_method: "development"
     )
 
     destroy_keychain
@@ -79,8 +81,10 @@ platform :ios do
 
     build_app(
       scheme: "BugSnap Demo App",
-      export_method: "app-store",
-      configuration: "Release"
+      output_directory: "output",
+      output_name: "Bugsnap.ipa",
+      configuration: "Release",
+      export_method: "app-store"
     )
 
     upload_to_testflight
@@ -94,8 +98,10 @@ platform :ios do
 
     build_app(
       scheme: "BugSnap Demo App",
-      export_method: "app-store",
-      configuration: "Release"
+      output_directory: "output",
+      output_name: "Bugsnap.ipa",
+      configuration: "Release",
+      export_method: "app-store"
     )
 
     capture_screenshots
