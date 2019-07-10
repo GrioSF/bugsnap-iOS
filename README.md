@@ -16,6 +16,18 @@ pod 'BugSnap', :git => 'https://github.com/GrioSF/bugsnap-iOS.git'
 
 ```
 
+If you're using **SSH** you can change the line above for the following:
+
+```
+pod 'BugSnap', :git => 'git@github.com:GrioSF/bugsnap-iOS.git'
+```
+
+For testing the framework as a development POD you can download the repo and use the following sintax:
+
+```
+pod ‘BugSnap’, :path => ‘~/path-where-you-downloaded-the-repo/bug-snap-ios’
+```
+
 *Note*: We'll update when the pod is public.
 
 ## Enabling the Shake Gesture and JIRA Integration
@@ -88,7 +100,10 @@ catch{
 
 In any case you'll be prompted with the user name/ api token to confirm the credentials and it will try to ping the projects names (fetching only one) in order to verify everything was successfully setup.
 
-# Distribution
+# Distribution DEMO App
+
+The following only applies if you're distributing the DEMO app and you plan to upload it to the App Store:
+
   * You need the Distribution Certificate in order to create a distribution build
   * Install fastlane by follow the [fastlane installation instructions](fastlane/README.md)
   * You have to add APPLE_ID to your environment (~/.bash_profile): `export APPLE_ID=user@domain.com`
