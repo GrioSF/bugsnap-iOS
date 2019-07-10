@@ -86,6 +86,10 @@ platform :ios do
       configuration: "Release",
       export_method: "app-store"
     )
+    backup_xcarchive(
+      destination: "output",
+      zip: true
+    )
 
     upload_to_testflight
     destroy_keychain
@@ -102,6 +106,10 @@ platform :ios do
       output_name: "Bugsnap.ipa",
       configuration: "Release",
       export_method: "app-store"
+    )
+    backup_xcarchive(
+      destination: "output",
+      zip: true
     )
 
     capture_screenshots

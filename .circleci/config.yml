@@ -58,7 +58,7 @@ jobs:
           name: Fastlane
           command: bundle exec fastlane $FASTLANE_LANE
       - store_artifacts:
-          path: output/Bugsnap.ipa
+          path: output/
 
   release:
     macos:
@@ -74,8 +74,8 @@ jobs:
       - run:
           name: Fastlane
           command: bundle exec fastlane $FASTLANE_LANE
-      - store_test_results:
-          path: output/Bugsnap.ipa
+      - store_artifacts:
+          path: output/
 
 workflows:
   version: 2
