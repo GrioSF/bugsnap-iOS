@@ -112,7 +112,6 @@ platform :ios do
       zip: true
     )
 
-    capture_screenshots
     upload_to_app_store       # Upload the screenshots and the binary to iTunes
     slack                     # Let your team-mates know the new version is live
     destroy_keychain
