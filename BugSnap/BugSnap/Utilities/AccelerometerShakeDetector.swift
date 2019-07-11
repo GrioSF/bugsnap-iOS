@@ -57,10 +57,13 @@ public class AccelerometerShakeDetector: NSObject {
     private var previousSlope = CMAcceleration()
     
     /// The threshold for a peak
-    private let thresholdPeak = 3.0
+    private let thresholdPeak = 2.4
     
     /// The last time we detected a peak
     private var lastTimePeak : TimeInterval = 0
+    
+    /// The minimum number of peaks to generate the notification
+    private var minimumNumberOfPeaks : Int = 3
     
     /// The number of peaks
     private var numberOfPeaks : Int = 0
@@ -169,7 +172,7 @@ public class AccelerometerShakeDetector: NSObject {
            lastTimePeak = data!.timestamp
            numberOfPeaks += 1
         // Check if we have stopped shaking the device (with a minimum number of peaks)
-        } else if waitingForStabilization &&  (data!.timestamp - lastTimePeak) > timeToSettleAfterShake && numberOfPeaks >= 5 {
+        } else if waitingForStabilization &&  (data!.timestamp - lastTimePeak) > timeToSettleAfterShake && numberOfPeaks >= minimumNumberOfPeaks {
             waitingForStabilization = false
             numberOfPeaks = 0
             lastTimePeak = data!.timestamp
@@ -188,7 +191,7 @@ public class AccelerometerShakeDetector: NSObject {
     /**
         Notifies the shake event.
         This method notifies that a shake event has ocurred so interested consumers can opt to listen to the shakeEventDetected notification.
-        Also it triggers the user interface that captures the top most view controller 
+        Also it triggers the user interface that captures the top most view controller
     */
     private func notifyShake() {
         NotificationCenter.default.post(name: .shakeEventDetected, object: nil)
