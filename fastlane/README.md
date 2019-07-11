@@ -36,16 +36,26 @@ Push a new beta build to TestFlight
 fastlane ios release
 ```
 Push a new release build to AppStore
-### ios buildbump
+### ios bumpbuild
 ```
-fastlane ios buildbump
+fastlane ios bumpbuild
 ```
-Bump the build number and commit the changes to git
-### ios versionbump
+Bump the build number
+### ios bumpversionmajor
 ```
-fastlane ios versionbump
+fastlane ios bumpversionmajor
 ```
-Bump the version number and commit the changes to git
+Increment major version number (i.e.: X.0.0) + build bump
+### ios bumpversionminor
+```
+fastlane ios bumpversionminor
+```
+Increment minor version number (i.e.: 1.X.0) + build bump
+### ios bumpversionpatch
+```
+fastlane ios bumpversionpatch
+```
+Increment patch version number (i.e.: 1.1.X) + build bump
 
 ----
 
