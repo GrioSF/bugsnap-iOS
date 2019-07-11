@@ -100,12 +100,6 @@ catch{
 
 In any case you'll be prompted with the user name/ api token to confirm the credentials and it will try to ping the projects names (fetching only one) in order to verify everything was successfully setup.
 
-# Distribution DEMO App
+# DEMO App Version Management
 
-The following only applies if you're distributing the DEMO app and you plan to upload it to the App Store:
-
-  * You need the Distribution Certificate in order to create a distribution build
-  * Install fastlane by follow the [fastlane installation instructions](fastlane/README.md)
-  * You have to add APPLE_ID to your environment (~/.bash_profile): `export APPLE_ID=user@domain.com`
-  * See distrbution options by running `fastlane list`
-
+Version management is done via fastlane. Please check the project specific [fastlane commands](fastlane/README.md) for more details.
