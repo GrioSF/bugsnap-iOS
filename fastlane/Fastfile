@@ -16,20 +16,108 @@
 default_platform(:ios)
 
 platform :ios do
+  desc "Test Library"
+  lane :test do
+    run_tests(
+      scheme: "BugSnap",
+      clean: true
+    )
+  end
+
+  private_lane :setup_keychain do
+    if is_ci?
+      # Create a temporary keychain to store the certificates.
+      create_keychain(
+        name: ENV["MATCH_KEYCHAIN_NAME"],
+        password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        add_to_search_list: true
+      )
+    end
+  end
+
+  private_lane :destroy_keychain do
+    if is_ci?
+      delete_keychain(name: ENV["MATCH_KEYCHAIN_NAME"])
+    end
+  end
+
+  private_lane :set_match do |options|
+    type = (options[:appstore] ? "appstore" : "development")
+    if is_ci?
+      match(
+        type: type,
+        readonly: true,
+        keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
+        keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+      )
+    else
+      match(type: type)
+    end
+  end
+
+  desc "Build Dev ipa"
+  lane :development do
+    setup_keychain
+    set_match(appstore: false)
+
+    build_app(
+      scheme: "BugSnap Demo App",
+      output_directory: "output",
+      output_name: "Bugsnap.ipa",
+      configuration: "Debug",
+      export_method: "development"
+    )
+
+    destroy_keychain
+  end
+
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    build_app(scheme: "BugSnap Demo App")
+    setup_keychain
+    set_match(appstore: true)
+
+    build_app(
+      scheme: "BugSnap Demo App",
+      output_directory: "output",
+      output_name: "Bugsnap.ipa",
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    backup_xcarchive(
+      destination: "output",
+      zip: true
+    )
+
     upload_to_testflight
+    destroy_keychain
   end
 
   desc "Push a new release build to AppStore"
   lane :release do
+    setup_keychain
+    set_match(appstore: true)
+
+    build_app(
+      scheme: "BugSnap Demo App",
+      output_directory: "output",
+      output_name: "Bugsnap.ipa",
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    backup_xcarchive(
+      destination: "output",
+      zip: true
+    )
+
     capture_screenshots
-    build_app
     upload_to_app_store       # Upload the screenshots and the binary to iTunes
     slack                     # Let your team-mates know the new version is live
+    destroy_keychain
   end
-  
+
   desc "Bump the build number and commit the changes to git"
   lane :buildbump do
     version = get_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
@@ -39,7 +127,7 @@ platform :ios do
       message: "[ver++] v#{version} (#{build})"
     )
   end
-  
+
   desc "Bump the version number and commit the changes to git"
   lane :versionbump do
     version = increment_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
