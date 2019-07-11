@@ -83,12 +83,13 @@ workflows:
   test-build:
     jobs:
       - test-library
+          filters:
+            tags:
+              only: /^v.*/
       - development:
           requires:
             - test-library
           filters:
-            branches:
-              only: /.*/
             tags:
               ignore: /.*/
       - release:
