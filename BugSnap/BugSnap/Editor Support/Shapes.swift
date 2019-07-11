@@ -158,6 +158,7 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
             if isSelected {
                 borderWidth = 1.0
                 borderColor = UIColor.darkGray.cgColor
+                backgroundColor = UIColor(red: 55, green: 123, blue: 246).withAlphaComponent(0.4         ).cgColor
                 
                 if selectionHandler == nil {
                     selectionHandler = CAShapeLayer()
@@ -171,7 +172,8 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
                 borderWidth = 0.0
                 borderColor = nil
                 selectionHandler?.removeFromSuperlayer()
-                selectionHandler = nil 
+                selectionHandler = nil
+                backgroundColor = nil
             }
         }
     }

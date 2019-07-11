@@ -11,9 +11,12 @@ import UIKit
 /**
     View that holds shapes to be drawn. It uses a dynamic implementation through protocols and CALayer to present the user drawings.
 */
-public class ShapesView: UIImageView {
+public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
     
     // MARK: - Properties
+    
+    /// The container scroll view
+    weak var scrollView : UIScrollView? = nil
     
     /// The array of shapes this view is drawing
     var shapes = [ShapeTool]()
@@ -49,14 +52,84 @@ public class ShapesView: UIImageView {
     /// The initial position for the gesture
     private var initialPoint = CGPoint.zero
     
-    /// The number of movement events
-    private var numberMovedEvents = 0
-    
     /// The original transformed frame for the selected shape
     private var shapeInitialFrame = CGRect.zero
     
     /// the last valid scale
     private var lastValidScale = CGSize.zero
+    
+    // MARK: - Gestures
+    
+    /// The tap gesture recognizer
+    private var tap : UITapGestureRecognizer!
+    
+    /// The pan gesture recognizer
+    private var pan : UIPanGestureRecognizer!
+    
+    /// The scroll pan gesture recognizer
+    private var scrollPan : UIPanGestureRecognizer!
+    
+    /// The pinch gesture recognizer
+    private var pinch : UIPinchGestureRecognizer!
+    
+    /// The initial content offset for the scroll view
+    private var initialContentOffset = CGPoint.zero
+    
+    /// The initial scale for the scroll view
+    private var initialScale : CGFloat = 1.0
+    
+    // MARK: - Initialization
+    
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupGestures()
+    }
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupGestures()
+    }
+    
+    public override init(image: UIImage?) {
+        super.init(image: image)
+        setupGestures()
+    }
+    
+    public override init(image: UIImage?, highlightedImage: UIImage?) {
+        super.init(image: image, highlightedImage: highlightedImage)
+        setupGestures()
+    }
+    
+    public init() {
+        super.init(frame: CGRect.zero)
+        setupGestures()
+    }
+    
+    // MARK: - Gestures Support
+    
+    private func setupGestures() {
+        guard tap == nil else { return }
+        
+        tap = UITapGestureRecognizer(target: self, action: #selector(onTap(gesture:)))
+        tap.numberOfTouchesRequired = 1
+        addGestureRecognizer(tap)
+        
+        pan = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
+        pan.maximumNumberOfTouches = 1
+        pan.delegate = self
+        addGestureRecognizer(pan)
+        
+        scrollPan = UIPanGestureRecognizer(target: self, action: #selector(onScrollPan(gesture:)))
+        scrollPan.minimumNumberOfTouches = 2
+        scrollPan.maximumNumberOfTouches = 2
+        scrollPan.delegate = self
+        addGestureRecognizer(scrollPan)
+        
+        pinch = UIPinchGestureRecognizer(target: self, action: #selector(onPinch(gesture:)))
+        pinch.delegate = self
+        addGestureRecognizer(pinch)
+        
+    }
     
     // MARK: - Exposed Methods
     
@@ -95,109 +168,134 @@ public class ShapesView: UIImageView {
     // MARK: - Support for the container scroll view
     
     func touchesShouldBegin( _ touches: Set<UITouch>, with event: UIEvent?) -> Bool {
-        
-        if touches.count > 1 {
-            deleteSelectedShape()
-            return false
-        }
-        
-        if let _ = selectedShape as? TextShapeProtocol {
-            
-            if let touch = touches.first,
-                let shape = selectedShape,
-               !shape.selectionFrame.contains(touch.location(in: self)){
-                deselectSelectedShape()
-                return false
-            }
-            
-            return true
-        }
-        
-        guard let touch = touches.first
-            else { return  false }
-        
-        if currentToolType != nil {
-            return true
-        }
-        let point = touch.location(in: self)
-        
-        for shape in shapes.reversed() {
-            let frame = shape.frame
-            let scaleFrame = CGRect(x: frame.bottomRight.x - 20.0, y: frame.bottomRight.y - 20.0, width: 40.0, height: 40.0)
-            let isScale = scaleFrame.contains(point)
-            
-            // Check if we can select this shape
-            if isScale || shape.selectionFrame.contains(point) {
-                return true
-            }
-        }
-        
-        deselectSelectedShape()
-        return false
+        return true
     }
     
-    // MARK: - Touches Management
+    // MARK: - Gestures Callback
     
-    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first
-               else { return }
+    @objc func onTap( gesture : UITapGestureRecognizer ) {
         
-        if touches.count > 1,
-           let scroll = superview as? UIScrollView {
-            scroll.touchesShouldCancel(in: self)
-            return 
+        // Give the focus to the text view if we're tapping inside the selected shape of a text view
+        if let textView = selectedShape as? TextShapeProtocol,
+           selectedShape!.selectionFrame.contains(gesture.location(in: self)) {
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                textView.becomeFirstResponder()
+            }
+            return
         }
         
-        let point = touch.location(in: self)
+        // Deselect the previous shape
+        selectedShape?.isSelected = false
+        selectedShape = nil
+        
+        if let shape = detectSelectedShape(point: gesture.location(in: self)) {
+            selectedShape = shape
+            shape.isSelected = true
+        }
+    }
+    
+    @objc func onPan( gesture : UIPanGestureRecognizer ) {
+        let point = gesture.location(in: self)
+        switch gesture.state {
+            case .began:
+                disableScroll()
+                onPanBegan(point: point)
+            case .changed:
+                onPanChanged(point: point)
+            case .ended:
+                enableScroll()
+                onPanEnded(point: point)
+            case .cancelled,.failed:
+                enableScroll()
+                onPanCancelled(point: point)
+                print("pan cancelled")
+            default:
+                break
+        }
+    }
+    
+    @objc func onScrollPan ( gesture : UIPanGestureRecognizer ) {
+        
+        switch gesture.state {
+        case .began:
+            disableScroll()
+            initialContentOffset = scrollView!.contentOffset
+        case .changed:
+            let translation = gesture.translation(in: self)
+            let offset = CGPoint(x: -translation.x*scrollView!.zoomScale+initialContentOffset.x,
+                                 y: -translation.y*scrollView!.zoomScale+initialContentOffset.y)
+            
+            scrollView?.setContentOffset( offset , animated: false)
+        case .ended:
+            enableScroll()
+            let translation = gesture.translation(in: self)
+            let maxOffset = CGPoint(x: bounds.width*scrollView!.zoomScale - scrollView!.bounds.width, y: bounds.height*scrollView!.zoomScale - scrollView!.bounds.height)
+            
+            let offset = CGPoint(x: min(max(-translation.x*scrollView!.zoomScale+initialContentOffset.x,0),maxOffset.x),
+                                 y: min(max(-translation.y*scrollView!.zoomScale+initialContentOffset.y,0),maxOffset.y))
+            scrollView?.setContentOffset( offset , animated: true)
+        case .failed,.cancelled:
+            enableScroll()
+            scrollView?.setContentOffset(initialContentOffset, animated: true)
+            print("scroll pan cancelled!")
+        default:
+            break
+        }
+    }
+    
+    @objc func onPinch( gesture : UIPinchGestureRecognizer ) {
+        switch gesture.state {
+        case .began:
+            disableScroll()
+            initialScale = scrollView!.zoomScale
+        case .changed:
+            scrollView?.setZoomScale(gesture.scale*initialScale, animated: false)
+        case .ended:
+            enableScroll()
+            scrollView?.setZoomScale(gesture.scale*initialScale, animated: true)
+        case .cancelled,.failed:
+            enableScroll()
+            scrollView?.setZoomScale(initialScale, animated: true)
+            print("Pinch cancelled!")
+        default:
+            break
+        }
+    }
+    
+    // MARK : Shape Pan Handling
+    
+    private func onPanBegan( point : CGPoint ) {
         initialPoint = point
-        scalingShape = false
-        numberMovedEvents = 0
         
         // Check the current type of shape and the last one on the queue
         if let shape = shapes.last,
-           let toolType = currentToolType,
+            let toolType = currentToolType,
             shape.isComposed && shape.isKind(of: toolType) && selectedShape == nil {
-            selectedShape?.isSelected = false
             beginShapeCreation(point: point)
             return
         }
-          
-        /// Now proceed to find a selection
-        var found = false
-        for shape in shapes.reversed() {
-            let frame = shape.frame
-            let scaleFrame = CGRect(x: frame.bottomRight.x - 20.0, y: frame.bottomRight.y - 20.0, width: 40.0, height: 40.0)
-            let isScale = scaleFrame.contains(point)
-            
-            // Check if we can select this shape
-            if isScale || shape.selectionFrame.contains(point) {
-                selectedShape?.isSelected = false
-                shape.isSelected = true
-                selectedShape = shape
-                shapeInitialFrame = frame
-                lastValidScale = CGSize.zero
-                found = true
-                scalingShape = isScale
-                break
-            }
-            
-        }
         
-        if !found {
-            if let shape = selectedShape {
-                shape.isSelected = false
+        // Check if we're trying to scale or move an already selected shape
+        if let selected = selectedShape {
+            let frame = selected.frame
+            let scaleFrame = CGRect(x: frame.bottomRight.x - 20.0, y: frame.bottomRight.y - 20.0, width: 40.0, height: 40.0)
+            scalingShape = scaleFrame.contains(point)
+            
+            // If we're scaling or moving the shape
+            if scalingShape || selected.selectionFrame.contains(point) {
+                lastValidScale = CGSize.zero
+                shapeInitialFrame = frame
+                return
+            } else {
+                selectedShape?.isSelected = false
                 selectedShape = nil
             }
-            beginShapeCreation(point: point)
         }
+        
+        beginShapeCreation(point: point)
     }
     
-    override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first
-               else { return }
-        
-        let point = touch.location(in: self)
-        numberMovedEvents += 1
+    private func onPanChanged( point : CGPoint ) {
         
         if let tool =  shapes.last,
             selectedShape == nil && currentToolType != nil {
@@ -207,54 +305,11 @@ public class ShapesView: UIImageView {
         } else if selectedShape != nil{
             implementShapeTransform(point: point)
         }
-        
     }
     
-    override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        let point = touch.location(in: self)
-        
-        if let tool =  shapes.last,
-            selectedShape == nil  && currentToolType != nil{
-            tool.gestureMoved(point: point)
-            
-            tool.gestureCancelled(point: point)
-            
-            currentToolType = autoDeselect ? nil : currentToolType
-            onEndedGesture?(autoDeselect)
-        } else if let shape = selectedShape {
-            shape.transform = CATransform3DIdentity
-        }
-    }
-    
-    override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        
-        let point = touch.location(in: self)
-        
+    private func onPanEnded( point : CGPoint ) {
         if let tool =  shapes.last,
             selectedShape == nil  && currentToolType != nil {
-            
-            // Remove the potential shape, and try to select a shape
-            guard ((
-                (tool.enclosingFrame.size.width > 10.0 || tool.enclosingFrame.size.height > 10.0) // Check the size of the shape
-                || initialPoint.distance(to: point) > 5.0 ) &&                    // Check the movement
-                !(tool is TextShapeProtocol) ) ||               // Check whether is not a text shape
-                // Check we had a text shape, but we're selecting
-                (tool is TextShapeProtocol && (tool as! TextShapeProtocol).text?.count ?? 0 == 0) else {
-                
-                tool.removeFromSuperlayer()
-                shapes.removeLast()
-                for shape in shapes.reversed() {
-                    if shape.selectionFrame.contains(point) {
-                        selectedShape = shape
-                        shape.isSelected = true
-                        scalingShape = false
-                        break
-                    }
-                }
-                return
-            }
             
             // We save the frame before updating the layer
             let enclosingFrame = tool.enclosingFrame
@@ -274,19 +329,71 @@ public class ShapesView: UIImageView {
             
         } else if selectedShape !=  nil {
             applyShapeTransform(point: point)
-            
-            if initialPoint.distance(to: point) < 10.0,
-               let textView = selectedShape as? TextShapeProtocol {
-                DispatchQueue.main.asyncAfter(deadline: .now()) {
-                    textView.becomeFirstResponder()
-                }
-            }
-            
         }
-        
     }
     
+    private func onPanCancelled( point : CGPoint ) {
+        
+        if let tool =  shapes.last,
+            selectedShape == nil  && currentToolType != nil{
+            tool.gestureMoved(point: point)
+            
+            tool.gestureCancelled(point: point)
+            
+            currentToolType = autoDeselect ? nil : currentToolType
+            onEndedGesture?(autoDeselect)
+        } else if let shape = selectedShape {
+            shape.transform = CATransform3DIdentity
+        }
+    }
+    
+    // MARK: - UIGestureRecognizerDelegate
+    
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == scrollPan && [pinch,pan].contains(otherGestureRecognizer) {
+            return false
+        }
+        if gestureRecognizer == pinch && [scrollPan, pan].contains(otherGestureRecognizer) {
+            return false
+        }
+        
+        if gestureRecognizer == pan && [scrollPan, pinch].contains(otherGestureRecognizer) {
+            return false
+        }
+        
+        return true
+    }
+    
+    // MARK: - Scroll View Management
+    
+    private func disableScroll() {
+        scrollView?.panGestureRecognizer.isEnabled = false
+        scrollView?.pinchGestureRecognizer?.isEnabled = false
+    }
+    
+    private func enableScroll() {
+        scrollView?.panGestureRecognizer.isEnabled = true
+        scrollView?.pinchGestureRecognizer?.isEnabled = true
+    }
+    
+
     // MARK: - Selection support
+    
+    /**
+        Given some point, detects whether is selecting a shape.
+        - Parameter point: The point in this view for selecting a shape
+        - Returns: A shape tool if found any, nil otherwise
+    */
+    private func detectSelectedShape( point : CGPoint ) -> ShapeTool? {
+        
+        for shape in shapes.reversed() {
+            if shape.selectionFrame.contains(point) {
+                return shape
+            }
+        }
+        
+        return nil
+    }
 
     private func deselectSelectedShape() {
         if selectedShape != nil {

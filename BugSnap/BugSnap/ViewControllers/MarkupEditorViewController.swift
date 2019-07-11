@@ -171,6 +171,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     private func setupImageView() {
         snapshot.contentMode = .center
         snapshot.translatesAutoresizingMaskIntoConstraints = false
+        snapshot.scrollView = scrollView
         scrollView.addSubview(snapshot)
         
         scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[snapshot]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["snapshot":snapshot]))
