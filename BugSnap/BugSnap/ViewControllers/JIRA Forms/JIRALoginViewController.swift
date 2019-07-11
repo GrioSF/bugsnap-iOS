@@ -203,6 +203,10 @@ public class JIRALoginViewController: ScrolledViewController, UITextFieldDelegat
     
     // MARK: - UITextFieldDelegate
     
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        inputField = textField
+    }
+    
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         keyboardHidingComesFromField = true
         textField.resignFirstResponder()
@@ -210,6 +214,7 @@ public class JIRALoginViewController: ScrolledViewController, UITextFieldDelegat
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
+        inputField = nil
         if keyboardHidingComesFromField {
             if textField == userNameField {
                 apiTokenField.becomeFirstResponder()
