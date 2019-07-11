@@ -92,7 +92,7 @@ workflows:
           filters:
             tags:
               ignore: /.*/
-      - release:
+      - beta:
           requires:
             - test-library
           filters:
