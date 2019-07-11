@@ -100,3 +100,11 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
+      - release:
+          requires:
+            - test-library
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^RELEASE-.*/

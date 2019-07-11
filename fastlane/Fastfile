@@ -11,7 +11,7 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane
 
 default_platform(:ios)
 
@@ -117,26 +117,40 @@ platform :ios do
     destroy_keychain
   end
 
-  desc "Bump the build number and commit the changes to git"
-  lane :buildbump do
+  desc "Bump the build number"
+  lane :bumpbuild do
     version = get_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
     build = increment_build_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
-    commit_version_bump(
-      xcodeproj:"BugSnap Demo App/BugSnap Demo App.xcodeproj",
-      message: "[ver++] v#{version} (#{build})"
-    )
+    puts "Bumped project to v#{version} (#{build}). Please remember to commit changes to git."
   end
 
-  desc "Bump the version number and commit the changes to git"
-  lane :versionbump do
-    version = increment_version_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
-    build = increment_build_number(
+  desc "Increment major version number (i.e.: X.0.0) + build bump"
+  lane :bumpversionmajor do
+    version = increment_version_number(
       xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj",
-      build_number: 1
+      bump_type: "major"
     )
-    commit_version_bump(
-      xcodeproj:"BugSnap Demo App/BugSnap Demo App.xcodeproj",
-      message: "[ver++] v#{version} (#{build})"
+    build = increment_build_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
+    puts "Bumped project to v#{version} (#{build}). Please remember to commit changes to git."
+  end
+
+  desc "Increment minor version number (i.e.: 1.X.0) + build bump"
+  lane :bumpversionminor do
+    version = increment_version_number(
+      xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj",
+      bump_type: "minor"
     )
+    build = increment_build_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
+    puts "Bumped project to v#{version} (#{build}). Please remember to commit changes to git."
+  end
+
+  desc "Increment patch version number (i.e.: 1.1.X) + build bump"
+  lane :bumpversionpatch do
+    version = increment_version_number(
+      xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj",
+      bump_type: "patch"
+    )
+    build = increment_build_number(xcodeproj: "BugSnap Demo App/BugSnap Demo App.xcodeproj")
+    puts "Bumped project to v#{version} (#{build}). Please remember to commit changes to git."
   end
 end
