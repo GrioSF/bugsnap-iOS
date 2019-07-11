@@ -13,7 +13,7 @@ import UIKit
     This is a simple form that allows to select the project, the issue type and capture the summary and description.
     No presentation is made about the annotated screenshot.
 */
-public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate {
+public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDelegate, UITextViewDelegate {
     
     // MARK: - Exposed properties
     
@@ -21,12 +21,6 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     var snapshot : UIImage? = nil
     
     // MARK: - UI Controls
-    
-    /// The scrollview containing all the controls
-    fileprivate var scrollView = UIScrollView()
-    
-    /// The content view for the scroll view
-    fileprivate var contentView = UIView()
     
     /// The title for the form
     private var promptLabel = FormTitleLabel(text: "Add Issue Details and Confirm")
@@ -41,7 +35,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     private var summaryField = FormTextField()
     
     /// The description capture field
-    private var descriptionField = PaddedTextView()
+    private var descriptionField = UITextView()
     
     /// The cancel button
     private var cancelButton = CancelFormButton(title: "Cancel")
@@ -89,22 +83,9 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
     }
     
     private func setupScrollView() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":scrollView]))
-        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        
+        view.removeConstraint(bottomConstraint!)
         scrollView.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -15.0).isActive = true
-        
-        // Setup the content view constraints
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.backgroundColor = UIColor.clear
-        contentView.isUserInteractionEnabled = true
-        scrollView.addSubview(contentView)
-        scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":contentView]))
-        scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":contentView]))
-        contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
-        contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor).isActive = true
-        
     }
     
     private func setupTitle() {
@@ -197,7 +178,8 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         label.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
         label.topAnchor.constraint(equalTo: summaryField.bottomAnchor, constant: 20.0).isActive = true
         
-        descriptionField.textInsets = summaryField.textInsets
+        
+        descriptionField.textContainerInset = UIEdgeInsets(top: 10.0, left: summaryField.textInsets.left - 4.0, bottom: 10.0, right: summaryField.textInsets.right - 4.0 )
         descriptionField.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
         descriptionField.font = label.font
         descriptionField.textColor = UIColor.black
@@ -207,6 +189,8 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         descriptionField.keyboardType = .asciiCapable
         descriptionField.autocapitalizationType = .none
         descriptionField.isEditable = false
+        descriptionField.isUserInteractionEnabled = false
+        descriptionField.delegate = self
         
         
         contentView.addSubview(descriptionField)
@@ -214,6 +198,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         descriptionField.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         descriptionField.heightAnchor.constraint(equalToConstant: 140.0).isActive = true
         descriptionField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
+        descriptionField.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10.0).isActive = true
         
         let toolbar = UIVisualEffectView(effect: UIBlurEffect(style: .light))
         let doneButton = SubmitFormButton(title: "Done")
@@ -292,6 +277,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         issueTypeSelected = issueType
         summaryField.isEnabled = true
         descriptionField.isEditable = true
+        descriptionField.isUserInteractionEnabled = true
     }
     
     // MARK: - UI Callback
@@ -326,7 +312,7 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
             presentOperationErrors(errors: ["You must capture a non empty summary field"], title: "Missing Data", button: "Ok")
             return
         }
-            
+        
         
         loadingViewController = presentLoading(message: "Building issue...")
         
@@ -359,17 +345,50 @@ public class JIRAIssueFormViewController: UIViewController, UITextFieldDelegate 
         }
     }
     
+    // MARK: - UITextViewDeleagate
+    
+    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        inputField = textView
+        return true
+    }
+    
+    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        inputField = nil
+        return true
+    }
+    
+    public func textViewDidChange(_ textView: UITextView) {
+        scrollToVisibleInput()
+    }
+    
+    public func textViewDidEndEditing(_ textView: UITextView) {
+        if textView === inputField {
+            inputField = nil
+        }
+    }
+    
     // MARK: - UITextFieldDelegate
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        inputField = textField
+    }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         let result = textField.text?.trimmingCharacters(in: CharacterSet.whitespaces).count ?? 0 > 0
         
         if result {
+            inputField = descriptionField
             descriptionField.becomeFirstResponder()
         }
         
         return result
+    }
+    
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        if inputField === textField {
+            inputField = nil
+        }
     }
     
     // MARK: - Support

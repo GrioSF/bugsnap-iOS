@@ -262,7 +262,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         
         controller.onShapeSelectedHandler = {
             [weak self] (shapeType) in
-            self?.snapshot.graphicProperties.lineWidth = 2.0
+            self?.snapshot.graphicProperties.lineWidth = 5.0
             self?.snapshot.currentToolType = shapeType
         }
         snapshot.autoDeselect = false
