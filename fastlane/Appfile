@@ -1,8 +1,7 @@
 app_identifier("com.grio.os.bugsnap") # The bundle identifier of your app
-apple_id("opensource-ci@grio.com") # Set environmental variables with your Apple email address
-
-itc_team_id("206697") # iTunes Connect Team ID
-team_id("3WBDCZ68AG") # Developer Portal Team ID
+apple_id ENV["APPLE_ID"] # Set environmental variables with your Apple email address
+itc_team_id ENV["ITC_TEAM_ID"] # iTunes Connect Team ID
+team_id ENV["DEV_TEAM_ID"] # Developer Portal Team ID
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile
