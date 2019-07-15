@@ -93,7 +93,11 @@ public extension UIApplication {
             let snapController = MarkupEditorViewController()
             snapController.screenSnapshot = image
             let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
-            navigationController.modalPresentationStyle = .formSheet
+            
+            if UI_USER_INTERFACE_IDIOM() == .pad {
+                navigationController.modalPresentationStyle = .formSheet
+            }
+            
             snapController.view.backgroundColor = UIColor.black
             
             loading.dismiss(animated: true, completion: {
