@@ -20,6 +20,9 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     /// The snapshot to be uploaded to JIRA
     var snapshot : UIImage? = nil
     
+    /// The video URL for uploading to JIRA
+    var videoURL : URL? = nil
+    
     // MARK: - UI Controls
     
     /// The title for the form
@@ -339,8 +342,20 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
                     self?.presentOperationErrors(errors: errorMessages)
                 })
             } else if let issueObject = issue {
-                self?.loadingViewController?.message = "Uploading snapshot..."
-                self?.uploadImage(issue: issueObject)
+                
+                if let _ = self?.snapshot {
+                    self?.loadingViewController?.message = "Uploading snapshot..."
+                    self?.uploadImage(issue: issueObject)
+                } else if let _ = self?.videoURL {
+                    self?.loadingViewController?.message = "Uploading video..."
+                    self?.uploadScreenRecording(issue: issueObject)
+                } else {
+                    self?.loadingViewController?.dismiss(animated: true, completion: {
+                        DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                            self?.showSuccess(issue: issueObject)
+                        })
+                    })
+                }
             }
         }
     }
@@ -399,6 +414,32 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     */
     private func uploadImage( issue : JIRA.Object ) {
         JIRARestAPI.sharedInstance.attach(snapshot: snapshot!, issue: issue) { [weak self] (_, errors) in
+            
+            self?.loadingViewController?.dismiss(animated: true, completion: {
+                
+                var block : (()->Void)! // block for preenting after the loading view controller is dismissed
+                
+                if let messages = errors {
+                    block = {
+                        self?.presentOperationErrors(errors: messages)
+                    }
+                } else {
+                    block = {
+                        self?.showSuccess(issue: issue)
+                    }
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: block)
+            })
+        }
+    }
+    
+    /**
+        Uploads the video result of the annotated screen recording.
+        - Parameter issue: The issue created previously with the summary and description provided by the UI.
+     */
+    private func uploadScreenRecording( issue : JIRA.Object ) {
+        JIRARestAPI.sharedInstance.attach(videoURL: videoURL!, issue: issue) { [weak self] (_, errors) in
             
             self?.loadingViewController?.dismiss(animated: true, completion: {
                 

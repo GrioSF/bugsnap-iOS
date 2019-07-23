@@ -319,7 +319,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         snapshot.snapshot { [weak self] (newImage) in
             loading?.dismiss(animated: true, completion: {
                 DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
-                    self?.presentJIRACapture(image: newImage)
+                    self?.startJIRACapture(snapshot: newImage)
                 })
             })
         }
@@ -380,22 +380,6 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
                 controller.hide()
                 currentMenuController = nil
             }
-        }
-    }
-    
-    private func presentJIRACapture( image : UIImage? ) {
-        let jiraLoginViewController = JIRALoginViewController()
-        jiraLoginViewController.modalPresentationStyle = .overCurrentContext
-        jiraLoginViewController.modalTransitionStyle = .coverVertical
-        present(jiraLoginViewController, animated: true, completion: nil)
-        
-        jiraLoginViewController.onSuccess = {
-            [weak self] in
-            
-            let controller = JIRAIssueFormViewController()
-            controller.snapshot = image
-            controller.modalTransitionStyle = .crossDissolve
-            self?.present(controller, animated: true, completion: nil)
         }
     }
 }

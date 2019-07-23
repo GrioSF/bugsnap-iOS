@@ -385,6 +385,54 @@ public class JIRARestAPI : NSObject {
         task.resume()
     }
     
+    /**
+        Uploads the video result of screen recording within the app
+     - Parameter issue: The issue for adding the attachment
+     - Parameter videoURL: The video URL for the file containing the video
+     - Parameter completion: Whether the operation completed successfully or there were some errors. The completion handler will have the array of errors if any, otherwise it can be assumed the operation completed successfully
+     */
+    func attach( videoURL : URL, issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
+        
+        let boundary = "Boundary-\(UUID().uuidString)"
+        var request = URLRequest(url: URL(string: "rest/api/3/issue/\(issue.key!)/attachments", relativeTo: serverURL)!)
+        request.httpMethod = "POST"
+        request.addValue("no-check", forHTTPHeaderField: "X-Atlassian-Token") // Required as per the doc
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        if let videoData = try? Data(contentsOf: videoURL) {
+            let appName = Bundle.main.infoDictionary?["CFBundleName"] ?? "BugSnap"
+            let filename = "\(appName).mp4".replacingOccurrences(of: " ", with: "")
+            let bodyData = JIRARestAPI.buildAttachmentHTTPBody(data: videoData, boundary: boundary, mimeType: "video/mp4", filename : filename)
+            request.setValue(String(bodyData.count), forHTTPHeaderField: "Content-Length")
+            request.httpBody = bodyData
+        }
+        
+        let urlSession = URLSession(configuration: sessionConfiguration)
+        let task = urlSession.dataTask(with: request) { (data, response, error) in
+            var messages : [String]? = nil  // The errors
+            var attachment : JIRA.IssueField.Attachment? = nil
+            if let responseData = data,
+                error == nil {
+                //let stringData = String(data: responseData, encoding: .utf8)
+                if let json = try? JSONSerialization.jsonObject(with: responseData, options: .allowFragments) {
+                    messages = JIRARestAPI.errorsInResponse(json: json)
+                    if let dictionary = json as? [AnyHashable:Any],
+                        messages == nil {
+                        attachment = JIRA.IssueField.Attachment()
+                        attachment?.load(from: dictionary)
+                    }
+                }
+            } else if let connectionError = error {
+                messages = [connectionError.localizedDescription]
+            }
+            
+            DispatchQueue.main.async {
+                completion(attachment, messages)
+            }
+        }
+        task.resume()
+    }
+    
     // MARK: - Support for Answer Processing
     
     /**

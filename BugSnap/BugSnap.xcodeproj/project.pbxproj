@@ -16,6 +16,9 @@
 		7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */; };
 		7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */; };
 		7F0BCF9E22B04C1A006B4F26 /* UIView+Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */; };
+		7F2716F422E62B980068C502 /* UIApplication+ScreenRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */; };
+		7F2716F622E766470068C502 /* VideoFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F522E766470068C502 /* VideoFileWriter.swift */; };
+		7F2716F822E772C90068C502 /* UIViewController+JIRAIssueFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */; };
 		7F66ABC222C151F200806661 /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */; };
 		7F66ABC422C1538700806661 /* JIRALoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC322C1538700806661 /* JIRALoginViewController.swift */; };
 		7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */; };
@@ -97,6 +100,9 @@
 		7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugSnapAction.swift; sourceTree = "<group>"; };
 		7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportAction.swift; sourceTree = "<group>"; };
 		7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Snap.swift"; sourceTree = "<group>"; };
+		7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+ScreenRecording.swift"; sourceTree = "<group>"; };
+		7F2716F522E766470068C502 /* VideoFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFileWriter.swift; sourceTree = "<group>"; };
+		7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+JIRAIssueFlow.swift"; sourceTree = "<group>"; };
 		7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		7F66ABC322C1538700806661 /* JIRALoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRALoginViewController.swift; sourceTree = "<group>"; };
 		7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueFormViewController.swift; sourceTree = "<group>"; };
@@ -381,9 +387,12 @@
 				7F0BCF9022B00C85006B4F26 /* AccelerometerShakeDetector.swift */,
 				7F0BCF9622B045A2006B4F26 /* UIViewController+Snap.swift */,
 				7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */,
+				7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */,
 				7F0BCF8E22B0011D006B4F26 /* UIApplication+Snap.swift */,
 				7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */,
 				7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */,
+				7F2716F522E766470068C502 /* VideoFileWriter.swift */,
+				7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -506,6 +515,7 @@
 				7F66ABE822C4610C00806661 /* ShapeEditorScrollView.swift in Sources */,
 				7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */,
 				7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */,
+				7F2716F422E62B980068C502 /* UIApplication+ScreenRecording.swift in Sources */,
 				7FEBAC6122B2A3390022158D /* Shapes.swift in Sources */,
 				7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */,
 				7F66ABD022C28F0200806661 /* JIRA+AtlassianDocument.swift in Sources */,
@@ -523,6 +533,7 @@
 				7F66ABC422C1538700806661 /* JIRALoginViewController.swift in Sources */,
 				7FEBAC6E22B3077D0022158D /* ColorSelectorViewController.swift in Sources */,
 				7FEBAC6C22B2FF080022158D /* ToolsButtons.swift in Sources */,
+				7F2716F822E772C90068C502 /* UIViewController+JIRAIssueFlow.swift in Sources */,
 				7FEBAC7422B41A5E0022158D /* LineWidthSelectorButton.swift in Sources */,
 				7F66ABEE22C517DB00806661 /* FormLabels.swift in Sources */,
 				7FEBAC5322B19E7C0022158D /* MarkupEditorViewController.swift in Sources */,
@@ -532,6 +543,7 @@
 				7F0BCF9122B00C85006B4F26 /* AccelerometerShakeDetector.swift in Sources */,
 				7FEBAC6822B2A42E0022158D /* IrisTransitioningNavigationController.swift in Sources */,
 				7F66ABF822C5336D00806661 /* ScrolledViewController.swift in Sources */,
+				7F2716F622E766470068C502 /* VideoFileWriter.swift in Sources */,
 				7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */,
 				7F66ABD822C2E2CB00806661 /* TextToolButton.swift in Sources */,
 				7F66ABCE22C28E3100806661 /* JIRA+User.swift in Sources */,
