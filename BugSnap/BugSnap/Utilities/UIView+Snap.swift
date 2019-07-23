@@ -56,10 +56,41 @@ public extension UIView {
         Creates a recording indicator that ReplayKit won't record when recording the screen.
     */
     @objc static func addRecordingIndicator() -> UIWindow {
-        let recordingIndicatorWindow = UIWindow(frame: UIScreen.main.bounds)
+        
+        let frame = UIScreen.main.bounds
+        let recordingIndicatorWindow = UIWindow(frame: frame)
         recordingIndicatorWindow.isHidden = false
         recordingIndicatorWindow.backgroundColor = UIColor.clear
         recordingIndicatorWindow.isUserInteractionEnabled = false
+        
+        if UI_USER_INTERFACE_IDIOM() == .pad {
+            recordingIndicatorWindow.frame = UIApplication.shared.keyWindow!.frame
+        } else if UI_USER_INTERFACE_IDIOM() == .phone {
+            var offset : CGFloat = 40.0
+            
+            if let keyWindow = UIApplication.shared.keyWindow {
+                if keyWindow.safeAreaInsets.left > 0 || keyWindow.safeAreaInsets.bottom > 0 ||
+                    keyWindow.safeAreaInsets.right > 0 || keyWindow.safeAreaInsets.top > 20.0 {
+                    offset = -31.0
+                }
+            }
+            
+            switch UIDevice.current.orientation {
+            case .landscapeLeft:
+                recordingIndicatorWindow.transform = CGAffineTransform(rotationAngle: CGFloat(90.0).radians).concatenating(CGAffineTransform(translationX: -frame.height * 0.5+offset, y: frame.height*0.5-offset))
+            case .landscapeRight:
+                recordingIndicatorWindow.transform = CGAffineTransform(rotationAngle: CGFloat(-90.0).radians).concatenating(CGAffineTransform(translationX:-frame.height * 0.5+offset, y:frame.height*0.5-offset))
+            case .portraitUpsideDown:
+                recordingIndicatorWindow.frame = CGRect(x: 0.0, y: 0.0, width: min(frame.width,frame.height), height: max(frame.width,frame.height))
+                recordingIndicatorWindow.transform = CGAffineTransform(rotationAngle: CGFloat(180.0).radians)
+            case .portrait:
+                recordingIndicatorWindow.transform = CGAffineTransform.identity
+            default:
+                break
+            }
+        }
+        
+        
         
         let indicatorViewContainer = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         indicatorViewContainer.cornerRadius = 8.0
@@ -68,6 +99,8 @@ public extension UIView {
         
         indicatorViewContainer.topAnchor.constraint(equalTo: recordingIndicatorWindow.safeAreaLayoutGuide.topAnchor).isActive = true
         indicatorViewContainer.trailingAnchor.constraint(equalTo: recordingIndicatorWindow.safeAreaLayoutGuide.trailingAnchor, constant: -10.0).isActive = true
+        
+        
         
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16.0)
