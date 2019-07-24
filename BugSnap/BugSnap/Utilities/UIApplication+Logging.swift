@@ -1,0 +1,246 @@
+//
+//  UIApplication+Logging.swift
+//  BugSnap
+//  This extension aims to redirect the stderr to a file that can be sent to JIRA
+//
+//  Created by Héctor García Peña on 7/24/19.
+//  Copyright © 2019 Héctor García Peña. All rights reserved.
+//
+
+import Foundation
+
+/// The key for storing the filename for the current log file
+fileprivate var _logFileNameKey = "_logFileNameKey"
+
+/// The name for the directory where the logs will be stored
+fileprivate let kLogFilesDirectory = "Logs"
+
+/// Timer to monitor the file size for the log file
+fileprivate var kLogFileMonitor = "kLogFileMonitor"
+
+/// The key for storing the size in kilobytes before changing the log file
+fileprivate var _maximumFileSizeKey = "kMaximumFileSizeKey"
+
+/// The key for storing the maximum number of files
+fileprivate var _maximumNumberOfFiles = "kMaximumNumberOfFilesKey"
+
+/**
+    UIApplication extension to provide an API that will redirect the stderr to a file that will be monitored for its size. The maximum size for the file will be a parameter that will be configured on the start call.
+*/
+public extension UIApplication {
+    
+    /// Gets the current log file url if it was set to auto log in a file
+    @objc var lastLogFileURL : URL? {
+        
+        guard let fileName = logFileName else { return nil }
+        
+        let cachesPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0] as NSString
+        let logsPath = cachesPath.appendingPathComponent(kLogFilesDirectory) as NSString
+        return URL(fileURLWithPath: logsPath.appendingPathComponent(fileName))
+    }
+    
+    /// Gets the url for the logs directory
+    @objc var logsDirectoryURL : URL {
+        let cachesPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0] as NSString
+        return URL(fileURLWithPath: cachesPath.appendingPathComponent(kLogFilesDirectory))
+    }
+    
+    // MARK: - Private Properties
+    
+    /// Timer for monitoring the file size for the log file
+    private var logFileMonitor : Timer? {
+        get {
+            return objc_getAssociatedObject(self, &kLogFileMonitor) as? Timer
+        }
+        set(newVal) {
+            objc_setAssociatedObject(self, &kLogFileMonitor, newVal, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    /// Internal property for setting/getting the log file name.
+    private var logFileName : String? {
+        get {
+            return objc_getAssociatedObject(self, &_logFileNameKey) as? String
+        }
+        set(newVal) {
+            objc_setAssociatedObject(self, &_logFileNameKey, newVal, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    /// Internal property for storing the maximum file size of a log file
+    private var maximumLogFileSize : UInt {
+        get {
+            if let number = objc_getAssociatedObject(self, &_maximumFileSizeKey) as? NSNumber {
+                return number.uintValue
+            }
+            return UInt.max
+        }
+        set(newVal) {
+            let number = NSNumber(value: newVal)
+            objc_setAssociatedObject(self, &_maximumFileSizeKey, number, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    /// Internal property for storing the maximum number of log files
+    private var maximumLogFiles : UInt {
+        get {
+            if let number = objc_getAssociatedObject(self, &_maximumNumberOfFiles) as? NSNumber {
+                return number.uintValue
+            }
+            return UInt.max
+        }
+        set(newVal) {
+            let number = NSNumber(value: newVal)
+            objc_setAssociatedObject(self, &_maximumNumberOfFiles, number, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    // MARK: - API for enabling logging
+    
+    /**
+        Redirects logging to files that ultimately can be used when downloading the sandbox or sending the information to JIRA.
+        Once this method is called the stderr is redirected to a file in the Logs Directory given by the logsDirectoryURL. Calling again this method sets the value of the parameters to its new values and resets the file monitoring timer. This timer monitors each sec for the file size to honor the user request regarding the file size. Once the file size is exceeded a new file is open. 
+        - Parameter maxFileSize: The maximum file size in kilobytes. The default is 1024 (e.g. 1 Megabyte of file size)
+        - Parameter maxFiles: The maximum number of files for logging ( The default value is 5 )
+    */
+    @objc func redirectLogging( maxFileSize : UInt = 1024 , maxFiles : UInt = 5) {
+        maximumLogFiles = maxFiles
+        maximumLogFileSize = maxFileSize
+        
+        // Invalidate previous timers
+        if let timer = logFileMonitor {
+            timer.invalidate()
+            logFileMonitor = nil
+        }
+        
+        redirectStdErr()
+        
+        let timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(onFileMonitorTimer(timer:)), userInfo: nil, repeats: true)
+        logFileMonitor = timer
+        
+    }
+    
+    // MARK: - Support
+    
+    /**
+        Builds a filename with the following format : <BundleName>-<timestamp>.log
+    */
+    private func buildFileName() -> String {
+        let appName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "BugSnap"
+        let filteredAppName = appName.filter { $0.isLetter || $0.isNumber }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd'T'HHmmss"
+        return "\(filteredAppName)-\(formatter.string(from: Date())).log"
+    }
+    
+    /**
+        Redirects stderr to a file that will be in the ${sandbox path}/Logs/${filename}
+        The filename is created with the buildFileName() method and is set into the logFileName property.
+    */
+    private func redirectStdErr() {
+        let permissions = UnsafePointer<Int8>(("w" as NSString).utf8String)
+        logFileName = buildFileName()
+        guard let url = lastLogFileURL,
+              verifyLogsDirectory() else {
+            logFileName = nil
+            return
+        }
+        let builtFileName = url.path
+        let fileName = UnsafePointer<Int8>((builtFileName as NSString).utf8String)
+        if freopen(fileName, permissions, stderr) == nil {
+            NSLog("Couldn't freopen with file: \(builtFileName)")
+        }
+    }
+    
+    /**
+        Verifies whether the logs directory exists in the sandbox and deletes it if necessary
+        - Returns: True if the directory exists or was created successfully, false otherwise
+    */
+    private func verifyLogsDirectory() -> Bool {
+        let logsDirectory = logsDirectoryURL.path
+        let manager = FileManager.default
+        
+        if !manager.fileExists(atPath: logsDirectory) {
+            do {
+                try manager.createDirectory(at: logsDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch {
+                NSLog("Couldn't create the logs directory! : \(logsDirectory)")
+                return false
+            }
+        }
+        return true
+    }
+    
+    @objc func onFileMonitorTimer( timer : Timer) {
+        guard let url = lastLogFileURL else { return }
+        let path = url.path
+        let manager = FileManager.default
+        
+        // flush stderr to have it with some content
+        fflush(stderr)
+        if manager.fileExists(atPath: path),
+           let attributes = try? manager.attributesOfItem(atPath: path),
+           let size = attributes[.size] as? NSNumber {
+            
+            // Check whether the file size in kilobytes is greater the maximumLogFileSize
+            if (size.uint64Value / UInt64(1024)) > UInt64(maximumLogFileSize) {
+                
+                // We need to open a new file
+                redirectStdErr()
+            }
+        }
+        
+        // Now we need to check for the maximum number of files
+        let logsDirectory = logsDirectoryURL.path
+        guard let files = try? manager.contentsOfDirectory(atPath: logsDirectory)
+            else {
+                NSLog("Couldn't open directory \(logsDirectory)")
+                return
+        }
+        
+        let filesFiltered = files.filter {
+            !($0 == "." || $0 == "..") &&
+            $0.range(of: ".log") != nil
+        }
+        
+        if filesFiltered.count < maximumLogFiles {
+            return
+        }
+        
+        // Sort by date
+        let sortedFiles = filesFiltered.sorted {
+            let path1 = (logsDirectory as NSString).appendingPathComponent($0)
+            let path2 = (logsDirectory as NSString).appendingPathComponent($1)
+            
+            do {
+                let attributes1 = try manager.attributesOfItem(atPath: path1 )
+                let attributes2 = try manager.attributesOfItem(atPath: path2 )
+                
+                guard let date1 = attributes1[.creationDate] as? Date,
+                    let date2 = attributes2[.creationDate] as? Date else {
+                        return false
+                }
+                
+                return date1.compare(date2) == .orderedAscending
+            }
+            catch {
+                NSLog("There was an error while getting the attributes of: \n \(path1) \n or \n \(path2)")
+                return false
+            }
+        }
+        
+        // Try to remove the oldest
+        do {
+            let fileName = sortedFiles.first!
+            let path = (logsDirectory as NSString).appendingPathComponent(fileName)
+            NSLog("About to automatically remove \(path)")
+            try manager.removeItem(atPath: path)
+        }
+        catch {
+            NSLog("There was an error while trying to remove \(sortedFiles.first!) : Error \(error)")
+        }
+        
+    }
+    
+}

@@ -30,11 +30,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         /// JIRA.URL  = '#Your JIRA server'
         /// JIRA.User = '#Your JIRA email for authentication'
         /// JIRA.APIKey = '#Your JIRA API Token key'
+        
+        UIApplication.shared.redirectLogging()
+        NSLog("This statement should be on a file!")
+        
         do {
             try JIRARestAPI.sharedInstance.loadConnectionParameters()
         }
         catch{
-            print("Error while configuring JIRA connection \(error)")
+            NSLog("Error while configuring JIRA connection \(error)")
         }
         
         return true

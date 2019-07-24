@@ -11,10 +11,6 @@ import ReplayKit
 import UIKit
 import AVFoundation
 
-
-
-
-
 /// A key for storing whether the application is recording the screen
 fileprivate var _shakeStopRecordingKey = "_shakeStopRecordingKey"
 
