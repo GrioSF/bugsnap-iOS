@@ -40,7 +40,7 @@ public extension UIApplication {
     }
     
     /// Gets the url for the logs directory
-    @objc var logsDirectoryURL : URL {
+    @objc static var logsDirectoryURL : URL {
         let cachesPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0] as NSString
         return URL(fileURLWithPath: cachesPath.appendingPathComponent(kLogFilesDirectory))
     }
@@ -117,7 +117,37 @@ public extension UIApplication {
         
         let timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(onFileMonitorTimer(timer:)), userInfo: nil, repeats: true)
         logFileMonitor = timer
+    }
+    
+    /**
+        Returns the last two log files in a single Data object if available
+        - Parameter numFiles: The number of log files to assemble a single file
+        - Returns: A Data object with the last n log files or nil if there're no log files or an error while accessing the directory
+    */
+    @objc static func lastLogs( numFiles : UInt = 2) -> Data? {
+        let logsDirectory = logsDirectoryURL.path
+        guard let sortedFiles = FileManager.default.sortedFiles(for: logsDirectory, ascending : false),
+            sortedFiles.count > 0  else {
+                return nil
+        }
         
+        ///  Get the maximum number of files to load
+        let maxFiles = min(Int(numFiles),sortedFiles.count)
+        
+        // Check the range
+        guard maxFiles > 0 else {
+            return nil
+        }
+        
+        let toAdd = sortedFiles[0...(maxFiles-1)]
+        var totalData = Data()
+        toAdd.reversed().forEach {
+            if let fileData = try? Data(contentsOf: URL(fileURLWithPath: $0)) {
+                totalData.append(fileData)
+            }
+        }
+        
+        return totalData
     }
     
     // MARK: - Support
@@ -157,12 +187,12 @@ public extension UIApplication {
         - Returns: True if the directory exists or was created successfully, false otherwise
     */
     private func verifyLogsDirectory() -> Bool {
-        let logsDirectory = logsDirectoryURL.path
+        let logsDirectory = UIApplication.logsDirectoryURL.path
         let manager = FileManager.default
         
         if !manager.fileExists(atPath: logsDirectory) {
             do {
-                try manager.createDirectory(at: logsDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                try manager.createDirectory(at: UIApplication.logsDirectoryURL, withIntermediateDirectories: true, attributes: nil)
             }
             catch {
                 NSLog("Couldn't create the logs directory! : \(logsDirectory)")
@@ -191,49 +221,16 @@ public extension UIApplication {
             }
         }
         
-        // Now we need to check for the maximum number of files
-        let logsDirectory = logsDirectoryURL.path
-        guard let files = try? manager.contentsOfDirectory(atPath: logsDirectory)
-            else {
-                NSLog("Couldn't open directory \(logsDirectory)")
-                return
-        }
-        
-        let filesFiltered = files.filter {
-            !($0 == "." || $0 == "..") &&
-            $0.range(of: ".log") != nil
-        }
-        
-        if filesFiltered.count < maximumLogFiles {
+        let logsDirectory = UIApplication.logsDirectoryURL.path
+        guard let sortedFiles = manager.sortedFiles(for: logsDirectory),
+            // Now we need to check for the maximum number of files
+              sortedFiles.count > 0 && sortedFiles.count > maximumLogFiles else {
             return
-        }
-        
-        // Sort by date
-        let sortedFiles = filesFiltered.sorted {
-            let path1 = (logsDirectory as NSString).appendingPathComponent($0)
-            let path2 = (logsDirectory as NSString).appendingPathComponent($1)
-            
-            do {
-                let attributes1 = try manager.attributesOfItem(atPath: path1 )
-                let attributes2 = try manager.attributesOfItem(atPath: path2 )
-                
-                guard let date1 = attributes1[.creationDate] as? Date,
-                    let date2 = attributes2[.creationDate] as? Date else {
-                        return false
-                }
-                
-                return date1.compare(date2) == .orderedAscending
-            }
-            catch {
-                NSLog("There was an error while getting the attributes of: \n \(path1) \n or \n \(path2)")
-                return false
-            }
         }
         
         // Try to remove the oldest
         do {
-            let fileName = sortedFiles.first!
-            let path = (logsDirectory as NSString).appendingPathComponent(fileName)
+            let path = sortedFiles.first!
             NSLog("About to automatically remove \(path)")
             try manager.removeItem(atPath: path)
         }

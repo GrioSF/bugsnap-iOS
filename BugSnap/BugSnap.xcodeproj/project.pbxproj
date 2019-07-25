@@ -56,6 +56,7 @@
 		7FB62E3022B981AB0007A02E /* JIRAIssueCreatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */; };
 		7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E3422B995020007A02E /* JIRA+Object.swift */; };
 		7FD2312822E8B0F100292997 /* UIApplication+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */; };
+		7FD2312A22E8FA8D00292997 /* FileManager+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD2312922E8FA8D00292997 /* FileManager+Util.swift */; };
 		7FEB197B22BC050300E9C8B5 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */; };
 		7FEB197D22BC264800E9C8B5 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */; };
 		7FEB197F22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */; };
@@ -143,6 +144,7 @@
 		7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueCreatorViewController.swift; sourceTree = "<group>"; };
 		7FB62E3422B995020007A02E /* JIRA+Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+Object.swift"; sourceTree = "<group>"; };
 		7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Logging.swift"; sourceTree = "<group>"; };
+		7FD2312922E8FA8D00292997 /* FileManager+Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Util.swift"; sourceTree = "<group>"; };
 		7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
 		7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocompleteTextFieldViewController.swift; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 				7F2716F522E766470068C502 /* VideoFileWriter.swift */,
 				7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */,
 				7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */,
+				7FD2312922E8FA8D00292997 /* FileManager+Util.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -544,6 +547,7 @@
 				7F66ABC222C151F200806661 /* UserDefaults+Keys.swift in Sources */,
 				7F66ABD622C2E1EF00806661 /* DrawToolButton.swift in Sources */,
 				7FB62E3022B981AB0007A02E /* JIRAIssueCreatorViewController.swift in Sources */,
+				7FD2312A22E8FA8D00292997 /* FileManager+Util.swift in Sources */,
 				7F0BCF9122B00C85006B4F26 /* AccelerometerShakeDetector.swift in Sources */,
 				7FEBAC6822B2A42E0022158D /* IrisTransitioningNavigationController.swift in Sources */,
 				7FD2312822E8B0F100292997 /* UIApplication+Logging.swift in Sources */,

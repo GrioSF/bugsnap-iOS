@@ -52,11 +52,13 @@ public extension UIViewController {
     /**
         Present the connection errors as an alert. The errors are a series of strings coming from the server or the underlying infrastructure.
         The alert action is presented in this view controller and it has only a button for dismiss the message box.
-        - Parameters: The errors found during the network interaction
-        - Parameters: A title for the alert message (the default is ""The following errors were found:")
-        - Parameters: The title for the only button in this alert message. The default value is "Ok"
+        - Parameter errors: The errors found during the network interaction
+        - Parameter title: A title for the alert message (the default is ""The following errors were found:")
+        - Parameter button: The title for the only button in this alert message. The default value is "Ok"
+        - Parameter retry: The block to be invoked if we want to retry the operation
+        - Parameter completion: The handler when the alert is dismissed
      */
-    func presentOperationErrors( errors : [String], title : String = "The following errors were found:", button : String = "Ok") {
+    func presentOperationErrors( errors : [String], title : String = "The following errors were found:", button : String = "Ok", retry : (()->Void)? = nil, completion : (()->Void)? = nil )  {
         
         var messageString = String()
         errors.forEach {
@@ -64,7 +66,18 @@ public extension UIViewController {
             messageString.append("\n")
         }
         let controller = UIAlertController(title: title, message: messageString, preferredStyle: .alert)
-        controller.addAction(UIAlertAction(title: button, style: .default, handler: nil))
+        
+        if retry != nil {
+            controller.addAction(UIAlertAction(title: "Retry", style: .default, handler: { (_) in
+                retry?()
+            }))
+        }
+        
+        controller.addAction(UIAlertAction(title: button, style: .default, handler: {
+            (_) in
+            completion?()
+        }))
+        
         present(controller, animated: true, completion: nil)
     }
 

@@ -336,27 +336,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         // TODO: Check if a we're missing a required object
         JIRARestAPI.sharedInstance.createIssue(fields: fields) {
             [weak self] (issue,errors) in
-        
-            if let errorMessages = errors {
-                self?.loadingViewController?.dismiss(animated: true, completion: {
-                    self?.presentOperationErrors(errors: errorMessages)
-                })
-            } else if let issueObject = issue {
-                
-                if let _ = self?.snapshot {
-                    self?.loadingViewController?.message = "Uploading snapshot..."
-                    self?.uploadImage(issue: issueObject)
-                } else if let _ = self?.videoURL {
-                    self?.loadingViewController?.message = "Uploading video..."
-                    self?.uploadScreenRecording(issue: issueObject)
-                } else {
-                    self?.loadingViewController?.dismiss(animated: true, completion: {
-                        DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
-                            self?.showSuccess(issue: issueObject)
-                        })
-                    })
-                }
-            }
+            self?.handleCreateIssueResponse(errors: errors, issue: issue)
         }
     }
     
@@ -413,24 +393,11 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         - Parameter issue: The issue created previously with the summary and description provided by the UI.
     */
     private func uploadImage( issue : JIRA.Object ) {
+        loadingViewController?.message = "Uploading snapshot..."
         JIRARestAPI.sharedInstance.attach(snapshot: snapshot!, issue: issue) { [weak self] (_, errors) in
             
-            self?.loadingViewController?.dismiss(animated: true, completion: {
-                
-                var block : (()->Void)! // block for preenting after the loading view controller is dismissed
-                
-                if let messages = errors {
-                    block = {
-                        self?.presentOperationErrors(errors: messages)
-                    }
-                } else {
-                    block = {
-                        self?.showSuccess(issue: issue)
-                    }
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: block)
-            })
+            guard let strongSelf = self else { return }
+            strongSelf.handleAttachmentResponse(issue: issue, errors: errors, caller: strongSelf.uploadImage(issue:))
         }
     }
     
@@ -439,23 +406,106 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         - Parameter issue: The issue created previously with the summary and description provided by the UI.
      */
     private func uploadScreenRecording( issue : JIRA.Object ) {
-        JIRARestAPI.sharedInstance.attach(videoURL: videoURL!, issue: issue) { [weak self] (_, errors) in
+        loadingViewController?.message = "Uploading video..."
+        JIRARestAPI.sharedInstance.attach(fileURL: videoURL!, mimeType: "video/mp4", issue: issue) { [weak self] (_, errors) in
             
-            self?.loadingViewController?.dismiss(animated: true, completion: {
-                
-                var block : (()->Void)! // block for preenting after the loading view controller is dismissed
-                
-                if let messages = errors {
-                    block = {
-                        self?.presentOperationErrors(errors: messages)
-                    }
-                } else {
-                    block = {
-                        self?.showSuccess(issue: issue)
-                    }
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: block)
+            guard let strongSelf = self else { return }
+            strongSelf.handleAttachmentResponse(issue: issue, errors: errors, caller: strongSelf.uploadScreenRecording(issue:))
+        }
+    }
+    
+    private func uploadLogs( issue : JIRA.Object ) {
+        guard let data = UIApplication.lastLogs() else {
+            
+            dismissLoading {
+                [weak self] in
+                self?.showSuccess(issue: issue)
+            }
+            
+            return
+        }
+        loadingViewController?.message = "Uploading log files..."
+        JIRARestAPI.sharedInstance.attach(data: data, fileName: "Apps.log", mimeType: "text/plain", issue: issue) { [weak self] (_, errors) in
+            self?.handleLogsAttachmentResponse(issue: issue, errors: errors)
+        }
+    }
+    
+    // MARK: - Handle network calls
+    
+    private func handleCreateIssueResponse(errors : [String]?, issue : JIRA.Object? ) {
+        
+        if let errorMessages = errors {
+            dismissLoading {
+                [weak self] in
+                self?.presentOperationErrors(errors: errorMessages)
+            }
+            return
+        }
+        
+        // Check the issue object was created correctly
+        guard let issueObject = issue else {
+            
+            // Just dismiss the loading view controller and present the error
+            handleCreateIssueResponse(errors: ["The issue object wasn't found in the response"], issue: nil)
+            return
+        }
+        
+        // Check if the form has an image
+        if snapshot != nil {
+            uploadImage(issue: issueObject)
+        // Check if the form has the URL of a video
+        } else if videoURL != nil {
+            uploadScreenRecording(issue: issueObject)
+            
+        // Just upload the logs if there's any
+        } else {
+            uploadLogs(issue: issueObject)
+        }
+    }
+    
+    private func handleAttachmentResponse( issue : JIRA.Object , errors : [String]? , caller : @escaping (JIRA.Object)->Void ) {
+        if errors == nil {
+            uploadLogs(issue: issue)
+        } else {
+            let controller = loadingViewController == nil ? self : loadingViewController
+            controller?.presentOperationErrors(errors: errors!, retry : {
+                caller(issue)
+            }) { [weak self] in
+                self?.uploadLogs(issue: issue)
+            }
+        }
+    }
+    
+    private func handleLogsAttachmentResponse( issue : JIRA.Object , errors: [String]? ) {
+        if errors == nil {
+            dismissLoading {
+                [weak self] in
+                self?.showSuccess(issue: issue)
+            }
+            
+        } else {
+            
+            // Present the errors and optionally retry uploading the attachment
+            let controller = loadingViewController == nil ? self : loadingViewController
+            controller?.presentOperationErrors(errors: errors!, retry : {
+                [weak self] in
+                self?.uploadLogs(issue: issue)
+            }) { [weak self] in
+                self?.handleLogsAttachmentResponse(issue: issue, errors: nil)
+            }
+        }
+    }
+    
+    // MARK: - Presentation support
+    
+    private func dismissLoading( completion : @escaping ()->Void ) {
+        guard let loading = loadingViewController else {
+            completion()
+            return
+        }
+        loading.dismiss(animated: true) {
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                completion()
             })
         }
     }
