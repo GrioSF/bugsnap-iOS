@@ -133,6 +133,7 @@ public extension JIRA.IssueField.Value {
     
     /**
         Serializes the device properties into a JIRA table
+        - Returns: A JIRA table serialized as a JSON Dictionary. 
     */
     func serializeDeviceProperties() -> [String:Any] {
         var table = [String:Any]()
@@ -145,8 +146,9 @@ public extension JIRA.IssueField.Value {
         
         for property in deviceProperties.children {
             var tableRow = [String:Any]()
-            let propertyName = property.label ?? "Unknown label"
-            let propertyValue = DeviceFeaturesTextPresenter.present(property: propertyName, with: "\(property.value)")
+            let propertyLabel = property.label ?? "Unknown label"
+            let propertyName = DeviceFeaturesTextPresenter.present(property: propertyLabel)
+            let propertyValue = DeviceFeaturesTextPresenter.present(property: propertyLabel, with: property.value )
             tableRow[Document.GeneralKeys.type.rawValue] = Document.Table.rowObjectType
             
             tableRow[Document.GeneralKeys.contents.rawValue] = [

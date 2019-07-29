@@ -38,7 +38,7 @@ public struct DeviceLoggingFields {
     var osVersion : String = ""
     
     /// The current battery level percentage
-    var batteryLevel : Float = 0.0
+    var batteryLevel : Double = 0.0
     
     /// The current state for the battery
     var batteryState : String = ""
@@ -69,22 +69,75 @@ public enum DeviceLoggingFieldsCustomRepresentation : String {
     case batteryLevel
 }
 
+public enum DeviceLoggingFieldsLabelsRepresentation : String {
+    case manufacturer
+    case model
+    case cpu
+    case totalRAM
+    case usedRAM
+    case totalStorage
+    case percentageFreeStorage
+    case osVersion
+    case batteryLevel
+    case batteryState
+    case thermalState
+    case resolution
+    case dpi
+    case lowPowerMode
+    case screenScale
+}
+
 /**
     Creates the text presentation for a field in a DeviceLoggingFields
 */
 public struct DeviceFeaturesTextPresenter {
     
-    static func present( property : String, with value : String ) -> String {
+    static func present( property : String, with value : Any ) -> String {
         
         guard let key = DeviceLoggingFieldsCustomRepresentation(rawValue: property) else {
-            return value
+            return "\(value)"
         }
         
         switch key {
             case .totalRAM,.usedRAM,.totalStorage:
-                return "\(value) MegaBytes"
+                let formattedString = String(format: "%0.2f MegaBytes", locale: Locale.current, value as! Double)
+                return formattedString
             case .percentageFreeStorage,.batteryLevel:
-                return "\(value) %"
+                return String(format: "%0.2f %%", locale: Locale.current, value as! Double)
+        }
+    }
+    
+    static func present( property : String ) -> String {
+        guard let key = DeviceLoggingFieldsLabelsRepresentation(rawValue: property) else {
+            return property
+        }
+        switch key {
+        case .cpu,.dpi:
+            return property.localizedUppercase
+        case .totalRAM:
+            return "Total RAM"
+        case .usedRAM:
+            return "Used RAM"
+        case .totalStorage:
+            return "Total Storage"
+        case .percentageFreeStorage:
+            return "Percentage of Storage Free"
+        case .osVersion:
+            return "OS Version"
+        case .batteryLevel:
+            return "Battery Percentage"
+        case .batteryState:
+            return "Battery Status"
+        case .thermalState:
+            return "Thermal State"
+        case .resolution:
+            return "Screen Resolution (pixels)"
+        case .lowPowerMode:
+            return "Low Power Mode Enabled"
+        case .screenScale:
+            return "Pixels per Point"
+        default:
+            return property.localizedCapitalized
         }
     }
 }
@@ -331,7 +384,7 @@ public extension UIDevice {
     var deviceLoggingData : DeviceLoggingFields {
         var data = DeviceLoggingFields()
         isBatteryMonitoringEnabled = true
-        data.batteryLevel = batteryLevel * 100.0
+        data.batteryLevel = Double(batteryLevel * 100.0)
         data.batteryState = batteryState.string
         
         let model = readableModel
