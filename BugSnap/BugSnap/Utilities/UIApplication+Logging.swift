@@ -126,28 +126,19 @@ public extension UIApplication {
     */
     @objc static func lastLogs( numFiles : UInt = 2) -> Data? {
         let logsDirectory = logsDirectoryURL.path
-        guard let sortedFiles = FileManager.default.sortedFiles(for: logsDirectory, ascending : false),
-            sortedFiles.count > 0  else {
-                return nil
-        }
-        
-        ///  Get the maximum number of files to load
-        let maxFiles = min(Int(numFiles),sortedFiles.count)
-        
-        // Check the range
-        guard maxFiles > 0 else {
+        guard let files = FileManager.default.last(numberOfFiles: numFiles, from: logsDirectory)
+        else {
             return nil
         }
         
-        let toAdd = sortedFiles[0...(maxFiles-1)]
         var totalData = Data()
-        toAdd.reversed().forEach {
+        files.forEach {
             if let fileData = try? Data(contentsOf: URL(fileURLWithPath: $0)) {
                 totalData.append(fileData)
             }
         }
-        
         return totalData
+        
     }
     
     // MARK: - Support

@@ -51,10 +51,23 @@ public extension JIRA.IssueField.Value {
         }
         
         /// Representation of constants related to paragraphs
-        public class Paragraph {
+        public struct Paragraph {
             
             /// The type for this object
             static let objectType = "paragraph"
+        }
+        
+        /// Representation of constants related to tables
+        public struct Table {
+            
+            /// The type for this object
+            static let objectType = "table"
+            
+            /// The type for table rows
+            static let rowObjectType = "tableRow"
+            
+            /// The type for table cell
+            static let cellObjectType = "tableCell"
         }
     }
     
@@ -70,24 +83,79 @@ public extension JIRA.IssueField.Value {
         root[Document.GeneralKeys.type.rawValue] = Document.objectType
         
         let components = string.components(separatedBy: CharacterSet.newlines)
-        var paragraphs = [[String:Any]]()
+        var elements = [[String:Any]]()
+        
+        // Append the device features
+        elements.append(serializeDeviceProperties())
+        
+        // Append the paragraphs for the description
         components.forEach {
             
             // We don't support empty lines
             guard $0.count > 0 else { return }
-            
-            var paragraph = [String:Any]()
-            paragraph[Document.GeneralKeys.type.rawValue] = Document.Paragraph.objectType
-            
-            var contents = [String:Any]()
-            contents[Document.GeneralKeys.type.rawValue] = Document.TextKeys.paragraphContents.rawValue
-            contents[Document.TextKeys.paragraphContents.rawValue] = $0
-            
-            paragraph[Document.GeneralKeys.contents.rawValue] = [contents]
-            paragraphs.append(paragraph)
+            let paragraph = serializeTextParagraph(text: $0)
+            elements.append(paragraph)
         }
-        root[Document.GeneralKeys.contents.rawValue] = paragraphs
+        root[Document.GeneralKeys.contents.rawValue] = elements
         
         return root
+    }
+    
+    /**
+        Serializes a text as a JIRA Paragraph
+        - Parameter text: The text the paragraph will contain
+        - Returns: A json dictionary reflecting a JIRA Paragraph
+    */
+    func serializeTextParagraph( text : String ) -> [String:Any] {
+        var paragraph = [String:Any]()
+        paragraph[Document.GeneralKeys.type.rawValue] = Document.Paragraph.objectType
+        
+        var contents = [String:Any]()
+        contents[Document.GeneralKeys.type.rawValue] = Document.TextKeys.paragraphContents.rawValue
+        contents[Document.TextKeys.paragraphContents.rawValue] = text
+        
+        paragraph[Document.GeneralKeys.contents.rawValue] = [contents]
+        
+        return paragraph
+    }
+    
+    /**
+        Serializes a text into a cell for adding in a table row in a JIRA formatted JSON Document
+        - Parameter text: The text content for the cell
+        - Returns: A JSON Dictionary representing a table cell in the JIRA formatted JSON Document
+    */
+    func serializeTextCell( text: String ) -> [String:Any] {
+        var cell = [String:Any]()
+        cell[Document.GeneralKeys.type.rawValue] = Document.Table.cellObjectType
+        cell[Document.GeneralKeys.contents.rawValue] = [ serializeTextParagraph(text: text)]
+        return cell
+    }
+    
+    /**
+        Serializes the device properties into a JIRA table
+    */
+    func serializeDeviceProperties() -> [String:Any] {
+        var table = [String:Any]()
+        let properties = UIDevice.current.deviceLoggingData
+        let deviceProperties = Mirror(reflecting: properties)
+        
+        table[Document.GeneralKeys.type.rawValue] = Document.Table.objectType
+        
+        var rows = [[String:Any]]()
+        
+        for property in deviceProperties.children {
+            var tableRow = [String:Any]()
+            let propertyName = property.label ?? "Unknown label"
+            let propertyValue = DeviceFeaturesTextPresenter.present(property: propertyName, with: "\(property.value)")
+            tableRow[Document.GeneralKeys.type.rawValue] = Document.Table.rowObjectType
+            
+            tableRow[Document.GeneralKeys.contents.rawValue] = [
+                serializeTextCell(text: propertyName),
+                serializeTextCell(text: propertyValue)
+            ]
+            rows.append(tableRow)
+        }
+        table[Document.GeneralKeys.contents.rawValue] = rows
+        return table
     }
 }

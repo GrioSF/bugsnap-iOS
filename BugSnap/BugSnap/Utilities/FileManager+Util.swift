@@ -81,4 +81,31 @@ public extension FileManager {
         }
         return array
     }
+    
+    /**
+        Returns the last n created files from a directory specified as parameter.
+        - Parameter numberOfFiles: The maximum number of files to be returned by this method
+        - Parameter directory: The directory to look after the required file names
+        - Returns: An array with the last *numberOfFiles* or the files in the directory (if numberOfFiles is greater than the number of files contained within the directory). This method returns nil if there's an error while retrieving the directory contents (such as a non existent directory)
+    */
+    @objc func last( numberOfFiles : UInt , from directory: String ) -> [String]? {
+        
+        guard let sortedFiles = FileManager.default.sortedFiles(for: directory, ascending : false),
+            sortedFiles.count > 0  else {
+                return nil
+        }
+        
+        ///  Get the maximum number of files to load
+        let maxFiles = min(Int(numberOfFiles),sortedFiles.count)
+        
+        // Check the range
+        guard maxFiles > 0 else {
+            return nil
+        }
+        
+        let toAdd = sortedFiles[0...(maxFiles-1)]
+        var files = [String]()
+        files.append(contentsOf: toAdd.reversed())
+        return files
+    }
 }

@@ -55,6 +55,7 @@
 		7FB62E2622B8363C0007A02E /* JIRA-API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2522B8363C0007A02E /* JIRA-API.swift */; };
 		7FB62E3022B981AB0007A02E /* JIRAIssueCreatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */; };
 		7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E3422B995020007A02E /* JIRA+Object.swift */; };
+		7FBCBE4D22EA0C0000347B36 /* UIDevice+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBCBE4C22EA0C0000347B36 /* UIDevice+Logging.swift */; };
 		7FD2312822E8B0F100292997 /* UIApplication+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */; };
 		7FD2312A22E8FA8D00292997 /* FileManager+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD2312922E8FA8D00292997 /* FileManager+Util.swift */; };
 		7FEB197B22BC050300E9C8B5 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */; };
@@ -143,6 +144,7 @@
 		7FB62E2522B8363C0007A02E /* JIRA-API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA-API.swift"; sourceTree = "<group>"; };
 		7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueCreatorViewController.swift; sourceTree = "<group>"; };
 		7FB62E3422B995020007A02E /* JIRA+Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+Object.swift"; sourceTree = "<group>"; };
+		7FBCBE4C22EA0C0000347B36 /* UIDevice+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Logging.swift"; sourceTree = "<group>"; };
 		7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Logging.swift"; sourceTree = "<group>"; };
 		7FD2312922E8FA8D00292997 /* FileManager+Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Util.swift"; sourceTree = "<group>"; };
 		7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */,
 				7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */,
 				7FD2312922E8FA8D00292997 /* FileManager+Util.swift */,
+				7FBCBE4C22EA0C0000347B36 /* UIDevice+Logging.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -465,7 +468,7 @@
 				TargetAttributes = {
 					7F0BCF2922AFFF53006B4F26 = {
 						CreatedOnToolsVersion = 10.2.1;
-						LastSwiftMigration = 1020;
+						LastSwiftMigration = 1030;
 					};
 					7F0BCF3222AFFF53006B4F26 = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -558,6 +561,7 @@
 				7F66ABCE22C28E3100806661 /* JIRA+User.swift in Sources */,
 				7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */,
 				7F66ABE222C3C04700806661 /* ToolOptionsViewController.swift in Sources */,
+				7FBCBE4D22EA0C0000347B36 /* UIDevice+Logging.swift in Sources */,
 				7F0BCF9722B045A2006B4F26 /* UIViewController+Snap.swift in Sources */,
 				7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */,
 				7FB62E1F22B7D8050007A02E /* ShapeSelectorButton.swift in Sources */,
@@ -745,6 +749,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.grio.BugSnap;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -772,6 +777,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.grio.BugSnap;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
