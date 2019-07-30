@@ -108,4 +108,17 @@ public extension FileManager {
         files.append(contentsOf: toAdd.reversed())
         return files
     }
+    
+    /**
+        Builds a filename with the following format : <BundleName>-<timestamp>. The timestamp uses DateFormatter and it has the pattern '<year><month><day>T<hours><mins><secs>'
+        This method assembles a file name with the CFBundleName for the App, a timestamp and a file extension (by default log).
+        - Parameter fileExtension: The file extension (defaults to "log")
+     */
+    @objc static func buildAppFileName( fileExtension : String =  "log") -> String {
+        let appName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "BugSnap"
+        let filteredAppName = appName.filter { $0.isLetter || $0.isNumber }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd'T'HHmmss"
+        return "\(filteredAppName)-\(formatter.string(from: Date())).\(fileExtension)"
+    }
 }

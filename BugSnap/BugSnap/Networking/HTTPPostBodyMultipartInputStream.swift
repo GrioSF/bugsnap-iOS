@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Extension of Stream.Status to have string descriptions for each status
 extension Stream.Status {
     
     var string : String  {
@@ -88,7 +89,7 @@ public class HTTPPostBodyMultipartInputStream: InputStream,StreamDelegate {
         - Parameter boundary: The generated boundary for the multipart body
         - Parameter mimeType: The mime type for the file being uploaded
     */
-    init( fileURL: URL , boundary : String , mimeType : String ) {
+    init( fileURL: URL , boundary : String , mimeType : MIMEType ) {
         super.init(data: Data())
         currentStatus = .notOpen
         let fileName = fileURL.lastPathComponent
@@ -106,15 +107,27 @@ public class HTTPPostBodyMultipartInputStream: InputStream,StreamDelegate {
     
     // MARK: - Protocol Support
     
-    private func buildHeader( boundary : String, mimeType : String, fileName : String) {
+    /**
+        Builds the header for the file field in the form-data.
+        This method creates a Data Object containing the header for the multipart form data. After the header is created then an InputStream is created to take advantage of the API to ultimately wrap it in this class.
+        - Parameter boundary: The boundary used for the part
+        - Parameter mimeType: The mime type for the data transmitted
+        - Parameter fileName: The given name for the file
+    */
+    private func buildHeader( boundary : String, mimeType : MIMEType, fileName : String) {
         let header = NSMutableData()
         header.append(string: "--\(boundary)\r\n")
         header.append(string: "Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n")
-        header.append(string: "Content-Type: \(mimeType)\r\n\r\n")
+        header.append(string: "Content-Type: \(mimeType.rawValue)\r\n\r\n")
         headerData = header as Data
         headerStream = InputStream(data: headerData)
     }
     
+    /**
+        Builds the epilogue for the file field in the form-data.
+        This method creates a Data object containing the epilogue or last part of the multipart form data. After the epilogue is created then an InputStream is crated to take advantage of the API to wrap it in this class.
+        - Parameter boundary: The boundary used for this part to close the part.
+    */
     private func buildEpilogueData( boundary : String ) {
         let epilogue = NSMutableData()
         epilogue.append(string: "\r\n")
@@ -164,7 +177,6 @@ public class HTTPPostBodyMultipartInputStream: InputStream,StreamDelegate {
     }
     
     public override var streamStatus: Stream.Status {
-        print("Current status \(currentStatus.string)")
         return currentStatus
     }
     
@@ -201,6 +213,7 @@ public class HTTPPostBodyMultipartInputStream: InputStream,StreamDelegate {
         // Check we have the stream actually open
         guard currentStatus == .open else { return 0 }
         
+        // Add the streams that currently have data in order to support the protocol
         if headerStream.hasBytesAvailable {
             streams.append(headerStream!)
         }

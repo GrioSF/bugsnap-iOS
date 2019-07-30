@@ -407,7 +407,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
      */
     private func uploadScreenRecording( issue : JIRA.Object ) {
         loadingViewController?.message = "Uploading video..."
-        JIRARestAPI.sharedInstance.attach(fileURL: videoURL!, mimeType: "video/mp4", issue: issue) { [weak self] (_, errors) in
+        JIRARestAPI.sharedInstance.attach(fileURL: videoURL!, mimeType: .mp4Video, issue: issue) { [weak self] (_, errors) in
             
             guard let strongSelf = self else { return }
             strongSelf.handleAttachmentResponse(issue: issue, errors: errors, caller: strongSelf.uploadScreenRecording(issue:))
@@ -425,7 +425,10 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
             return
         }
         loadingViewController?.message = "Uploading log files..."
-        JIRARestAPI.sharedInstance.attach(data: data, fileName: "Apps.log", mimeType: "text/plain", issue: issue) { [weak self] (_, errors) in
+        JIRARestAPI.sharedInstance.attach(data: data,
+                                          fileName: FileManager.buildAppFileName(),
+                                          mimeType: .plainText,
+                                          issue: issue) { [weak self] (_, errors) in
             self?.handleLogsAttachmentResponse(issue: issue, errors: errors)
         }
     }

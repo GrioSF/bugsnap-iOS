@@ -26,6 +26,18 @@ extension NSMutableData {
     }
 }
 
+public enum MIMEType : String {
+    
+    /// The MIME type for text plain
+    case plainText = "text/plain"
+    
+    /// MIME type for the jpg image attachment
+    case jpgImage = "image/jpg"
+    
+    /// MIME type for mp4 video
+    case mp4Video = "video/mp4"
+}
+
 /**
  Interface with the JIRA Software Server for REST API 3.0 found in:
  https://developer.atlassian.com/cloud/jira/platform/rest/v3/
@@ -345,10 +357,9 @@ public class JIRARestAPI : NSObject {
     */
     func attach( snapshot : UIImage, issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
         
-        let appName = Bundle.main.infoDictionary?["CFBundleName"] ?? "BugSnap"
-        let filename = "\(appName).jpg".replacingOccurrences(of: " ", with: "")
+        let filename = FileManager.buildAppFileName(fileExtension: "jpg")
         if let imageData = snapshot.jpegData(compressionQuality: 1.0) {
-            attach(data: imageData, fileName: filename, mimeType: "image/jpg", issue: issue, completion: completion)
+            attach(data: imageData, fileName: filename, mimeType: .jpgImage, issue: issue, completion: completion)
         }
     }
     
@@ -359,7 +370,7 @@ public class JIRARestAPI : NSObject {
      - Parameter fileURL: The file URL for the file within the sandbox file system
      - Parameter completion: Whether the operation completed successfully or there were some errors. The completion handler will have the array of errors if any, otherwise it can be assumed the operation completed successfully
      */
-    func attach( fileURL : URL, mimeType : String,  issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
+    func attach( fileURL : URL, mimeType : MIMEType,  issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
         
         let boundary = "Boundary-\(UUID().uuidString)"
         // Create the request
@@ -382,7 +393,7 @@ public class JIRARestAPI : NSObject {
         - Parameter issue: The JIRA.Object representing the issue
         - Parameter completion: The handler to be called when the attachment is sent successfully (or with error) to the server
     */
-    func attach( data : Data, fileName : String , mimeType : String, issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
+    func attach( data : Data, fileName : String , mimeType : MIMEType, issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
         
         let boundary = "Boundary-\(UUID().uuidString)"
         var request = buildInitialAttachmentRequest(boundary: boundary, issue: issue)
@@ -396,6 +407,9 @@ public class JIRARestAPI : NSObject {
     
     // MARK: - Support for Answer Processing
     
+    /**
+        Creates a request for attachments according to the JIRA rest API.
+    */
     private func buildInitialAttachmentRequest( boundary : String, issue : JIRA.Object ) -> URLRequest {
         var request = URLRequest(url: URL(string: "rest/api/3/issue/\(issue.key!)/attachments", relativeTo: serverURL)!)
         request.httpMethod = "POST"
@@ -439,12 +453,12 @@ public class JIRARestAPI : NSObject {
         - Parameter filename: The name for the file that will contain the data. The API requires the field to be named file. It defaults to bugsnap.jpg
         - Returns: A Data object built with the the data and the HTTP Protocol strings for multipart/form-data
     */
-    static func buildAttachmentHTTPBody( data : Data, boundary : String, mimeType : String = "image/jpg", filename : String  = "bugsnap.jpg") -> Data {
+    static func buildAttachmentHTTPBody( data : Data, boundary : String, mimeType : MIMEType = .jpgImage , filename : String  = "bugsnap.jpg") -> Data {
         let body = NSMutableData()
         
         body.append(string: "--\(boundary)\r\n")
         body.append(string: "Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n")
-        body.append(string: "Content-Type: \(mimeType)\r\n\r\n")
+        body.append(string: "Content-Type: \(mimeType.rawValue)\r\n\r\n")
         body.append(data)
         body.append(string: "\r\n")
         body.append(string: "--\(boundary)--\r\n")

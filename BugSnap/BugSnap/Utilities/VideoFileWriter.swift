@@ -61,8 +61,8 @@ class VideoFileWriter : NSObject {
         Initializes the asset writer and the audio tracks for assembling the video file. Replay Kit sends the microphone input and App's audio in different samples, so the AVAssetWriterInput for each stream of samples is used to have different tracks (video, app audio and mic audio).
         - Parameter fileName: The desired name for the file that is ultimately stored in the caches directory in the App's sandbox
     */
-    init( with fileName : String = VideoFileWriter.defaultVideoFileName ) {
-        videoFileName = fileName
+    init( with fileName : String? = nil ) {
+        videoFileName = fileName ?? FileManager.buildAppFileName(fileExtension: "mp4")
         
         super.init()
         

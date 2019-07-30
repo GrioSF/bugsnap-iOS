@@ -144,23 +144,12 @@ public extension UIApplication {
     // MARK: - Support
     
     /**
-        Builds a filename with the following format : <BundleName>-<timestamp>.log
-    */
-    private func buildFileName() -> String {
-        let appName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "BugSnap"
-        let filteredAppName = appName.filter { $0.isLetter || $0.isNumber }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd'T'HHmmss"
-        return "\(filteredAppName)-\(formatter.string(from: Date())).log"
-    }
-    
-    /**
         Redirects stderr to a file that will be in the ${sandbox path}/Logs/${filename}
         The filename is created with the buildFileName() method and is set into the logFileName property.
     */
     private func redirectStdErr() {
         let permissions = UnsafePointer<Int8>(("w" as NSString).utf8String)
-        logFileName = buildFileName()
+        logFileName = FileManager.buildAppFileName()
         guard let url = lastLogFileURL,
               verifyLogsDirectory() else {
             logFileName = nil
