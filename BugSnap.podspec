@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "BugSnap"
-  spec.version      = "0.0.1"
+  spec.version      = "1.0.3"
   spec.summary      = "POD that allows to snapshot the screen after a shake gesture, annotate the image and upload it to JIRA"
 
   # This description is used to generate tags and improve search results.
@@ -74,7 +74,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/GrioSF/bugsnap-iOS.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/GrioSF/bugsnap-iOS.git", :tag => "v1.0.3" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
