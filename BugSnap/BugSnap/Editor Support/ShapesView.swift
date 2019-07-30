@@ -188,6 +188,12 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
         selectedShape?.isSelected = false
         selectedShape = nil
         
+        if let tooltype = currentToolType,
+            tooltype == TextShape.self {
+            onPanBegan(point: gesture.location(in: self))
+            onPanEnded(point: gesture.location(in: self))
+        }
+        else
         if let shape = detectSelectedShape(point: gesture.location(in: self)) {
             selectedShape = shape
             shape.isSelected = true

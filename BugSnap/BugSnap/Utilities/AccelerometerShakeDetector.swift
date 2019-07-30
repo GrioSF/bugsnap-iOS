@@ -137,7 +137,7 @@ public class AccelerometerShakeDetector: NSObject {
                                                  y: acceleration.y - rollingAcceleration.y,
                                                  z: acceleration.z - rollingAcceleration.z)
         
-        /// Just save the first sample captured
+        // Just save the first sample captured
         guard previousAcceleration.x != 0.0 && previousAcceleration.y != 0.0 && previousAcceleration.z != 0.0 else {
             previousAcceleration = currentAcceleration
             return
@@ -157,14 +157,14 @@ public class AccelerometerShakeDetector: NSObject {
             return
         }
         
-        /// This would be like the second difference, that basically will give us whether we have a significative movement at all
+        // This would be like the second difference, that basically will give us whether we have a significative movement at all
         let secondDifference = CMAcceleration(x: abs(slope.x-previousSlope.x),
                                               y: abs(slope.y-previousSlope.y),
                                               z: abs(slope.z-previousSlope.z))
         
         //print("Second difference x: \(round(secondDifference.x)) y: \(round(secondDifference.y)) z: \(round(secondDifference.z))")
         
-        /// Check if we have peaks in any axis
+        // Check if we have peaks in any axis
         if round(secondDifference.x) >= thresholdPeak ||
            round(secondDifference.y) >= thresholdPeak ||
            round(secondDifference.z) >= thresholdPeak {

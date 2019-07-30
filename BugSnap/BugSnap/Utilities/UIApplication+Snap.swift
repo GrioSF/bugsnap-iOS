@@ -9,9 +9,14 @@
 import Foundation
 import CoreMotion
 import UIKit
+import ReplayKit
 
 /// A key for storing the reference to the shake detector
 fileprivate var _shakeDetectorReferenceKey = "_shakeDetectorReferenceKey"
+
+
+
+
 
 
 /**
@@ -19,6 +24,8 @@ fileprivate var _shakeDetectorReferenceKey = "_shakeDetectorReferenceKey"
     input from the user. This would be useful if needed to use the shake event to trigger the view controller capture.
 */
 public extension UIApplication {
+    
+    
     
     /**
         Starts the accelerometer in the device in order to trigger a capture for the top most view controller.
@@ -78,10 +85,57 @@ public extension UIApplication {
     @objc fileprivate func onSnapRequested( notification : Notification ) {
         
         guard Thread.current.isMainThread,
-            applicationState != .background,
+            applicationState != .background else {
+                NSLog("Tried to enable shake gesture on either a secondary thread or in a non active state")
+                return
+        }
+        
+        // check whether we're already recording
+        if isScreenRecording {
+            doEndCapture()
+        // Check whether the screen recorder is available
+        } else if RPScreenRecorder.shared().isAvailable {
+            askSnapAction()
+        // Otherwise defaults to the snapshot action
+        } else {
+            takeSnapshot()
+        }
+    }
+    
+    // MARK: - Support
+    
+    private func askSnapAction() {
+        guard let topMost = UIViewController.topMostViewController else {
+                NSLog("Couldn't find either the key window or the top most view controller")
+                return
+        }
+        
+        let alertController = UIAlertController(title: "Capture Bug", message: "What do you want to do?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Take Video", style: .default, handler: { (_) in
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+                self.promptRecording()
+            })
+        }))
+        alertController.addAction(UIAlertAction(title: "Take Snapshot", style: .default, handler: { (_) in
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+                self.takeSnapshot()
+            })
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        topMost.present(alertController, animated: true, completion: nil)
+    }
+
+    
+    /**
+        Tries to take the snapshot from the main window (keyWindow) and then loads the MarkupEditorController
+        This method uses the snapshot method from the UIView category in order to have the capture of the screen and then
+        it loads the MarkupEditorViewController to allow the user for edits presenting it as the topMost View Controller
+    */
+    private func takeSnapshot() {
+        guard
             let view = keyWindow,
             let topMost = UIViewController.topMostViewController else {
-                NSLog("Tried to enable shake gesture on either a secondary thread or in a non active state")
+                NSLog("Couldn't find either the key window or the top most view controller")
                 return
         }
         
