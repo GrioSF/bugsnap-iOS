@@ -361,9 +361,17 @@ public class JIRARestAPI : NSObject {
      */
     func attach( fileURL : URL, mimeType : String,  issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
         
-        if let videoData = try? Data(contentsOf: fileURL) {
-            attach(data: videoData, fileName: fileURL.lastPathComponent, mimeType: mimeType, issue: issue, completion: completion)
-        }
+        let boundary = "Boundary-\(UUID().uuidString)"
+        // Create the request
+        var request = buildInitialAttachmentRequest(boundary: boundary, issue: issue)
+        
+        // Create the stream
+        let stream = HTTPPostBodyMultipartInputStream(fileURL: fileURL, boundary: boundary, mimeType: mimeType)
+        request.httpBodyStream = stream
+        request.setValue(String(stream.size), forHTTPHeaderField: "Content-Length")
+        
+        // Execute the request
+        executeJIRAAttachmentRequest(request: request, completion: completion)
     }
     
     /**
@@ -377,15 +385,26 @@ public class JIRARestAPI : NSObject {
     func attach( data : Data, fileName : String , mimeType : String, issue : JIRA.Object, completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
         
         let boundary = "Boundary-\(UUID().uuidString)"
-        var request = URLRequest(url: URL(string: "rest/api/3/issue/\(issue.key!)/attachments", relativeTo: serverURL)!)
-        request.httpMethod = "POST"
-        request.addValue("no-check", forHTTPHeaderField: "X-Atlassian-Token") // Required as per the doc
-        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        var request = buildInitialAttachmentRequest(boundary: boundary, issue: issue)
         
         let bodyData = JIRARestAPI.buildAttachmentHTTPBody(data: data, boundary: boundary, mimeType: mimeType, filename : fileName)
         request.setValue(String(bodyData.count), forHTTPHeaderField: "Content-Length")
         request.httpBody = bodyData
         
+        executeJIRAAttachmentRequest(request: request, completion: completion)
+    }
+    
+    // MARK: - Support for Answer Processing
+    
+    private func buildInitialAttachmentRequest( boundary : String, issue : JIRA.Object ) -> URLRequest {
+        var request = URLRequest(url: URL(string: "rest/api/3/issue/\(issue.key!)/attachments", relativeTo: serverURL)!)
+        request.httpMethod = "POST"
+        request.addValue("no-check", forHTTPHeaderField: "X-Atlassian-Token") // Required as per the doc
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        return request
+    }
+    
+    private func executeJIRAAttachmentRequest( request : URLRequest , completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
         let urlSession = URLSession(configuration: sessionConfiguration)
         let task = urlSession.dataTask(with: request) { (data, response, error) in
             var messages : [String]? = nil  // The errors
@@ -411,8 +430,6 @@ public class JIRARestAPI : NSObject {
         }
         task.resume()
     }
-    
-    // MARK: - Support for Answer Processing
     
     /**
         Builds a Data object using the image and configuration given

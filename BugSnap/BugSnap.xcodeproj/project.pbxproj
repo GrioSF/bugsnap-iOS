@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F0B0CB322EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0B0CB222EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift */; };
 		7F0BCF3422AFFF53006B4F26 /* BugSnap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0BCF2A22AFFF53006B4F26 /* BugSnap.framework */; };
 		7F0BCF3922AFFF53006B4F26 /* BugSnapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF3822AFFF53006B4F26 /* BugSnapTests.swift */; };
 		7F0BCF3B22AFFF53006B4F26 /* BugSnap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F0BCF2D22AFFF53006B4F26 /* BugSnap.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -91,6 +92,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7F0B0CB222EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPPostBodyMultipartInputStream.swift; sourceTree = "<group>"; };
 		7F0BCF2A22AFFF53006B4F26 /* BugSnap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugSnap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F0BCF2D22AFFF53006B4F26 /* BugSnap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugSnap.h; sourceTree = "<group>"; };
 		7F0BCF2E22AFFF53006B4F26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				7FB62E2522B8363C0007A02E /* JIRA-API.swift */,
+				7F0B0CB222EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -521,6 +524,7 @@
 				7F66ABD222C2C2B700806661 /* JIRA+Attachment.swift in Sources */,
 				7F66ABF622C51F5C00806661 /* FormTextField.swift in Sources */,
 				7F66ABDC22C2E53600806661 /* DismissButton.swift in Sources */,
+				7F0B0CB322EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift in Sources */,
 				7FEBAC7822B41FD60022158D /* PathBasedTableViewCell.swift in Sources */,
 				7F66ABE822C4610C00806661 /* ShapeEditorScrollView.swift in Sources */,
 				7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */,
