@@ -149,6 +149,7 @@
 		7FBCBE4C22EA0C0000347B36 /* UIDevice+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Logging.swift"; sourceTree = "<group>"; };
 		7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Logging.swift"; sourceTree = "<group>"; };
 		7FD2312922E8FA8D00292997 /* FileManager+Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Util.swift"; sourceTree = "<group>"; };
+		7FE43E1622F1050D000F8ABC /* BugSnap.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = BugSnap.podspec; path = ../../BugSnap.podspec; sourceTree = "<group>"; };
 		7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
 		7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocompleteTextFieldViewController.swift; sourceTree = "<group>"; };
@@ -211,6 +212,7 @@
 		7F0BCF2C22AFFF53006B4F26 /* BugSnap */ = {
 			isa = PBXGroup;
 			children = (
+				7FE43E1622F1050D000F8ABC /* BugSnap.podspec */,
 				7F87683722B44A5E0018AC74 /* LICENSE */,
 				7F87683622B44A5E0018AC74 /* README.md */,
 				7FB62E2722B836460007A02E /* Networking */,
