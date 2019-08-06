@@ -40,6 +40,12 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     /// The description capture field
     private var descriptionField = UITextView()
     
+    /// The toggle for the log file
+    private var checkboxLog = CheckboxControl(label: "Log Attached")
+    
+    /// The toggle for the media file
+    private var checkboxMedia : CheckboxControl!
+    
     /// The cancel button
     private var cancelButton = CancelFormButton(title: "Cancel")
     
@@ -83,6 +89,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         setupIssueType()
         setupSummary()
         setupDescription()
+        setupMediaAttachmentToggles()
     }
     
     private func setupTitle() {
@@ -127,6 +134,8 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         view.removeConstraint(topConstraint!)
         scrollView.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -15.0).isActive = true
         scrollView.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 20.0).isActive = true
+        scrollView.setNeedsUpdateConstraints()
+        scrollView.setNeedsLayout()
     }
     
     private func setupProjectField() {
@@ -230,15 +239,40 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         descriptionField.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         descriptionField.heightAnchor.constraint(equalToConstant: 140.0).isActive = true
         descriptionField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
-        descriptionField.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10.0).isActive = true
+        
         
         let toolbar = TextViewAccessoryView()
         toolbar.addTarget(self, action: #selector(onDismissDescription))
         descriptionField.inputAccessoryView = toolbar
     }
     
-    private func setupMediaAttachment() {
+    private func setupMediaAttachmentToggles() {
+        if snapshot != nil {
+            checkboxMedia = CheckboxControl(label: "Screenshot attached")
+        } else if videoURL != nil {
+            checkboxMedia = CheckboxControl(label: "Screen recording attached")
+        }
         
+        var topLogReference : UIView = descriptionField
+        if checkboxMedia != nil {
+            topLogReference = checkboxMedia!
+            checkboxMedia.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(checkboxMedia)
+            checkboxMedia.leadingAnchor.constraint(equalTo: descriptionField.leadingAnchor).isActive = true
+            checkboxMedia.topAnchor.constraint(equalTo: descriptionField.bottomAnchor, constant: 20.0).isActive = true
+            checkboxMedia.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+            checkboxMedia.trailingAnchor.constraint(equalTo: descriptionField.trailingAnchor).isActive = true
+            checkboxMedia.isSelected = true
+        }
+        
+        checkboxLog.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(checkboxLog)
+        checkboxLog.topAnchor.constraint(equalTo: topLogReference.bottomAnchor, constant: topLogReference == descriptionField ? 20.0 : 10.0 ).isActive = true
+        checkboxLog.leadingAnchor.constraint(equalTo: descriptionField.leadingAnchor).isActive = true
+        checkboxLog.trailingAnchor.constraint(equalTo: descriptionField.trailingAnchor).isActive = true
+        checkboxLog.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+        checkboxLog.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10.0).isActive = true
+        checkboxLog.isSelected = true
     }
     
     private func setupLowerButtons() {
@@ -439,7 +473,8 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     }
     
     private func uploadLogs( issue : JIRA.Object ) {
-        guard let data = UIApplication.lastLogs() else {
+        guard let data = UIApplication.lastLogs(),
+              checkboxLog.isSelected else {
             
             dismissLoading {
                 [weak self] in
@@ -477,17 +512,18 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
             return
         }
         
+        guard checkboxMedia != nil && checkboxMedia.isSelected else {
+            uploadLogs(issue: issueObject)
+            return
+        }
+        
         // Check if the form has an image
-        if snapshot != nil {
+        if snapshot != nil  {
             uploadImage(issue: issueObject)
         // Check if the form has the URL of a video
         } else if videoURL != nil {
             uploadScreenRecording(issue: issueObject)
-            
-        // Just upload the logs if there's any
-        } else {
-            uploadLogs(issue: issueObject)
-        }
+        } 
     }
     
     private func handleAttachmentResponse( issue : JIRA.Object , errors : [String]? , caller : @escaping (JIRA.Object)->Void ) {

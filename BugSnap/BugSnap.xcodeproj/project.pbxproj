@@ -17,6 +17,7 @@
 		7F0BCF9922B047BC006B4F26 /* BugSnapAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */; };
 		7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */; };
 		7F0BCF9E22B04C1A006B4F26 /* UIView+Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */; };
+		7F18DCD522F9E4E600319066 /* CheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F18DCD422F9E4E600319066 /* CheckboxButton.swift */; };
 		7F2716F422E62B980068C502 /* UIApplication+ScreenRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */; };
 		7F2716F622E766470068C502 /* VideoFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F522E766470068C502 /* VideoFileWriter.swift */; };
 		7F2716F822E772C90068C502 /* UIViewController+JIRAIssueFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */; };
@@ -111,6 +112,7 @@
 		7F0BCF9822B047BC006B4F26 /* BugSnapAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugSnapAction.swift; sourceTree = "<group>"; };
 		7F0BCF9B22B04B28006B4F26 /* BugReportAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportAction.swift; sourceTree = "<group>"; };
 		7F0BCF9D22B04C1A006B4F26 /* UIView+Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Snap.swift"; sourceTree = "<group>"; };
+		7F18DCD422F9E4E600319066 /* CheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxButton.swift; sourceTree = "<group>"; };
 		7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+ScreenRecording.swift"; sourceTree = "<group>"; };
 		7F2716F522E766470068C502 /* VideoFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFileWriter.swift; sourceTree = "<group>"; };
 		7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+JIRAIssueFlow.swift"; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 				7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */,
 				7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */,
 				7F4C8E0C22F9DD02001EAD96 /* ChevronLeftButton.swift */,
+				7F18DCD422F9E4E600319066 /* CheckboxButton.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -577,6 +580,7 @@
 				7F66ABC422C1538700806661 /* JIRALoginViewController.swift in Sources */,
 				7FEBAC6E22B3077D0022158D /* ColorSelectorViewController.swift in Sources */,
 				7FEBAC6C22B2FF080022158D /* ToolsButtons.swift in Sources */,
+				7F18DCD522F9E4E600319066 /* CheckboxButton.swift in Sources */,
 				7F2716F822E772C90068C502 /* UIViewController+JIRAIssueFlow.swift in Sources */,
 				7FEBAC7422B41A5E0022158D /* LineWidthSelectorButton.swift in Sources */,
 				7F66ABEE22C517DB00806661 /* FormLabels.swift in Sources */,
