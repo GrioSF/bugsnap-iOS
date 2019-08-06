@@ -24,6 +24,8 @@
 		7F4C8E0422F8982D001EAD96 /* ScreenshotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */; };
 		7F4C8E0622F898DD001EAD96 /* ScreenRecordingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */; };
 		7F4C8E0822F8B6D2001EAD96 /* TrashToolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0722F8B6D2001EAD96 /* TrashToolButton.swift */; };
+		7F4C8E0B22F9D249001EAD96 /* TextViewAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0A22F9D249001EAD96 /* TextViewAccessoryView.swift */; };
+		7F4C8E0D22F9DD02001EAD96 /* ChevronLeftButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0C22F9DD02001EAD96 /* ChevronLeftButton.swift */; };
 		7F66ABC222C151F200806661 /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */; };
 		7F66ABC422C1538700806661 /* JIRALoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC322C1538700806661 /* JIRALoginViewController.swift */; };
 		7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */; };
@@ -116,6 +118,8 @@
 		7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotButton.swift; sourceTree = "<group>"; };
 		7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingButton.swift; sourceTree = "<group>"; };
 		7F4C8E0722F8B6D2001EAD96 /* TrashToolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashToolButton.swift; sourceTree = "<group>"; };
+		7F4C8E0A22F9D249001EAD96 /* TextViewAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewAccessoryView.swift; sourceTree = "<group>"; };
+		7F4C8E0C22F9DD02001EAD96 /* ChevronLeftButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChevronLeftButton.swift; sourceTree = "<group>"; };
 		7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		7F66ABC322C1538700806661 /* JIRALoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRALoginViewController.swift; sourceTree = "<group>"; };
 		7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueFormViewController.swift; sourceTree = "<group>"; };
@@ -268,6 +272,14 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
+		7F4C8E0922F9D218001EAD96 /* AccessoryViews */ = {
+			isa = PBXGroup;
+			children = (
+				7F4C8E0A22F9D249001EAD96 /* TextViewAccessoryView.swift */,
+			);
+			path = AccessoryViews;
+			sourceTree = "<group>";
+		};
 		7F66ABE922C5150200806661 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
@@ -290,6 +302,7 @@
 				7F66ABF322C51CDD00806661 /* FormsButtons.swift */,
 				7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */,
 				7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */,
+				7F4C8E0C22F9DD02001EAD96 /* ChevronLeftButton.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -378,6 +391,7 @@
 		7FEBAC4D22B17FF70022158D /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				7F4C8E0922F9D218001EAD96 /* AccessoryViews */,
 				7F66ABF022C51A5000806661 /* TextFields */,
 				7F66ABEA22C5165E00806661 /* Label */,
 				7F66ABE922C5150200806661 /* Buttons */,
@@ -578,8 +592,10 @@
 				7F66ABF822C5336D00806661 /* ScrolledViewController.swift in Sources */,
 				7F2716F622E766470068C502 /* VideoFileWriter.swift in Sources */,
 				7FB62E1A22B7CE7F0007A02E /* LineShapes.swift in Sources */,
+				7F4C8E0B22F9D249001EAD96 /* TextViewAccessoryView.swift in Sources */,
 				7F66ABD822C2E2CB00806661 /* TextToolButton.swift in Sources */,
 				7F66ABCE22C28E3100806661 /* JIRA+User.swift in Sources */,
+				7F4C8E0D22F9DD02001EAD96 /* ChevronLeftButton.swift in Sources */,
 				7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */,
 				7F66ABE222C3C04700806661 /* ToolOptionsViewController.swift in Sources */,
 				7FBCBE4D22EA0C0000347B36 /* UIDevice+Logging.swift in Sources */,

@@ -28,6 +28,9 @@ public class ScrolledViewController: UIViewController {
     /// The bottom constraint for the scroll view
     var bottomConstraint : NSLayoutConstraint? = nil
     
+    /// The top constraint for the scroll view
+    var topConstraint : NSLayoutConstraint? = nil
+    
     /// The original edge insets for the scroll view
     var scrollInsets = UIEdgeInsets()
     
@@ -62,9 +65,10 @@ public class ScrolledViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":scrollView]))
-        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        topConstraint = scrollView.topAnchor.constraint(equalTo: view.topAnchor)
         bottomConstraint = scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         bottomConstraint?.isActive = true
+        topConstraint?.isActive = true
         
         // Setup the content view constraints
         contentView.translatesAutoresizingMaskIntoConstraints = false

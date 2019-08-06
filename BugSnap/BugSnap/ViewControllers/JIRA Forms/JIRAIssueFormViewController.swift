@@ -77,27 +77,56 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     
     private func setup() {
         setupLowerButtons()
-        setupScrollView()
         setupTitle()
+        setupScrollView()
         setupProjectField()
         setupIssueType()
         setupSummary()
         setupDescription()
     }
     
+    private func setupTitle() {
+        
+        // Add the separator with shadow to the title
+        let separator = UIView()
+        separator.backgroundColor = UIColor.white
+        separator.layer.shadowColor = UIColor(white: 0.7, alpha: 0.8).cgColor
+        separator.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        separator.layer.shadowRadius = 3.0
+        separator.layer.shadowOpacity = 0.8
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(separator)
+        separator.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        separator.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        separator.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        
+        view.addSubview(promptLabel)
+        promptLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        promptLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
+        promptLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.0 ).isActive = true
+        promptLabel.heightAnchor.constraint(equalToConstant: 60.0).isActive = true
+        
+        separator.bottomAnchor.constraint(equalTo: promptLabel.bottomAnchor).isActive = true
+        
+        // Add the back button
+        let back = ChevronLeftButton()
+        back.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(back)
+        back.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0).isActive = true
+        back.centerYAnchor.constraint(equalTo: promptLabel.centerYAnchor).isActive = true
+        back.widthAnchor.constraint(equalToConstant: 36.0).isActive = true
+        back.heightAnchor.constraint(equalTo: back.widthAnchor).isActive = true
+        back.addTarget(self, action: #selector(onCancel), for: .touchUpInside)
+    }
+    
     private func setupScrollView() {
         
         view.removeConstraint(bottomConstraint!)
+        view.removeConstraint(topConstraint!)
         scrollView.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -15.0).isActive = true
-    }
-    
-    private func setupTitle() {
-        
-        contentView.addSubview(promptLabel)
-        promptLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-        promptLabel.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
-        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
-        promptLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20.0).isActive = true
+        scrollView.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 20.0).isActive = true
     }
     
     private func setupProjectField() {
@@ -203,18 +232,13 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         descriptionField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
         descriptionField.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10.0).isActive = true
         
-        let toolbar = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-        let doneButton = SubmitFormButton(title: "Done")
-        doneButton.cornerRadius = 5.0
-        doneButton.addTarget(self, action: #selector(onDismissDescription), for: .primaryActionTriggered)
-        toolbar.contentView.addSubview(doneButton)
-        doneButton.trailingAnchor.constraint(equalTo: toolbar.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -20.0).isActive = true
-        doneButton.centerYAnchor.constraint(equalTo: toolbar.contentView.centerYAnchor).isActive = true
-        doneButton.widthAnchor.constraint(equalToConstant: 50.0).isActive = true
-        doneButton.heightAnchor.constraint(equalToConstant: 36.0).isActive = true
-        
-        toolbar.frame = CGRect(x: 0, y: 0, width: 200.0, height: 42.0)
+        let toolbar = TextViewAccessoryView()
+        toolbar.addTarget(self, action: #selector(onDismissDescription))
         descriptionField.inputAccessoryView = toolbar
+    }
+    
+    private func setupMediaAttachment() {
+        
     }
     
     private func setupLowerButtons() {
