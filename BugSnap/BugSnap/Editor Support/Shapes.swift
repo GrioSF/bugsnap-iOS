@@ -23,6 +23,9 @@ public protocol ShapeGestureHandler : NSObject {
     /// Whether this shape supports multiple dragging sessions
     var isComposed : Bool { get }
     
+    /// Whether this shape has already finished its creation
+    var isComplete : Bool { get }
+    
     /**
         Method to be called when the gesture began. The method should set the initial point in order to be consistent with the rest
         of the methods.
@@ -51,7 +54,7 @@ public protocol ShapeGestureHandler : NSObject {
 
 
 /**
- Protocol for all the drawings that may be added to an image as markup
+    Protocol for all the drawings that may be added to an image as markup
  */
 public protocol ShapeProtocol : NSObject {
     
@@ -123,6 +126,10 @@ typealias ShapeToolType = ShapeTool.Type
 */
 public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
     
+    // MARK: - Private Properties
+    
+    private var userInteractionCreationFinished = false
+    
     // MARK: - Auxiliary layer
     
     /// The current selection handler
@@ -133,8 +140,11 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
     
     public var initialPoint = CGPoint.zero
     
-    
     // MARK: - ShapeProtocol Implementation
+    
+    public var isComplete : Bool {
+        return userInteractionCreationFinished
+    }
     
     public var enclosingFrame: CGRect = CGRect.zero
     
@@ -287,12 +297,14 @@ public class Shape : CAShapeLayer, ShapeProtocol, ShapePathAdapter {
         updatePath(point: point)
         enclosingFrame = updatedFrame(point: point)
         normalizePath()
+        userInteractionCreationFinished = true
     }
     
     public func gestureEnded(point: CGPoint) {
         updatePath(point: point)
         enclosingFrame = updatedFrame(point: point)
         normalizePath()
+        userInteractionCreationFinished = true
     }
     
     public func startPath(point: CGPoint) {

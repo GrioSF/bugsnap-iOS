@@ -20,6 +20,10 @@
 		7F2716F422E62B980068C502 /* UIApplication+ScreenRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */; };
 		7F2716F622E766470068C502 /* VideoFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F522E766470068C502 /* VideoFileWriter.swift */; };
 		7F2716F822E772C90068C502 /* UIViewController+JIRAIssueFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */; };
+		7F4C8E0222F89445001EAD96 /* CaptureOptionSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */; };
+		7F4C8E0422F8982D001EAD96 /* ScreenshotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */; };
+		7F4C8E0622F898DD001EAD96 /* ScreenRecordingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */; };
+		7F4C8E0822F8B6D2001EAD96 /* TrashToolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0722F8B6D2001EAD96 /* TrashToolButton.swift */; };
 		7F66ABC222C151F200806661 /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */; };
 		7F66ABC422C1538700806661 /* JIRALoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC322C1538700806661 /* JIRALoginViewController.swift */; };
 		7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */; };
@@ -108,6 +112,10 @@
 		7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+ScreenRecording.swift"; sourceTree = "<group>"; };
 		7F2716F522E766470068C502 /* VideoFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFileWriter.swift; sourceTree = "<group>"; };
 		7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+JIRAIssueFlow.swift"; sourceTree = "<group>"; };
+		7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionSheetViewController.swift; sourceTree = "<group>"; };
+		7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotButton.swift; sourceTree = "<group>"; };
+		7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingButton.swift; sourceTree = "<group>"; };
+		7F4C8E0722F8B6D2001EAD96 /* TrashToolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashToolButton.swift; sourceTree = "<group>"; };
 		7F66ABC122C151F200806661 /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		7F66ABC322C1538700806661 /* JIRALoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRALoginViewController.swift; sourceTree = "<group>"; };
 		7F66ABC722C1D47000806661 /* JIRAIssueFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueFormViewController.swift; sourceTree = "<group>"; };
@@ -255,6 +263,7 @@
 				7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */,
 				7F66ABD322C2CACD00806661 /* LoadingViewController.swift */,
 				7F66ABF722C5336D00806661 /* ScrolledViewController.swift */,
+				7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -267,6 +276,7 @@
 				7F66ABD522C2E1EF00806661 /* DrawToolButton.swift */,
 				7F66ABD722C2E2CB00806661 /* TextToolButton.swift */,
 				7F66ABD922C2E37E00806661 /* ShapesToolButton.swift */,
+				7F4C8E0722F8B6D2001EAD96 /* TrashToolButton.swift */,
 				7FEBAC4E22B180B00022158D /* PathBasedButton.swift */,
 				7FB62E2322B7F4C60007A02E /* UndoButton.swift */,
 				7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */,
@@ -278,6 +288,8 @@
 				7F66ABE322C3C71600806661 /* ToolbarSelectableButton.swift */,
 				7F66ABF122C51BA700806661 /* AbstractFormButton.swift */,
 				7F66ABF322C51CDD00806661 /* FormsButtons.swift */,
+				7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */,
+				7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -524,9 +536,11 @@
 				7F66ABDE22C2E85300806661 /* TrashButton.swift in Sources */,
 				7FEBAC4F22B180B00022158D /* PathBasedButton.swift in Sources */,
 				7F66ABD222C2C2B700806661 /* JIRA+Attachment.swift in Sources */,
+				7F4C8E0222F89445001EAD96 /* CaptureOptionSheetViewController.swift in Sources */,
 				7F66ABF622C51F5C00806661 /* FormTextField.swift in Sources */,
 				7F66ABDC22C2E53600806661 /* DismissButton.swift in Sources */,
 				7F0B0CB322EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift in Sources */,
+				7F4C8E0622F898DD001EAD96 /* ScreenRecordingButton.swift in Sources */,
 				7FEBAC7822B41FD60022158D /* PathBasedTableViewCell.swift in Sources */,
 				7F66ABE822C4610C00806661 /* ShapeEditorScrollView.swift in Sources */,
 				7FEBAC6322B2A3F80022158D /* Number+Utilities.swift in Sources */,
@@ -553,6 +567,7 @@
 				7FEBAC7422B41A5E0022158D /* LineWidthSelectorButton.swift in Sources */,
 				7F66ABEE22C517DB00806661 /* FormLabels.swift in Sources */,
 				7FEBAC5322B19E7C0022158D /* MarkupEditorViewController.swift in Sources */,
+				7F4C8E0422F8982D001EAD96 /* ScreenshotButton.swift in Sources */,
 				7F66ABC222C151F200806661 /* UserDefaults+Keys.swift in Sources */,
 				7F66ABD622C2E1EF00806661 /* DrawToolButton.swift in Sources */,
 				7FB62E3022B981AB0007A02E /* JIRAIssueCreatorViewController.swift in Sources */,
@@ -588,6 +603,7 @@
 				7FEBAC7222B408BC0022158D /* PathBasedCollectionViewCell.swift in Sources */,
 				7F66ABF422C51CDD00806661 /* FormsButtons.swift in Sources */,
 				7FB62E1D22B7D4900007A02E /* ShapeToolViewController.swift in Sources */,
+				7F4C8E0822F8B6D2001EAD96 /* TrashToolButton.swift in Sources */,
 				7F66ABFA22C55C5E00806661 /* TextOptionsViewController.swift in Sources */,
 				7FB62E2622B8363C0007A02E /* JIRA-API.swift in Sources */,
 			);

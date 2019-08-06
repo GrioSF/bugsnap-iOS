@@ -157,10 +157,6 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         // Setup the dismiss button
         navigationItem.setLeftBarButton(customViewControl(control: DismissButton(), selector: #selector(onDismiss)), animated: false)
         navigationController?.setToolbarHidden(false, animated: false)
-        
-        let trashButton = TrashButton()
-        trashButton.addTarget(self, action: #selector(onTrash), for: .touchUpInside)
-        navigationItem.titleView = trashButton
     }
     
     private func setupScrollView() {
@@ -234,9 +230,10 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         let strokeButton = DrawToolButton()
         let textButton = TextToolButton()
         let shapesButton = ShapesToolButton()
+        let trashButton = TrashToolButton()
         
         toolbarButtons.removeAll()
-        toolbarButtons.append(contentsOf: [strokeButton,textButton,shapesButton])
+        toolbarButtons.append(contentsOf: [strokeButton,textButton,shapesButton,trashButton])
         toolbarButtons.forEach {
             $0.isSelected = false
         }
@@ -247,8 +244,15 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
                                                 customViewControl(control: textButton, selector: #selector(onText(button:))),
                                                 UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
                                                 customViewControl(control: shapesButton, selector: #selector(onShapes(button:))),
+                                                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                                                customViewControl(control: trashButton, selector: #selector(onTrash(button:))),
                                                 UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
             ], animated: true)
+        
+        snapshot.onShapeSelectionChanged = {
+            (somethingSelected) in
+            trashButton.isSelected = somethingSelected
+        }
     }
     
     private func customViewControl( control : UIControl, selector : Selector ) -> UIBarButtonItem {
@@ -267,7 +271,7 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         }
     }
     
-    @objc func onTrash() {
+    @objc func onTrash( button : ToolbarSelectableButton ) {
         snapshot.deleteSelectedShape()
     }
     

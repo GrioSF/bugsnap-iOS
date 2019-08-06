@@ -34,6 +34,9 @@ public class TextShape: CALayer, ShapeProtocol, ShapeGestureHandler , TextShapeP
     
     // MARK: - For the text
     
+    /// The current state of user creation
+    private var userInteractionFinished = false
+    
     /// The current selection handler
     private var selectionHandler : CAShapeLayer? = nil
     
@@ -118,6 +121,10 @@ public class TextShape: CALayer, ShapeProtocol, ShapeGestureHandler , TextShapeP
     
     
     // MARK: - ShapeProtocol Implementation
+    
+    public var isComplete: Bool {
+        return userInteractionFinished
+    }
     
     public var enclosingFrame: CGRect = CGRect.zero
     
@@ -220,10 +227,12 @@ public class TextShape: CALayer, ShapeProtocol, ShapeGestureHandler , TextShapeP
     
     public func gestureCancelled(point: CGPoint) {
         endDragging()
+        userInteractionFinished = true
     }
     
     public func gestureEnded(point: CGPoint) {
         endDragging()
+        userInteractionFinished = true
     }
     
 
