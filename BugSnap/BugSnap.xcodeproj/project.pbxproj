@@ -69,6 +69,7 @@
 		7FEB197B22BC050300E9C8B5 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */; };
 		7FEB197D22BC264800E9C8B5 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */; };
 		7FEB197F22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */; };
+		7FEB52FD22FC5ECC000498BC /* OptionSelectorPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB52FC22FC5ECC000498BC /* OptionSelectorPopupViewController.swift */; };
 		7FEBAC4F22B180B00022158D /* PathBasedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC4E22B180B00022158D /* PathBasedButton.swift */; };
 		7FEBAC5322B19E7C0022158D /* MarkupEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */; };
 		7FEBAC5822B1ABE90022158D /* ColorSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */; };
@@ -167,6 +168,7 @@
 		7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
 		7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocompleteTextFieldViewController.swift; sourceTree = "<group>"; };
+		7FEB52FC22FC5ECC000498BC /* OptionSelectorPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorPopupViewController.swift; sourceTree = "<group>"; };
 		7FEBAC4E22B180B00022158D /* PathBasedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathBasedButton.swift; sourceTree = "<group>"; };
 		7FEBAC5222B19E7C0022158D /* MarkupEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkupEditorViewController.swift; sourceTree = "<group>"; };
 		7FEBAC5722B1ABE90022158D /* ColorSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelectorButton.swift; sourceTree = "<group>"; };
@@ -270,6 +272,7 @@
 				7F66ABD322C2CACD00806661 /* LoadingViewController.swift */,
 				7F66ABF722C5336D00806661 /* ScrolledViewController.swift */,
 				7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */,
+				7FEB52FC22FC5ECC000498BC /* OptionSelectorPopupViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -602,6 +605,7 @@
 				7F4C8E0D22F9DD02001EAD96 /* ChevronLeftButton.swift in Sources */,
 				7F66ABC822C1D47000806661 /* JIRAIssueFormViewController.swift in Sources */,
 				7F66ABE222C3C04700806661 /* ToolOptionsViewController.swift in Sources */,
+				7FEB52FD22FC5ECC000498BC /* OptionSelectorPopupViewController.swift in Sources */,
 				7FBCBE4D22EA0C0000347B36 /* UIDevice+Logging.swift in Sources */,
 				7F0BCF9722B045A2006B4F26 /* UIViewController+Snap.swift in Sources */,
 				7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */,

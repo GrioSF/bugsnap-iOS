@@ -13,7 +13,7 @@ import UIKit
     This is a simple form that allows to select the project, the issue type and capture the summary and description.
     No presentation is made about the annotated screenshot.
 */
-public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDelegate, UITextViewDelegate {
+public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDelegate, UITextViewDelegate, UIPopoverPresentationControllerDelegate {
     
     // MARK: - Exposed properties
     
@@ -33,6 +33,9 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     
     /// The issue type selector
     private var issueTypeSelector = FormTextField()
+    
+    /// The issue type selector touches interceptor
+    private var issueTypeSelectorTouchInterceptor = UIView()
     
     /// The summary capture field
     private var summaryField = FormTextField()
@@ -181,15 +184,23 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         issueTypeSelector.placeholder = "Tap to select issue type"
         issueTypeSelector.isUserInteractionEnabled = false
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(onSelectIssueType))
-        issueTypeSelector.addGestureRecognizer(tap)
-        
-        
         contentView.addSubview(issueTypeSelector)
         issueTypeSelector.leadingAnchor.constraint(equalTo: label.leadingAnchor).isActive = true
         issueTypeSelector.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         issueTypeSelector.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
         issueTypeSelector.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
+        
+        issueTypeSelectorTouchInterceptor.backgroundColor = UIColor.clear
+        issueTypeSelectorTouchInterceptor.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(issueTypeSelectorTouchInterceptor)
+        issueTypeSelectorTouchInterceptor.leadingAnchor.constraint(equalTo: issueTypeSelector.leadingAnchor).isActive = true
+        issueTypeSelectorTouchInterceptor.trailingAnchor.constraint(equalTo: issueTypeSelector.trailingAnchor).isActive = true
+        issueTypeSelectorTouchInterceptor.topAnchor.constraint(equalTo: issueTypeSelector.topAnchor).isActive = true
+        issueTypeSelectorTouchInterceptor.bottomAnchor.constraint(equalTo: issueTypeSelector.bottomAnchor).isActive = true
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onSelectIssueType))
+        issueTypeSelectorTouchInterceptor.addGestureRecognizer(tap)
+        issueTypeSelectorTouchInterceptor.isUserInteractionEnabled = false
     }
     
     private func setupSummary() {
@@ -305,6 +316,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         JIRARestAPI.sharedInstance.fetchCreateIssueMetadata(project: jiraProject) { [weak self] (issueTypes) in
             controller.dismiss(animated: true, completion: {
                 self?.issueTypesForProject = issueTypes
+                self?.issueTypeSelectorTouchInterceptor.isUserInteractionEnabled = true
                 self?.buildIssueTypeSelector(issueTypes: issueTypes)
             })
         }
@@ -315,25 +327,31 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     private func buildIssueTypeSelector( issueTypes : [JIRA.Project.IssueType]? ) {
         guard let types = issueTypes else { return }
         
-        let controller = UIAlertController(title: "Issue Type", message: "Select the issue type", preferredStyle: .alert)
+        view.endEditing(false)
         
-        types.forEach {
-            let type = $0
-            let option = UIAlertAction(title: type.name, style: .default, handler: { [weak self] (_) in
-                self?.issueTypeSelected(issueType: type )
-                self?.autocomplete.isLocked = true
-                self?.summaryField.becomeFirstResponder()
-            })
-            controller.addAction(option)
+        let optionsController = OptionSelectorPopupViewController<JIRA.Project.IssueType>()
+        optionsController.options = types
+        optionsController.propertyName = "name"
+        optionsController.selectionHandler = {
+            [weak self, weak optionsController] (option) in
+
+            self?.issueTypeSelected(issueType: option)
+            self?.autocomplete.isLocked = true
+            self?.summaryField.becomeFirstResponder()
+            optionsController?.dismiss(animated: true, completion: nil)
         }
         
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        controller.addAction(cancel)
-        present(controller, animated: true, completion: nil)
+        optionsController.modalPresentationStyle = .popover
+        optionsController.popoverPresentationController?.delegate = self
+        optionsController.popoverPresentationController?.backgroundColor = UIColor.clear
+        optionsController.popoverPresentationController?.sourceView = issueTypeSelector
+        optionsController.popoverPresentationController?.sourceRect = CGRect(x: issueTypeSelector.bounds.midX - 10.0, y: issueTypeSelector.bounds.height - 20.0 , width: 20.0, height: 10.0)
+        optionsController.popoverPresentationController?.permittedArrowDirections = [.up]
+        optionsController.preferredContentSize = CGSize(width: issueTypeSelector.bounds.width, height: 150.0)
+        present(optionsController, animated: true, completion: nil)
     }
     
     private func issueTypeSelected( issueType : JIRA.Project.IssueType ) {
-        issueTypeSelector.isUserInteractionEnabled = true
         issueTypeSelector.text = issueType.name ?? ""
         issueTypeSelected = issueType
         summaryField.isEnabled = true
@@ -419,6 +437,13 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
             inputField = nil
         }
     }
+    
+    // MARK: - UIPopoverPresentationControllerDelegate
+    
+    public func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
     
     // MARK: - UITextFieldDelegate
     
