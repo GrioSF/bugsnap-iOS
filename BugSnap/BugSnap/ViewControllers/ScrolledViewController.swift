@@ -59,6 +59,17 @@ public class ScrolledViewController: UIViewController {
         clearKeyboardNotifications()
     }
     
+    // MARK: - Size change
+    
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        
+        if inputField == nil && scrollView.contentOffset == CGPoint.zero {
+            coordinator.animate(alongsideTransition: { (_) in
+                self.scrollView.setContentOffset(CGPoint.zero, animated: false)
+            }, completion: nil)
+        }
+    }
+    
     // MARK: - Setup
     
     private func setupScroll() {
@@ -76,17 +87,14 @@ public class ScrolledViewController: UIViewController {
         contentView.isUserInteractionEnabled = true
         scrollView.addSubview(contentView)
         
-        contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        contentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-        
-        /*scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":contentView]))
+        scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":contentView]))
         scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["view":contentView]))
         
-        */
         contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
-        contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor).isActive = true
+        let heightConstraint = NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .equal, toItem: scrollView, attribute: .height, multiplier: 1.0, constant: 0.0)
+        heightConstraint.priority = .defaultLow
+        heightConstraint.isActive = true
+        scrollView.addConstraint(heightConstraint)
     }
     
     // MARK: - Public method to manually scroll to the corresponding position within the scroll view

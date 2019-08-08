@@ -41,6 +41,7 @@ import UIKit
         textAlignment = .left
         font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
         translatesAutoresizingMaskIntoConstraints = false
+        heightAnchor.constraint(equalToConstant: 20.0).isActive = true
     }
 }
 

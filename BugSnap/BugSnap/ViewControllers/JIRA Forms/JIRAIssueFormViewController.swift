@@ -86,8 +86,8 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     
     private func setup() {
         setupLowerButtons()
-        setupTitle()
         setupScrollView()
+        setupTitle()
         setupProjectField()
         setupIssueType()
         setupSummary()
@@ -106,16 +106,16 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         separator.layer.shadowOpacity = 0.8
         separator.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(separator)
-        separator.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        separator.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        separator.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        contentView.addSubview(separator)
+        separator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        separator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        separator.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         
-        view.addSubview(promptLabel)
-        promptLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        promptLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
-        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
-        promptLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.0 ).isActive = true
+        contentView.addSubview(promptLabel)
+        promptLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        promptLabel.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
+        promptLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 0.0 ).isActive = true
         promptLabel.heightAnchor.constraint(equalToConstant: 60.0).isActive = true
         
         separator.bottomAnchor.constraint(equalTo: promptLabel.bottomAnchor).isActive = true
@@ -123,8 +123,8 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         // Add the back button
         let back = ChevronLeftButton()
         back.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(back)
-        back.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0).isActive = true
+        contentView.addSubview(back)
+        back.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0).isActive = true
         back.centerYAnchor.constraint(equalTo: promptLabel.centerYAnchor).isActive = true
         back.widthAnchor.constraint(equalToConstant: 36.0).isActive = true
         back.heightAnchor.constraint(equalTo: back.widthAnchor).isActive = true
@@ -134,11 +134,9 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     private func setupScrollView() {
         
         view.removeConstraint(bottomConstraint!)
-        view.removeConstraint(topConstraint!)
         scrollView.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -15.0).isActive = true
-        scrollView.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 20.0).isActive = true
-        scrollView.setNeedsUpdateConstraints()
-        scrollView.setNeedsLayout()
+        view.setNeedsUpdateConstraints()
+        view.setNeedsLayout()
     }
     
     private func setupProjectField() {
@@ -251,7 +249,6 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         descriptionField.heightAnchor.constraint(equalToConstant: 140.0).isActive = true
         descriptionField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
         
-        
         let toolbar = TextViewAccessoryView()
         toolbar.addTarget(self, action: #selector(onDismissDescription))
         descriptionField.inputAccessoryView = toolbar
@@ -282,7 +279,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         checkboxLog.leadingAnchor.constraint(equalTo: descriptionField.leadingAnchor).isActive = true
         checkboxLog.trailingAnchor.constraint(equalTo: descriptionField.trailingAnchor).isActive = true
         checkboxLog.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
-        checkboxLog.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10.0).isActive = true
+        checkboxLog.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20.0).isActive = true
         checkboxLog.isSelected = true
     }
     
@@ -346,7 +343,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         optionsController.popoverPresentationController?.backgroundColor = UIColor.clear
         optionsController.popoverPresentationController?.sourceView = issueTypeSelector
         optionsController.popoverPresentationController?.sourceRect = CGRect(x: issueTypeSelector.bounds.midX - 10.0, y: issueTypeSelector.bounds.height - 20.0 , width: 20.0, height: 10.0)
-        optionsController.popoverPresentationController?.permittedArrowDirections = [.up]
+        optionsController.popoverPresentationController?.permittedArrowDirections = [.up,.down]
         optionsController.preferredContentSize = CGSize(width: issueTypeSelector.bounds.width, height: 150.0)
         present(optionsController, animated: true, completion: nil)
     }
