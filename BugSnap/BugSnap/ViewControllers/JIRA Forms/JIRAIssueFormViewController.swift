@@ -13,7 +13,7 @@ import UIKit
     This is a simple form that allows to select the project, the issue type and capture the summary and description.
     No presentation is made about the annotated screenshot.
 */
-public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDelegate, UITextViewDelegate {
+public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDelegate, UITextViewDelegate, UIPopoverPresentationControllerDelegate {
     
     // MARK: - Exposed properties
     
@@ -34,11 +34,20 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     /// The issue type selector
     private var issueTypeSelector = FormTextField()
     
+    /// The issue type selector touches interceptor
+    private var issueTypeSelectorTouchInterceptor = UIView()
+    
     /// The summary capture field
     private var summaryField = FormTextField()
     
     /// The description capture field
     private var descriptionField = UITextView()
+    
+    /// The toggle for the log file
+    private var checkboxLog = CheckboxControl(label: "Log Attached")
+    
+    /// The toggle for the media file
+    private var checkboxMedia : CheckboxControl!
     
     /// The cancel button
     private var cancelButton = CancelFormButton(title: "Cancel")
@@ -83,21 +92,51 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         setupIssueType()
         setupSummary()
         setupDescription()
+        setupMediaAttachmentToggles()
+    }
+    
+    private func setupTitle() {
+        
+        // Add the separator with shadow to the title
+        let separator = UIView()
+        separator.backgroundColor = UIColor.white
+        separator.layer.shadowColor = UIColor(white: 0.7, alpha: 0.8).cgColor
+        separator.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        separator.layer.shadowRadius = 3.0
+        separator.layer.shadowOpacity = 0.8
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(separator)
+        separator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        separator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        separator.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        
+        contentView.addSubview(promptLabel)
+        promptLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        promptLabel.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
+        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
+        promptLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 0.0 ).isActive = true
+        promptLabel.heightAnchor.constraint(equalToConstant: 60.0).isActive = true
+        
+        separator.bottomAnchor.constraint(equalTo: promptLabel.bottomAnchor).isActive = true
+        
+        // Add the back button
+        let back = ChevronLeftButton()
+        back.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(back)
+        back.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0).isActive = true
+        back.centerYAnchor.constraint(equalTo: promptLabel.centerYAnchor).isActive = true
+        back.widthAnchor.constraint(equalToConstant: 36.0).isActive = true
+        back.heightAnchor.constraint(equalTo: back.widthAnchor).isActive = true
+        back.addTarget(self, action: #selector(onCancel), for: .touchUpInside)
     }
     
     private func setupScrollView() {
         
         view.removeConstraint(bottomConstraint!)
         scrollView.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -15.0).isActive = true
-    }
-    
-    private func setupTitle() {
-        
-        contentView.addSubview(promptLabel)
-        promptLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-        promptLabel.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30.0).isActive = true
-        promptLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
-        promptLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20.0).isActive = true
+        view.setNeedsUpdateConstraints()
+        view.setNeedsLayout()
     }
     
     private func setupProjectField() {
@@ -143,15 +182,23 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         issueTypeSelector.placeholder = "Tap to select issue type"
         issueTypeSelector.isUserInteractionEnabled = false
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(onSelectIssueType))
-        issueTypeSelector.addGestureRecognizer(tap)
-        
-        
         contentView.addSubview(issueTypeSelector)
         issueTypeSelector.leadingAnchor.constraint(equalTo: label.leadingAnchor).isActive = true
         issueTypeSelector.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         issueTypeSelector.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
         issueTypeSelector.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
+        
+        issueTypeSelectorTouchInterceptor.backgroundColor = UIColor.clear
+        issueTypeSelectorTouchInterceptor.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(issueTypeSelectorTouchInterceptor)
+        issueTypeSelectorTouchInterceptor.leadingAnchor.constraint(equalTo: issueTypeSelector.leadingAnchor).isActive = true
+        issueTypeSelectorTouchInterceptor.trailingAnchor.constraint(equalTo: issueTypeSelector.trailingAnchor).isActive = true
+        issueTypeSelectorTouchInterceptor.topAnchor.constraint(equalTo: issueTypeSelector.topAnchor).isActive = true
+        issueTypeSelectorTouchInterceptor.bottomAnchor.constraint(equalTo: issueTypeSelector.bottomAnchor).isActive = true
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onSelectIssueType))
+        issueTypeSelectorTouchInterceptor.addGestureRecognizer(tap)
+        issueTypeSelectorTouchInterceptor.isUserInteractionEnabled = false
     }
     
     private func setupSummary() {
@@ -201,20 +248,39 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         descriptionField.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30.0).isActive = true
         descriptionField.heightAnchor.constraint(equalToConstant: 140.0).isActive = true
         descriptionField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 3.0).isActive = true
-        descriptionField.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10.0).isActive = true
         
-        let toolbar = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-        let doneButton = SubmitFormButton(title: "Done")
-        doneButton.cornerRadius = 5.0
-        doneButton.addTarget(self, action: #selector(onDismissDescription), for: .primaryActionTriggered)
-        toolbar.contentView.addSubview(doneButton)
-        doneButton.trailingAnchor.constraint(equalTo: toolbar.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -20.0).isActive = true
-        doneButton.centerYAnchor.constraint(equalTo: toolbar.contentView.centerYAnchor).isActive = true
-        doneButton.widthAnchor.constraint(equalToConstant: 50.0).isActive = true
-        doneButton.heightAnchor.constraint(equalToConstant: 36.0).isActive = true
-        
-        toolbar.frame = CGRect(x: 0, y: 0, width: 200.0, height: 42.0)
+        let toolbar = TextViewAccessoryView()
+        toolbar.addTarget(self, action: #selector(onDismissDescription))
         descriptionField.inputAccessoryView = toolbar
+    }
+    
+    private func setupMediaAttachmentToggles() {
+        if snapshot != nil {
+            checkboxMedia = CheckboxControl(label: "Screenshot attached")
+        } else if videoURL != nil {
+            checkboxMedia = CheckboxControl(label: "Screen recording attached")
+        }
+        
+        var topLogReference : UIView = descriptionField
+        if checkboxMedia != nil {
+            topLogReference = checkboxMedia!
+            checkboxMedia.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(checkboxMedia)
+            checkboxMedia.leadingAnchor.constraint(equalTo: descriptionField.leadingAnchor).isActive = true
+            checkboxMedia.topAnchor.constraint(equalTo: descriptionField.bottomAnchor, constant: 20.0).isActive = true
+            checkboxMedia.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+            checkboxMedia.trailingAnchor.constraint(equalTo: descriptionField.trailingAnchor).isActive = true
+            checkboxMedia.isSelected = true
+        }
+        
+        checkboxLog.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(checkboxLog)
+        checkboxLog.topAnchor.constraint(equalTo: topLogReference.bottomAnchor, constant: topLogReference == descriptionField ? 20.0 : 10.0 ).isActive = true
+        checkboxLog.leadingAnchor.constraint(equalTo: descriptionField.leadingAnchor).isActive = true
+        checkboxLog.trailingAnchor.constraint(equalTo: descriptionField.trailingAnchor).isActive = true
+        checkboxLog.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+        checkboxLog.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20.0).isActive = true
+        checkboxLog.isSelected = true
     }
     
     private func setupLowerButtons() {
@@ -247,6 +313,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         JIRARestAPI.sharedInstance.fetchCreateIssueMetadata(project: jiraProject) { [weak self] (issueTypes) in
             controller.dismiss(animated: true, completion: {
                 self?.issueTypesForProject = issueTypes
+                self?.issueTypeSelectorTouchInterceptor.isUserInteractionEnabled = true
                 self?.buildIssueTypeSelector(issueTypes: issueTypes)
             })
         }
@@ -257,25 +324,31 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     private func buildIssueTypeSelector( issueTypes : [JIRA.Project.IssueType]? ) {
         guard let types = issueTypes else { return }
         
-        let controller = UIAlertController(title: "Issue Type", message: "Select the issue type", preferredStyle: .alert)
+        view.endEditing(false)
         
-        types.forEach {
-            let type = $0
-            let option = UIAlertAction(title: type.name, style: .default, handler: { [weak self] (_) in
-                self?.issueTypeSelected(issueType: type )
-                self?.autocomplete.isLocked = true
-                self?.summaryField.becomeFirstResponder()
-            })
-            controller.addAction(option)
+        let optionsController = OptionSelectorPopupViewController<JIRA.Project.IssueType>()
+        optionsController.options = types
+        optionsController.propertyName = "name"
+        optionsController.selectionHandler = {
+            [weak self, weak optionsController] (option) in
+
+            self?.issueTypeSelected(issueType: option)
+            self?.autocomplete.isLocked = true
+            self?.summaryField.becomeFirstResponder()
+            optionsController?.dismiss(animated: true, completion: nil)
         }
         
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        controller.addAction(cancel)
-        present(controller, animated: true, completion: nil)
+        optionsController.modalPresentationStyle = .popover
+        optionsController.popoverPresentationController?.delegate = self
+        optionsController.popoverPresentationController?.backgroundColor = UIColor.clear
+        optionsController.popoverPresentationController?.sourceView = issueTypeSelector
+        optionsController.popoverPresentationController?.sourceRect = CGRect(x: issueTypeSelector.bounds.midX - 10.0, y: issueTypeSelector.bounds.height - 20.0 , width: 20.0, height: 10.0)
+        optionsController.popoverPresentationController?.permittedArrowDirections = [.up,.down]
+        optionsController.preferredContentSize = CGSize(width: issueTypeSelector.bounds.width, height: 150.0)
+        present(optionsController, animated: true, completion: nil)
     }
     
     private func issueTypeSelected( issueType : JIRA.Project.IssueType ) {
-        issueTypeSelector.isUserInteractionEnabled = true
         issueTypeSelector.text = issueType.name ?? ""
         issueTypeSelected = issueType
         summaryField.isEnabled = true
@@ -362,6 +435,13 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         }
     }
     
+    // MARK: - UIPopoverPresentationControllerDelegate
+    
+    public func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    
     // MARK: - UITextFieldDelegate
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -415,7 +495,8 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     }
     
     private func uploadLogs( issue : JIRA.Object ) {
-        guard let data = UIApplication.lastLogs() else {
+        guard let data = UIApplication.lastLogs(),
+              checkboxLog.isSelected else {
             
             dismissLoading {
                 [weak self] in
@@ -453,17 +534,18 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
             return
         }
         
+        guard checkboxMedia != nil && checkboxMedia.isSelected else {
+            uploadLogs(issue: issueObject)
+            return
+        }
+        
         // Check if the form has an image
-        if snapshot != nil {
+        if snapshot != nil  {
             uploadImage(issue: issueObject)
         // Check if the form has the URL of a video
         } else if videoURL != nil {
             uploadScreenRecording(issue: issueObject)
-            
-        // Just upload the logs if there's any
-        } else {
-            uploadLogs(issue: issueObject)
-        }
+        } 
     }
     
     private func handleAttachmentResponse( issue : JIRA.Object , errors : [String]? , caller : @escaping (JIRA.Object)->Void ) {

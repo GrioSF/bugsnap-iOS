@@ -16,8 +16,8 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "BugSnap"
-  spec.version      = "1.0.3"
-  spec.summary      = "POD that allows to snapshot the screen after a shake gesture, annotate the image and upload it to JIRA"
+  spec.version      = "1.0.4"
+  spec.summary      = "POD that allows to snapshot or record the screen after a shake gesture, annotate the image and upload it to JIRA"
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -27,9 +27,7 @@ Pod::Spec.new do |spec|
   spec.description  = <<-DESC
 	This framework is to ease the task of QA when testing mobile Apps managed with JIRA. Basically what it does is to
 	generate a notification through NotificationCenter and then use the UIApplication singleton to present a UI that allows
-	to annotate the captured image and then upload such image and some description to JIRA. The integration with JIRA uses Basic Authentication
-	and JIRA's Rest API v3 (https://developer.atlassian.com/cloud/jira/platform/rest/v3/), so basically you'll need to setup the app where the 
-	framework is embedded with your email and API Token. 
+	either to annotate the captured image or record a video from the app and then upload it with some description and device information to JIRA. The integration with JIRA uses Basic Authentication and JIRA's Rest API v3 (https://developer.atlassian.com/cloud/jira/platform/rest/v3/), so basically you'll need to setup the app where the framework is embedded with your email and API Token.
                    DESC
 
   spec.homepage     = "https://github.com/GrioSF/bugsnap-iOS"
@@ -74,7 +72,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/GrioSF/bugsnap-iOS.git", :tag => "v1.0.3" }
+  spec.source       = { :git => "https://github.com/GrioSF/bugsnap-iOS.git", :tag => "v1.0.4" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

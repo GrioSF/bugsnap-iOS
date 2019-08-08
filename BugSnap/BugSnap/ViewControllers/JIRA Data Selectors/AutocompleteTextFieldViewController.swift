@@ -100,31 +100,38 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
     
     // MARK: - UITextFieldDelegate
     
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.selectAll(nil)
+        updateOptions(with: textField.text ?? "")
+    }
+    
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let mutable = NSMutableString(string: textField.text ?? "")
         mutable.replaceCharacters(in: range, with: string)
         
         let filterString = mutable.copy() as? String ?? ""
-        
-        if autocompleteURL == nil {
-            filter(with: filterString)
-        } else {
-            autocomplete(with: filterString)
-        }
-        
-        
+        updateOptions(with: filterString)
         return true
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        if filteredObjects?.count == 1 {
+        if (filteredObjects?.count ?? 0) > 0 {
             selectObject(object: filteredObjects?.first)
+            textField.text = filteredObjects?.first?.name ?? ""
         }
         return true
     }
     
     // MARK: - Autocomplete support
+    
+    private func updateOptions( with filterString : String ) {
+        if autocompleteURL == nil {
+            filter(with: filterString)
+        } else {
+            autocomplete(with: filterString)
+        }
+    }
     
     private func autocomplete( with typed : String ) {
         

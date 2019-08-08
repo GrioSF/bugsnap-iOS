@@ -110,19 +110,20 @@ public extension UIApplication {
                 return
         }
         
-        let alertController = UIAlertController(title: "Capture Bug", message: "What do you want to do?", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Take Video", style: .default, handler: { (_) in
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-                self.promptRecording()
-            })
-        }))
-        alertController.addAction(UIAlertAction(title: "Take Snapshot", style: .default, handler: { (_) in
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-                self.takeSnapshot()
-            })
-        }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        topMost.present(alertController, animated: true, completion: nil)
+        let optionSheetController = CaptureOptionSheetViewController()
+        optionSheetController.optionSelectionHandler = {
+            [weak self] (option) in
+            switch option {
+            case .screenrecording:
+                self?.promptRecording()
+            case .screenshot:
+                self?.takeSnapshot()
+            default:
+                break
+            }
+        }
+        optionSheetController.modalPresentationStyle = .overCurrentContext
+        topMost.present(optionSheetController, animated: true, completion: nil)
     }
 
     

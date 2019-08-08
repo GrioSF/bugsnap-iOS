@@ -8,6 +8,21 @@
 
 import UIKit
 
+/// Extension to toggle the scrollview gestures (pan & pinch)
+fileprivate extension UIScrollView {
+    
+    /// Whether the gestures for this scroll view are enabled (pan & pinch)
+    var areGesturesEnabled : Bool {
+        get {
+            return panGestureRecognizer.isEnabled && (pinchGestureRecognizer?.isEnabled ?? true)
+        }
+        set(newVal) {
+            panGestureRecognizer.isEnabled = newVal
+            pinchGestureRecognizer?.isEnabled = newVal
+        }
+    }
+}
+
 /**
     View that holds shapes to be drawn. It uses a dynamic implementation through protocols and CALayer to present the user drawings.
 */
@@ -36,6 +51,9 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
     /// The handler when the gesture has begun
     var onBeganGesture : (()->Void)? = nil
     
+    /// The handler when a shape is selected. The parameter is true when there's a shape selected, false otherwise
+    var onShapeSelectionChanged : ((Bool)->Void)? = nil
+    
     /// Whether this view is dirty
     var isDirty : Bool {
         return shapes.count > 0
@@ -47,7 +65,13 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
     private var scalingShape = false
     
     /// The current selected shape
-    private weak var selectedShape : ShapeTool?
+    private weak var selectedShape : ShapeTool? {
+        
+        // Notify when a shape selection has changed
+        didSet {
+            onShapeSelectionChanged?( selectedShape != nil )
+        }
+    }
     
     /// The initial position for the gesture
     private var initialPoint = CGPoint.zero
@@ -194,7 +218,8 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
             onPanEnded(point: gesture.location(in: self))
         }
         else
-        if let shape = detectSelectedShape(point: gesture.location(in: self)) {
+        if let shape = detectSelectedShape(point: gesture.location(in: self)),
+           shape.isComplete {
             selectedShape = shape
             shape.isSelected = true
         }
@@ -204,17 +229,16 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
         let point = gesture.location(in: self)
         switch gesture.state {
             case .began:
-                disableScroll()
+                scrollView?.areGesturesEnabled = false
                 onPanBegan(point: point)
             case .changed:
                 onPanChanged(point: point)
             case .ended:
-                enableScroll()
+                scrollView?.areGesturesEnabled = true
                 onPanEnded(point: point)
             case .cancelled,.failed:
-                enableScroll()
+                scrollView?.areGesturesEnabled = true
                 onPanCancelled(point: point)
-                print("pan cancelled")
             default:
                 break
         }
@@ -224,7 +248,7 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
         
         switch gesture.state {
         case .began:
-            disableScroll()
+            scrollView?.areGesturesEnabled = false
             initialContentOffset = scrollView!.contentOffset
         case .changed:
             let translation = gesture.translation(in: self)
@@ -233,7 +257,7 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
             
             scrollView?.setContentOffset( offset , animated: false)
         case .ended:
-            enableScroll()
+            scrollView?.areGesturesEnabled = true
             let translation = gesture.translation(in: self)
             let maxOffset = CGPoint(x: bounds.width*scrollView!.zoomScale - scrollView!.bounds.width, y: bounds.height*scrollView!.zoomScale - scrollView!.bounds.height)
             
@@ -241,7 +265,7 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
                                  y: min(max(-translation.y*scrollView!.zoomScale+initialContentOffset.y,0),maxOffset.y))
             scrollView?.setContentOffset( offset , animated: true)
         case .failed,.cancelled:
-            enableScroll()
+            scrollView?.areGesturesEnabled = true
             scrollView?.setContentOffset(initialContentOffset, animated: true)
             print("scroll pan cancelled!")
         default:
@@ -252,15 +276,15 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
     @objc func onPinch( gesture : UIPinchGestureRecognizer ) {
         switch gesture.state {
         case .began:
-            disableScroll()
+            scrollView?.areGesturesEnabled = false
             initialScale = scrollView!.zoomScale
         case .changed:
             scrollView?.setZoomScale(gesture.scale*initialScale, animated: false)
         case .ended:
-            enableScroll()
+            scrollView?.areGesturesEnabled = true
             scrollView?.setZoomScale(gesture.scale*initialScale, animated: true)
         case .cancelled,.failed:
-            enableScroll()
+            scrollView?.areGesturesEnabled = true
             scrollView?.setZoomScale(initialScale, animated: true)
             print("Pinch cancelled!")
         default:
@@ -368,18 +392,6 @@ public class ShapesView: UIImageView, UIGestureRecognizerDelegate {
         }
         
         return true
-    }
-    
-    // MARK: - Scroll View Management
-    
-    private func disableScroll() {
-        scrollView?.panGestureRecognizer.isEnabled = false
-        scrollView?.pinchGestureRecognizer?.isEnabled = false
-    }
-    
-    private func enableScroll() {
-        scrollView?.panGestureRecognizer.isEnabled = true
-        scrollView?.pinchGestureRecognizer?.isEnabled = true
     }
     
 
