@@ -24,6 +24,13 @@ platform :ios do
     )
   end
 
+  desc "Setup JIRA Environment from Environment Variables."
+  private_lane :setup_jira_keys do
+    set_info_plist_value(path: "./BugSnap Demo App/BugSnap Demo App/Info.plist", key: "JIRA.URL", value: ENV["JIRA_URL"])
+    set_info_plist_value(path: "./BugSnap Demo App/BugSnap Demo App/Info.plist", key: "JIRA.User", value: ENV["JIRA_User"])
+    set_info_plist_value(path: "./BugSnap Demo App/BugSnap Demo App/Info.plist", key: "JIRA.APIKey", value: ENV["JIRA_APIKey"])
+  end
+
   private_lane :setup_keychain do
     if is_ci?
       # Create a temporary keychain to store the certificates.
@@ -76,6 +83,7 @@ platform :ios do
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
+    setup_jira_keys
     setup_keychain
     set_match(appstore: true)
 
