@@ -117,6 +117,12 @@
 		7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+ScreenRecording.swift"; sourceTree = "<group>"; };
 		7F2716F522E766470068C502 /* VideoFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFileWriter.swift; sourceTree = "<group>"; };
 		7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+JIRAIssueFlow.swift"; sourceTree = "<group>"; };
+		7F4C1E5522FE3C8200FEDE79 /* Pluginfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pluginfile; sourceTree = "<group>"; };
+		7F4C1E5622FE3C8200FEDE79 /* Appfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
+		7F4C1E5722FE3C8200FEDE79 /* Fastfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; };
+		7F4C1E5822FE3C8200FEDE79 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		7F4C1E5922FE3C8200FEDE79 /* Matchfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Matchfile; sourceTree = "<group>"; };
+		7F4C1E5A22FE3C8200FEDE79 /* report.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = report.xml; sourceTree = "<group>"; };
 		7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionSheetViewController.swift; sourceTree = "<group>"; };
 		7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotButton.swift; sourceTree = "<group>"; };
 		7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingButton.swift; sourceTree = "<group>"; };
@@ -228,6 +234,7 @@
 		7F0BCF2C22AFFF53006B4F26 /* BugSnap */ = {
 			isa = PBXGroup;
 			children = (
+				7F4C1E5422FE3C8200FEDE79 /* fastlane */,
 				7FE43E1622F1050D000F8ABC /* BugSnap.podspec */,
 				7F87683722B44A5E0018AC74 /* LICENSE */,
 				7F87683622B44A5E0018AC74 /* README.md */,
@@ -275,6 +282,20 @@
 				7FEB52FC22FC5ECC000498BC /* OptionSelectorPopupViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		7F4C1E5422FE3C8200FEDE79 /* fastlane */ = {
+			isa = PBXGroup;
+			children = (
+				7F4C1E5522FE3C8200FEDE79 /* Pluginfile */,
+				7F4C1E5622FE3C8200FEDE79 /* Appfile */,
+				7F4C1E5722FE3C8200FEDE79 /* Fastfile */,
+				7F4C1E5822FE3C8200FEDE79 /* README.md */,
+				7F4C1E5922FE3C8200FEDE79 /* Matchfile */,
+				7F4C1E5A22FE3C8200FEDE79 /* report.xml */,
+			);
+			name = fastlane;
+			path = ../../fastlane;
 			sourceTree = "<group>";
 		};
 		7F4C8E0922F9D218001EAD96 /* AccessoryViews */ = {
