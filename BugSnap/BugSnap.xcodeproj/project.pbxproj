@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		7F0B0CB322EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0B0CB222EF7A6700029C68 /* HTTPPostBodyMultipartInputStream.swift */; };
 		7F0BCF3422AFFF53006B4F26 /* BugSnap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0BCF2A22AFFF53006B4F26 /* BugSnap.framework */; };
-		7F0BCF3922AFFF53006B4F26 /* BugSnapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF3822AFFF53006B4F26 /* BugSnapTests.swift */; };
+		7F0BCF3922AFFF53006B4F26 /* JIRAConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF3822AFFF53006B4F26 /* JIRAConfigTests.swift */; };
 		7F0BCF3B22AFFF53006B4F26 /* BugSnap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F0BCF2D22AFFF53006B4F26 /* BugSnap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7F0BCF8F22B0011D006B4F26 /* UIApplication+Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF8E22B0011D006B4F26 /* UIApplication+Snap.swift */; };
 		7F0BCF9122B00C85006B4F26 /* AccelerometerShakeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0BCF9022B00C85006B4F26 /* AccelerometerShakeDetector.swift */; };
@@ -106,7 +106,7 @@
 		7F0BCF2D22AFFF53006B4F26 /* BugSnap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugSnap.h; sourceTree = "<group>"; };
 		7F0BCF2E22AFFF53006B4F26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F0BCF3322AFFF53006B4F26 /* BugSnapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugSnapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7F0BCF3822AFFF53006B4F26 /* BugSnapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugSnapTests.swift; sourceTree = "<group>"; };
+		7F0BCF3822AFFF53006B4F26 /* JIRAConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAConfigTests.swift; sourceTree = "<group>"; };
 		7F0BCF3A22AFFF53006B4F26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F0BCF8E22B0011D006B4F26 /* UIApplication+Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Snap.swift"; sourceTree = "<group>"; };
 		7F0BCF9022B00C85006B4F26 /* AccelerometerShakeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerometerShakeDetector.swift; sourceTree = "<group>"; };
@@ -256,7 +256,7 @@
 		7F0BCF3722AFFF53006B4F26 /* BugSnapTests */ = {
 			isa = PBXGroup;
 			children = (
-				7F0BCF3822AFFF53006B4F26 /* BugSnapTests.swift */,
+				7F0BCF3822AFFF53006B4F26 /* JIRAConfigTests.swift */,
 				7F0BCF3A22AFFF53006B4F26 /* Info.plist */,
 			);
 			path = BugSnapTests;
@@ -662,7 +662,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F0BCF3922AFFF53006B4F26 /* BugSnapTests.swift in Sources */,
+				7F0BCF3922AFFF53006B4F26 /* JIRAConfigTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
