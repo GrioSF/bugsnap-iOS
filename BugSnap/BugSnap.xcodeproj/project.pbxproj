@@ -21,6 +21,7 @@
 		7F2716F422E62B980068C502 /* UIApplication+ScreenRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */; };
 		7F2716F622E766470068C502 /* VideoFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F522E766470068C502 /* VideoFileWriter.swift */; };
 		7F2716F822E772C90068C502 /* UIViewController+JIRAIssueFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */; };
+		7F4C1E5E2302FA1400FEDE79 /* JIRA+IssuePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C1E5D2302FA1400FEDE79 /* JIRA+IssuePicker.swift */; };
 		7F4C8E0222F89445001EAD96 /* CaptureOptionSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */; };
 		7F4C8E0422F8982D001EAD96 /* ScreenshotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */; };
 		7F4C8E0622F898DD001EAD96 /* ScreenRecordingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */; };
@@ -123,6 +124,7 @@
 		7F4C1E5822FE3C8200FEDE79 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		7F4C1E5922FE3C8200FEDE79 /* Matchfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Matchfile; sourceTree = "<group>"; };
 		7F4C1E5A22FE3C8200FEDE79 /* report.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = report.xml; sourceTree = "<group>"; };
+		7F4C1E5D2302FA1400FEDE79 /* JIRA+IssuePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+IssuePicker.swift"; sourceTree = "<group>"; };
 		7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionSheetViewController.swift; sourceTree = "<group>"; };
 		7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotButton.swift; sourceTree = "<group>"; };
 		7F4C8E0522F898DD001EAD96 /* ScreenRecordingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingButton.swift; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 				7FB62E3422B995020007A02E /* JIRA+Object.swift */,
 				7F66ABC922C28D7D00806661 /* JIRA+Project.swift */,
 				7F66ABCB22C28DEA00806661 /* JIRA+IssueField.swift */,
+				7F4C1E5D2302FA1400FEDE79 /* JIRA+IssuePicker.swift */,
 				7F66ABCD22C28E3100806661 /* JIRA+User.swift */,
 				7F66ABCF22C28F0200806661 /* JIRA+AtlassianDocument.swift */,
 				7F66ABD122C2C2B700806661 /* JIRA+Attachment.swift */,
@@ -637,6 +640,7 @@
 				7F66ABE022C3A50300806661 /* StrokeOptionsViewController.swift in Sources */,
 				7F66ABE422C3C71600806661 /* ToolbarSelectableButton.swift in Sources */,
 				7FEBAC6A22B2A4790022158D /* UIView+IBHelpers.swift in Sources */,
+				7F4C1E5E2302FA1400FEDE79 /* JIRA+IssuePicker.swift in Sources */,
 				7F66ABCA22C28D7D00806661 /* JIRA+Project.swift in Sources */,
 				7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */,
 				7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */,

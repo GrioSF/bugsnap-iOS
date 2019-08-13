@@ -176,7 +176,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Bug Snap" id="IVd-a3-dYH"/>
+                    <navigationItem key="navigationItem" title="Bug Snap" id="IVd-a3-dYH">
+                        <barButtonItem key="rightBarButtonItem" title="Search Issue" id="Vlf-s3-b70">
+                            <connections>
+                                <segue destination="7J6-RA-ICM" kind="presentation" id="e7g-cQ-rP0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -334,7 +340,86 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bJ2-TO-2bk" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="tsN-c8-jK3" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="609" y="991"/>
+            <point key="canvasLocation" x="438" y="1143"/>
+        </scene>
+        <!--Search Issue View Controller-->
+        <scene sceneID="cBt-Fh-OoG">
+            <objects>
+                <viewController id="7J6-RA-ICM" customClass="SearchIssueViewController" customModule="BugSnap_Demo_App" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dkD-i4-bce">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t1a-63-hwh">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <items>
+                                    <navigationItem title="Search Issues" id="AxK-yj-4l8">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="done" id="TR1-mp-YKD">
+                                            <connections>
+                                                <segue destination="Mix-am-pXx" kind="unwind" unwindAction="unwindToMainViewControllerWithSegue:" id="Nhk-2r-fhm"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type Issue String" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="TA9-BR-Akt">
+                                <rect key="frame" x="20" y="108" width="374" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="rVC-gq-OPv"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="18"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadiusiPad">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                        <color key="value" red="0.034602805969999997" green="0.25001704689999998" blue="0.45597749949999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="delegate" destination="7J6-RA-ICM" id="hN0-LY-UYN"/>
+                                </connections>
+                            </textField>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="U3g-1W-TMu">
+                                <rect key="frame" x="20" y="168" width="374" height="285"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="7J6-RA-ICM" id="mwa-L1-PJI"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="TA9-BR-Akt" firstAttribute="leading" secondItem="trD-sq-YyN" secondAttribute="leading" constant="20" id="4wj-AZ-aVz"/>
+                            <constraint firstItem="U3g-1W-TMu" firstAttribute="top" secondItem="TA9-BR-Akt" secondAttribute="bottom" constant="20" id="6bO-cb-wiq"/>
+                            <constraint firstItem="trD-sq-YyN" firstAttribute="leading" secondItem="t1a-63-hwh" secondAttribute="leading" id="AmX-Gg-zsP"/>
+                            <constraint firstItem="U3g-1W-TMu" firstAttribute="leading" secondItem="trD-sq-YyN" secondAttribute="leading" constant="20" id="D2Y-9m-hp9"/>
+                            <constraint firstItem="trD-sq-YyN" firstAttribute="trailing" secondItem="U3g-1W-TMu" secondAttribute="trailing" constant="20" id="KFS-WP-fGj"/>
+                            <constraint firstItem="trD-sq-YyN" firstAttribute="centerY" secondItem="U3g-1W-TMu" secondAttribute="bottom" id="ldD-Ej-JC1"/>
+                            <constraint firstItem="t1a-63-hwh" firstAttribute="top" secondItem="trD-sq-YyN" secondAttribute="top" id="ohp-jP-1j1"/>
+                            <constraint firstItem="trD-sq-YyN" firstAttribute="trailing" secondItem="TA9-BR-Akt" secondAttribute="trailing" constant="20" id="s0X-fA-l0y"/>
+                            <constraint firstItem="trD-sq-YyN" firstAttribute="trailing" secondItem="t1a-63-hwh" secondAttribute="trailing" id="wTO-c3-Qpw"/>
+                            <constraint firstItem="TA9-BR-Akt" firstAttribute="top" secondItem="t1a-63-hwh" secondAttribute="bottom" constant="20" id="xo6-ed-Qah"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="trD-sq-YyN"/>
+                    </view>
+                    <connections>
+                        <outlet property="searchField" destination="TA9-BR-Akt" id="irx-gn-v6t"/>
+                        <outlet property="tableView" destination="U3g-1W-TMu" id="Ofx-Kw-dBc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mAh-TE-3r3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Mix-am-pXx" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1300" y="1152.4553571428571"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="pBV-cF-Xlf">
