@@ -147,6 +147,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         
         autocomplete.fieldPlaceholder = ""
         autocomplete.objectLoaderHandler = JIRARestAPI.sharedInstance.allProjects
+        autocomplete.preloadedObjectKey = UserDefaults.standard.jiraProject
         autocomplete.onObjectSelected = {
             [weak self] (project) in
             self?.onProjectSelected(project: project)
@@ -308,6 +309,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     private func onProjectSelected( project : JIRA.Object? ) {
         guard let jiraProject = project as? JIRA.Project  else { return }
         
+        UserDefaults.standard.jiraProject = project?.identifier  // Save the selected project for future iterations
         let controller = UIAlertController(title: "Wait a sec...", message: "Loading JIRA's project configuration", preferredStyle: .alert)
         present(controller, animated: true, completion: nil)
         

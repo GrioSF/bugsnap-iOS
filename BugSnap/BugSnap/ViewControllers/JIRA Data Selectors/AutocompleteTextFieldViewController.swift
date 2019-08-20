@@ -65,6 +65,9 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
     /// The type for the autocomplete
     var autocompleteType : JIRA.Object.Type = JIRA.Object.self
     
+    /// The preloaded object if any. This value will allow to automatically select a full value based on a key or name
+    var preloadedObjectKey : String? = nil
+    
     // MARK: - View Life Cycle
     
     override public func viewDidLoad() {
@@ -73,6 +76,8 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
             [weak self] (objects) in
             self?.objects = objects
             self?.filteredObjects = objects
+            self?.objectName.isEnabled = true
+            self?.autoSelectPreloadedObject()
         })
         setup()
     }
@@ -92,6 +97,7 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
         objectName.inputAccessoryView = accessoryView
         objectName.autocorrectionType = .no
         objectName.autocapitalizationType = .words
+        objectName.isEnabled = false
         
         view.addSubview(objectName)
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[field]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: ["field":objectName]))
@@ -124,6 +130,19 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
     }
     
     // MARK: - Autocomplete support
+    
+    private func autoSelectPreloadedObject() {
+        guard let key = preloadedObjectKey?.localizedLowercase else { return }
+        let filteredObjects = objects?.filter {
+            $0.key?.localizedLowercase == key || $0.name?.localizedLowercase == key  || $0.identifier == key
+        }
+        if (filteredObjects?.count ?? 0) == 1 {
+            DispatchQueue.main.async {
+                self.selectObject(object: filteredObjects?.first)
+                self.objectName.text = filteredObjects?.first?.name ?? ""
+            }
+        }
+    }
     
     private func updateOptions( with filterString : String ) {
         if autocompleteURL == nil {
@@ -164,7 +183,7 @@ class AutocompleteTextFieldViewController: UIViewController, UITextFieldDelegate
             accessoryView.isHidden = true
             return
         }
-            
+        
         let subviews = accessoryView.arrangedSubviews
         let maxLabels = min(2,objects.count-1)
         subviews.forEach { $0.removeFromSuperview()}

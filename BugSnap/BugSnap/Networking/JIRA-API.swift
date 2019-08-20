@@ -69,6 +69,9 @@ public class JIRARestAPI : NSObject {
         
         /// The API key for the user given by JIRA.USER
         case apiKey = "JIRA.APIKey"
+        
+        /// The API Key for the jira project. The project can be the name, key or the identifier in jira.
+        case project = "JIRA.Project"
     }
     
     public enum ConfigurationErrorKeys : Int {
@@ -145,6 +148,8 @@ public class JIRARestAPI : NSObject {
                     userName = value
                 case .apiKey:
                     apiToken = value
+                case .project:
+                    UserDefaults.standard.jiraProject = value
             }
         }
         

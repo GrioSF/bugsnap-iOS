@@ -30,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         /// JIRA.URL  = '#Your JIRA server'
         /// JIRA.User = '#Your JIRA email for authentication'
         /// JIRA.APIKey = '#Your JIRA API Token key'
+        /// JIRA.Project = '#Either the key, identifier or complete name for your JIRA.Project (optional)'
+        
         
         UIApplication.shared.redirectLogging()
         NSLog("This statement should be on a file!")
