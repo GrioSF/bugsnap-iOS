@@ -65,7 +65,6 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     
     /// A loading view controller
     private weak var loadingViewController : LoadingViewController? = nil
-    
 
     // MARK: - View Life Cycle
     
@@ -152,8 +151,10 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
             [weak self] (project) in
             self?.onProjectSelected(project: project)
         }
+        
         autocomplete.view.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
         autocomplete.view.translatesAutoresizingMaskIntoConstraints = false
+        
         
         autocomplete.willMove(toParent: self)
         contentView.addSubview(autocomplete.view)
@@ -401,6 +402,10 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
                 let value = JIRA.IssueField.Value()
                 value.stringValue = descriptionField.text
                 $0.value = value
+            } else if ($0.key ?? "") == "environment" {
+                let value = JIRA.IssueField.Value()
+                value.stringValue = UIDevice.current.deviceLoggingData.textPresentation
+                $0.value = value
             }
         }
         
@@ -545,7 +550,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         // Check if the form has the URL of a video
         } else if videoURL != nil {
             uploadScreenRecording(issue: issueObject)
-        } 
+        }
     }
     
     private func handleAttachmentResponse( issue : JIRA.Object , errors : [String]? , caller : @escaping (JIRA.Object)->Void ) {

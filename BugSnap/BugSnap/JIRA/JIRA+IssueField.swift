@@ -19,7 +19,7 @@ public extension JIRA {
     class IssueField : Object {
         
         /// The fields that have an attlasian document format, this is configurable
-        public static var attlasianDocumentFieldKeys : Set<String> = ["description"]
+        public static var attlasianDocumentFieldKeys : Set<String> = ["description","environment"]
         
         /// The keys for loading this from a JSON Object
         enum IssueFieldJSONKeys : String, CaseIterable {
@@ -215,7 +215,9 @@ public extension JIRA {
                 return dictionary
             } else if textOnlyField {
                 
-                if IssueField.attlasianDocumentFieldKeys.contains(key ?? "") {
+                if (key?.localizedLowercase ?? "") == "environment" {
+                    return value?.serializeEnvironmentAsDocument()
+                } else if IssueField.attlasianDocumentFieldKeys.contains(key ?? "") {
                     return value?.serializeDocument()
                 }
                 
