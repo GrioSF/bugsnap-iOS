@@ -32,7 +32,7 @@
                                 <color key="backgroundColor" red="0.81686693429946899" green="0.8244209885597229" blue="0.8520466685295105" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sE3-H5-h0O">
-                                <rect key="frame" x="157" y="384" width="100" height="66.5"/>
+                                <rect key="frame" x="157" y="355" width="100" height="66.5"/>
                                 <color key="backgroundColor" red="0.034602805969999997" green="0.25001704689999998" blue="0.45597749949999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="sE3-H5-h0O" secondAttribute="height" multiplier="3:2" id="4jz-Jm-ekl"/>
@@ -54,7 +54,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JeD-YI-2ej">
-                                <rect key="frame" x="157" y="470.5" width="100" height="67"/>
+                                <rect key="frame" x="157" y="441.5" width="100" height="67"/>
                                 <color key="backgroundColor" red="0.034602805969999997" green="0.25001704689999998" blue="0.45597749949999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="Khu-xb-7iY"/>
@@ -76,7 +76,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LQS-QA-l6x">
-                                <rect key="frame" x="157" y="557.5" width="100" height="66.5"/>
+                                <rect key="frame" x="157" y="528.5" width="100" height="66.5"/>
                                 <color key="backgroundColor" red="0.034602805969999997" green="0.25001704689999998" blue="0.45597749949999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="Mit-Ya-yor"/>
@@ -162,12 +162,13 @@
                             <constraint firstItem="Ksx-4w-kjN" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="8qZ-4s-Nbr"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Hue-AL-vpD" secondAttribute="trailing" id="Ffm-HA-K8f"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="s4S-tj-Uzw" secondAttribute="bottom" constant="10" id="Idp-IO-KsQ"/>
+                            <constraint firstItem="JeD-YI-2ej" firstAttribute="top" secondItem="sE3-H5-h0O" secondAttribute="bottom" constant="20" id="JoZ-0j-233"/>
                             <constraint firstItem="Hue-AL-vpD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Khu-h3-xqd"/>
                             <constraint firstItem="Ksx-4w-kjN" firstAttribute="top" secondItem="Hue-AL-vpD" secondAttribute="bottom" id="RYe-56-Mq4"/>
-                            <constraint firstItem="sE3-H5-h0O" firstAttribute="top" secondItem="Hue-AL-vpD" secondAttribute="bottom" constant="20" id="UiV-7p-3vU"/>
                             <constraint firstItem="sE3-H5-h0O" firstAttribute="centerX" secondItem="Hue-AL-vpD" secondAttribute="centerX" id="asr-43-Xgq"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="51R-py-SmU" secondAttribute="bottom" constant="10" id="bU3-Ou-M51"/>
                             <constraint firstAttribute="bottom" secondItem="Ksx-4w-kjN" secondAttribute="bottom" id="dBc-ff-o1h"/>
+                            <constraint firstItem="JeD-YI-2ej" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="iAr-g3-YL1"/>
                             <constraint firstItem="51R-py-SmU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="kB7-5c-gVN"/>
                             <constraint firstItem="Hue-AL-vpD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="kxF-Ha-AM0"/>
                             <constraint firstItem="LQS-QA-l6x" firstAttribute="centerX" secondItem="JeD-YI-2ej" secondAttribute="centerX" id="o8r-nM-ZA8"/>

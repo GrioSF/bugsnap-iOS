@@ -25,7 +25,11 @@ fileprivate var _shakeDetectorReferenceKey = "_shakeDetectorReferenceKey"
 */
 public extension UIApplication {
     
-    
+    /// The name for the app (specified in the display name)
+    @objc var appName : String {
+        let appName = (Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String) ?? "BugSnap"
+        return appName
+    }
     
     /**
         Starts the accelerometer in the device in order to trigger a capture for the top most view controller.

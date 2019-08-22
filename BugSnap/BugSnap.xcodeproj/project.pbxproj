@@ -21,6 +21,7 @@
 		7F2716F422E62B980068C502 /* UIApplication+ScreenRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */; };
 		7F2716F622E766470068C502 /* VideoFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F522E766470068C502 /* VideoFileWriter.swift */; };
 		7F2716F822E772C90068C502 /* UIViewController+JIRAIssueFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */; };
+		7F2DBE48230C9852002E5011 /* FeedbackCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2DBE47230C9852002E5011 /* FeedbackCardViewController.swift */; };
 		7F4C1E5E2302FA1400FEDE79 /* JIRA+IssuePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C1E5D2302FA1400FEDE79 /* JIRA+IssuePicker.swift */; };
 		7F4C8E0222F89445001EAD96 /* CaptureOptionSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */; };
 		7F4C8E0422F8982D001EAD96 /* ScreenshotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4C8E0322F8982D001EAD96 /* ScreenshotButton.swift */; };
@@ -65,6 +66,8 @@
 		7FB62E3022B981AB0007A02E /* JIRAIssueCreatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */; };
 		7FB62E3522B995020007A02E /* JIRA+Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB62E3422B995020007A02E /* JIRA+Object.swift */; };
 		7FBCBE4D22EA0C0000347B36 /* UIDevice+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBCBE4C22EA0C0000347B36 /* UIDevice+Logging.swift */; };
+		7FC50C67230EED190066A8C3 /* FeedbackCaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC50C66230EED190066A8C3 /* FeedbackCaptureViewController.swift */; };
+		7FC50C69230F080C0066A8C3 /* JIRAIssueCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC50C68230F080C0066A8C3 /* JIRAIssueCreator.swift */; };
 		7FD2312822E8B0F100292997 /* UIApplication+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */; };
 		7FD2312A22E8FA8D00292997 /* FileManager+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD2312922E8FA8D00292997 /* FileManager+Util.swift */; };
 		7FEB197B22BC050300E9C8B5 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */; };
@@ -118,6 +121,7 @@
 		7F2716F322E62B980068C502 /* UIApplication+ScreenRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+ScreenRecording.swift"; sourceTree = "<group>"; };
 		7F2716F522E766470068C502 /* VideoFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFileWriter.swift; sourceTree = "<group>"; };
 		7F2716F722E772C90068C502 /* UIViewController+JIRAIssueFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+JIRAIssueFlow.swift"; sourceTree = "<group>"; };
+		7F2DBE47230C9852002E5011 /* FeedbackCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackCardViewController.swift; sourceTree = "<group>"; };
 		7F4C1E5522FE3C8200FEDE79 /* Pluginfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pluginfile; sourceTree = "<group>"; };
 		7F4C1E5622FE3C8200FEDE79 /* Appfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
 		7F4C1E5722FE3C8200FEDE79 /* Fastfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; };
@@ -170,6 +174,8 @@
 		7FB62E2F22B981AB0007A02E /* JIRAIssueCreatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueCreatorViewController.swift; sourceTree = "<group>"; };
 		7FB62E3422B995020007A02E /* JIRA+Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JIRA+Object.swift"; sourceTree = "<group>"; };
 		7FBCBE4C22EA0C0000347B36 /* UIDevice+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Logging.swift"; sourceTree = "<group>"; };
+		7FC50C66230EED190066A8C3 /* FeedbackCaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackCaptureViewController.swift; sourceTree = "<group>"; };
+		7FC50C68230F080C0066A8C3 /* JIRAIssueCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueCreator.swift; sourceTree = "<group>"; };
 		7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Logging.swift"; sourceTree = "<group>"; };
 		7FD2312922E8FA8D00292997 /* FileManager+Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Util.swift"; sourceTree = "<group>"; };
 		7FE43E1622F1050D000F8ABC /* BugSnap.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = BugSnap.podspec; path = ../../BugSnap.podspec; sourceTree = "<group>"; };
@@ -282,6 +288,8 @@
 				7F66ABF722C5336D00806661 /* ScrolledViewController.swift */,
 				7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */,
 				7FEB52FC22FC5ECC000498BC /* OptionSelectorPopupViewController.swift */,
+				7F2DBE47230C9852002E5011 /* FeedbackCardViewController.swift */,
+				7FC50C66230EED190066A8C3 /* FeedbackCaptureViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -463,6 +471,7 @@
 				7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */,
 				7FD2312922E8FA8D00292997 /* FileManager+Util.swift */,
 				7FBCBE4C22EA0C0000347B36 /* UIDevice+Logging.swift */,
+				7FC50C68230F080C0066A8C3 /* JIRAIssueCreator.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -631,6 +640,8 @@
 				7F66ABE222C3C04700806661 /* ToolOptionsViewController.swift in Sources */,
 				7FEB52FD22FC5ECC000498BC /* OptionSelectorPopupViewController.swift in Sources */,
 				7FBCBE4D22EA0C0000347B36 /* UIDevice+Logging.swift in Sources */,
+				7FC50C69230F080C0066A8C3 /* JIRAIssueCreator.swift in Sources */,
+				7FC50C67230EED190066A8C3 /* FeedbackCaptureViewController.swift in Sources */,
 				7F0BCF9722B045A2006B4F26 /* UIViewController+Snap.swift in Sources */,
 				7F87683C22B44BE50018AC74 /* StrokeColorSelectorButton.swift in Sources */,
 				7FB62E1F22B7D8050007A02E /* ShapeSelectorButton.swift in Sources */,
@@ -642,6 +653,7 @@
 				7FEBAC6A22B2A4790022158D /* UIView+IBHelpers.swift in Sources */,
 				7F4C1E5E2302FA1400FEDE79 /* JIRA+IssuePicker.swift in Sources */,
 				7F66ABCA22C28D7D00806661 /* JIRA+Project.swift in Sources */,
+				7F2DBE48230C9852002E5011 /* FeedbackCardViewController.swift in Sources */,
 				7F0BCF9C22B04B28006B4F26 /* BugReportAction.swift in Sources */,
 				7F87683E22B4546F0018AC74 /* GeometryExtensions.swift in Sources */,
 				7FEBAC5D22B1BA4B0022158D /* ShapesView.swift in Sources */,

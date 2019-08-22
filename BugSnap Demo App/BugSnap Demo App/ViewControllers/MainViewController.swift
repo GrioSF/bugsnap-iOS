@@ -15,6 +15,8 @@ import BugSnap
 class MainViewController: UIViewController {
 
     // MARK: - Navigation
+    
+    var window : UIWindow? = nil
 
     /**
         Manage unwind to this view controller
@@ -27,9 +29,17 @@ class MainViewController: UIViewController {
         Presents a test alert.
     */
     @IBAction func presentAlert() {
+        
+        /*
         let alert = UIAlertController(title: "Alert", message: "test alert", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+        window = UIView.addRecordingIndicator()
+        */
+        let controller = FeedbackCardViewController()
+        controller.snapshot = UIImage(named: "TestImage")
+        controller.modalPresentationStyle = .overCurrentContext
+        present(controller, animated: true, completion: nil)
     }
     
     

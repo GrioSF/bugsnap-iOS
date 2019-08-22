@@ -36,6 +36,9 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
     
     /// The handler when the edition has finished
     var onEditionFinished : ((UIImage?)->Void)? = nil
+    
+    /// Whether it should display the share button
+    var shouldDisplayShare = true
 
     // MARK: - UI Properties
     
@@ -150,9 +153,15 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
         navigationController?.navigationBar.barTintColor = UIColor(red: 48, green: 48, blue: 48)
         
         // Setup the right buttom item
-        let shareItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onShare(item:)))
-        shareItem.tintColor = UIColor.white
-        navigationItem.setRightBarButton(shareItem, animated: false)
+        if shouldDisplayShare {
+            let shareItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onShare(item:)))
+            shareItem.tintColor = UIColor.white
+            navigationItem.setRightBarButton(shareItem, animated: false)
+        } else {
+            let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDone(item:)))
+            doneItem.tintColor = UIColor.white
+            navigationItem.setRightBarButton(doneItem, animated: false)
+        }
         
         // Setup the dismiss button
         navigationItem.setLeftBarButton(customViewControl(control: DismissButton(), selector: #selector(onDismiss)), animated: false)
@@ -324,6 +333,17 @@ public class MarkupEditorViewController: UIViewController, UIScrollViewDelegate,
             loading?.dismiss(animated: true, completion: {
                 DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
                     self?.startJIRACapture(snapshot: newImage)
+                })
+            })
+        }
+    }
+    
+    @objc func onDone( item : UIBarButtonItem? ) {
+        let loading = self.navigationController?.presentLoading(message: "Generating image...")
+        snapshot.snapshot { [weak self] (newImage) in
+            loading?.dismiss(animated: true, completion: {
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                    self?.onEditionFinished?(newImage)
                 })
             })
         }
