@@ -47,7 +47,9 @@ class MainViewController: UIViewController {
         Take a snapshot
     */
     @IBAction func takeSnapshot() {
+        UIApplication.shared.userFeedbackFlow = true
         NotificationCenter.default.post(name: .shakeEventDetected, object: nil)
+        //UIApplication.shared.takeSnapshot()
     }
 
 }

@@ -70,22 +70,39 @@ public class FeedbackCardViewController: UIViewController {
     private func animateCardEntry() {
         card.transform = CGAffineTransform(translationX: 0.0, y: card.bounds.height)
         card.isHidden = false
-        UIView.animate(withDuration: 0.8, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.6, options: [.beginFromCurrentState,.curveEaseInOut], animations: {
+        UIView.animate(withDuration: 0.7, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.6, options: [.beginFromCurrentState,.curveEaseInOut], animations: {
             self.card.transform = CGAffineTransform.identity
             self.view.backgroundColor = UIColor(white: 0.0, alpha: 0.3)
         }, completion: nil)
+    }
+    
+    private func animateCardDismiss( completion : @escaping ()->Void ) {
+        UIView.animate(withDuration: 0.4, delay: 0.0, options: [.curveEaseIn,.beginFromCurrentState], animations: {
+            self.card.transform = CGAffineTransform(translationX: 0.0, y: self.card.bounds.height)
+            self.view.backgroundColor = UIColor(white: 0.0, alpha: 0.0)
+        }) { (_) in
+            self.dismiss(animated: true, completion: {
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.4, execute: {
+                    completion()
+                })
+            })
+        }
     }
     
     // MARK: - Setup
     
     private func setup() {
         view.backgroundColor = UIColor.clear
+        
         setupContainer()
         setupTitle()
         setupSubtitle()
         setupSeparator()
         setupReportButton()
         card.isHidden = true
+        
+        let tapOutsideCard = UITapGestureRecognizer(target: self, action: #selector(onTapOutsideCard(gesture:)))
+        view.addGestureRecognizer(tapOutsideCard)
     }
     
     private func setupContainer() {
@@ -183,15 +200,22 @@ public class FeedbackCardViewController: UIViewController {
     
     // MARK: - UICallback
     
+    @objc func onTapOutsideCard( gesture : UITapGestureRecognizer ) {
+        
+        // If we're touching outside the card, we dismiss it
+        if !card.frame.contains(gesture.location(in: view)) {
+            animateCardDismiss {
+            }
+        }
+    }
+    
     @objc func onReport() {
         let presentingController = presentingViewController
         let controller = FeedbackCaptureViewController()
         controller.snapshot = snapshot
         controller.modalPresentationStyle = .overCurrentContext
-        dismiss(animated: true) {
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-                presentingController?.present(controller, animated: true, completion: nil)
-            })
+        animateCardDismiss {
+            presentingController?.present(controller, animated: true, completion: nil)
         }
     }
 

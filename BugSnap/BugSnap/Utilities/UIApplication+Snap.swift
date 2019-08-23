@@ -14,9 +14,8 @@ import ReplayKit
 /// A key for storing the reference to the shake detector
 fileprivate var _shakeDetectorReferenceKey = "_shakeDetectorReferenceKey"
 
-
-
-
+/// A key for storing the reference of whether we use the user feedback flow
+fileprivate var _shakeDetectorUserFeedbackFlowKey = "_shakeDetectorUserFeedbackFlowKey"
 
 
 /**
@@ -29,6 +28,17 @@ public extension UIApplication {
     @objc var appName : String {
         let appName = (Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String) ?? "BugSnap"
         return appName
+    }
+    
+    /// Whether we want the user feedback flow for capturing the screen
+    @objc var userFeedbackFlow : Bool {
+        get{
+            guard let value = objc_getAssociatedObject(self, &_shakeDetectorUserFeedbackFlowKey) as? NSNumber else { return false }
+            return value.boolValue
+        }
+        set(newVal) {
+            objc_setAssociatedObject(self, &_shakeDetectorUserFeedbackFlowKey, NSNumber(booleanLiteral: newVal), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
     }
     
     /**
@@ -98,7 +108,7 @@ public extension UIApplication {
         if isScreenRecording {
             doEndCapture()
         // Check whether the screen recorder is available
-        } else if RPScreenRecorder.shared().isAvailable {
+        } else if RPScreenRecorder.shared().isAvailable  && !userFeedbackFlow {
             askSnapAction()
         // Otherwise defaults to the snapshot action
         } else {
@@ -134,36 +144,72 @@ public extension UIApplication {
     /**
         Tries to take the snapshot from the main window (keyWindow) and then loads the MarkupEditorController
         This method uses the snapshot method from the UIView category in order to have the capture of the screen and then
-        it loads the MarkupEditorViewController to allow the user for edits presenting it as the topMost View Controller
+        it loads the MarkupEditorViewController or the user feedback card to allow the user for edits presenting it as the topMost View Controller
     */
-    private func takeSnapshot() {
+    @objc func takeSnapshot() {
         guard
-            let view = keyWindow,
-            let topMost = UIViewController.topMostViewController else {
+            let view = keyWindow else {
                 NSLog("Couldn't find either the key window or the top most view controller")
                 return
         }
         
         // Take the snapshot and present the view controller
-        view.snapshot( flashing : true) { (image) in
+        view.snapshot( flashing : true) {
+            [weak self] (image) in
             
-            let loading = topMost.presentLoading(message: "Loading image...")
-            
-            let snapController = MarkupEditorViewController()
-            snapController.screenSnapshot = image
-            let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
-            
-            if UI_USER_INTERFACE_IDIOM() == .pad {
-                navigationController.modalPresentationStyle = .formSheet
+            if self?.userFeedbackFlow ?? false {
+                self?.startUserFeedbackFlow(image: image!)
+            } else {
+                self?.startQAFlow(image: image)
             }
-            
-            snapController.view.backgroundColor = UIColor.black
-            
-            loading.dismiss(animated: true, completion: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-                    topMost.present(navigationController, animated: true, completion: nil)
-                })
-            })
         }
+    }
+    
+    /**
+        Starts the flow with the capture card in order to have some sort of automated user feedback
+        - Parameter image: The image captured
+     */
+    private func startUserFeedbackFlow( image : UIImage? ) {
+        guard let topMost = UIViewController.topMostViewController else {
+            return
+        }
+        let loading = topMost.presentLoading(message: "Loading image...")
+        
+        let controller = FeedbackCardViewController()
+        controller.snapshot = image
+        controller.modalPresentationStyle = .overCurrentContext
+        
+        loading.dismiss(animated: true, completion: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                topMost.present(controller, animated: true, completion: nil)
+            })
+        })
+    }
+    
+    /**
+        Starts the flow with the markup editor to later present the JIRA Capture screen
+        - Parameter image: The image captured
+    */
+    private func startQAFlow( image : UIImage? ) {
+        guard let topMost = UIViewController.topMostViewController else {
+            return
+        }
+        let loading = topMost.presentLoading(message: "Loading image...")
+        
+        let snapController = MarkupEditorViewController()
+        snapController.screenSnapshot = image
+        let navigationController = IrisTransitioningNavigationController(rootViewController: snapController)
+        
+        if UI_USER_INTERFACE_IDIOM() == .pad {
+            navigationController.modalPresentationStyle = .formSheet
+        }
+        
+        snapController.view.backgroundColor = UIColor.black
+        
+        loading.dismiss(animated: true, completion: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                topMost.present(navigationController, animated: true, completion: nil)
+            })
+        })
     }
 }
