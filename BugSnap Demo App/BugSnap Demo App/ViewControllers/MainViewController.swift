@@ -13,10 +13,39 @@ import BugSnap
     Test view controller with a unwind segue
 */
 class MainViewController: UIViewController {
+    
+    /// The switch for controlling whether we want a card flow
+    @IBOutlet weak var bugCaptureFlowControl : UISegmentedControl!
+    
+    // MARK: - View Life Cycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateCaptureFlowRepresentation()
+    }
+    
+    // MARK: - SegmentedControl status update
+    
+    private func updateCaptureFlowRepresentation() {
+        guard let flowControl = bugCaptureFlowControl else { return }
+        flowControl.selectedSegmentIndex = UIApplication.shared.userFeedbackFlow ? 0 : 1
+    }
+    
+    // MARK: - UI Callback
+    
+    @IBAction func onBugCaptureFlowChanged( control : UISegmentedControl ) {
+        UIApplication.shared.userFeedbackFlow = control.selectedSegmentIndex == 0
+    }
 
     // MARK: - Navigation
     
-    var window : UIWindow? = nil
+    
+    
+    
 
     /**
         Manage unwind to this view controller
@@ -47,7 +76,6 @@ class MainViewController: UIViewController {
         Take a snapshot
     */
     @IBAction func takeSnapshot() {
-        UIApplication.shared.userFeedbackFlow = true
         NotificationCenter.default.post(name: .shakeEventDetected, object: nil)
         //UIApplication.shared.takeSnapshot()
     }

@@ -18,8 +18,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TestImage" translatesAutoresizingMaskIntoConstraints="NO" id="Ksx-4w-kjN">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" red="0.81686693429946899" green="0.8244209885597229" blue="0.8520466685295105" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </imageView>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hue-AL-vpD">
-                                <rect key="frame" x="0.0" y="88" width="414" height="276"/>
+                                <rect key="frame" x="0.0" y="116" width="414" height="276"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Hue-AL-vpD" secondAttribute="height" multiplier="3:2" id="oWQ-hp-EGV"/>
                                 </constraints>
@@ -27,10 +31,6 @@
                                     <segue destination="WDx-PE-pu0" kind="embed" id="pGm-xc-uN6"/>
                                 </connections>
                             </containerView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TestImage" translatesAutoresizingMaskIntoConstraints="NO" id="Ksx-4w-kjN">
-                                <rect key="frame" x="0.0" y="364" width="414" height="532"/>
-                                <color key="backgroundColor" red="0.81686693429946899" green="0.8244209885597229" blue="0.8520466685295105" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sE3-H5-h0O">
                                 <rect key="frame" x="157" y="355" width="100" height="66.5"/>
                                 <color key="backgroundColor" red="0.034602805969999997" green="0.25001704689999998" blue="0.45597749949999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -153,24 +153,38 @@
                                     <action selector="takeSnapshot" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Jiv-0H-U0P"/>
                                 </connections>
                             </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="7Ob-kq-3o9">
+                                <rect key="frame" x="0.0" y="88" width="414" height="29"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <segments>
+                                    <segment title="Card Flow"/>
+                                    <segment title="Old Flow"/>
+                                </segments>
+                                <color key="tintColor" red="0.0039215686269999999" green="0.098039215690000001" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="onBugCaptureFlowChangedWithControl:" destination="BYZ-38-t0r" eventType="valueChanged" id="fV4-w9-Z3a"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="JeD-YI-2ej" firstAttribute="top" secondItem="sE3-H5-h0O" secondAttribute="bottom" constant="20" id="4Vl-MI-inm"/>
+                            <constraint firstItem="7Ob-kq-3o9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="5SK-Su-wbP"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="s4S-tj-Uzw" secondAttribute="trailing" constant="10" id="5aF-c0-5yv"/>
                             <constraint firstAttribute="trailing" secondItem="Ksx-4w-kjN" secondAttribute="trailing" id="8ik-2g-2Ox"/>
                             <constraint firstItem="Ksx-4w-kjN" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="8qZ-4s-Nbr"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Hue-AL-vpD" secondAttribute="trailing" id="Ffm-HA-K8f"/>
+                            <constraint firstItem="7Ob-kq-3o9" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GXB-cz-1EG"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="s4S-tj-Uzw" secondAttribute="bottom" constant="10" id="Idp-IO-KsQ"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="7Ob-kq-3o9" secondAttribute="trailing" id="JLb-iT-a4m"/>
                             <constraint firstItem="JeD-YI-2ej" firstAttribute="top" secondItem="sE3-H5-h0O" secondAttribute="bottom" constant="20" id="JoZ-0j-233"/>
                             <constraint firstItem="Hue-AL-vpD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Khu-h3-xqd"/>
-                            <constraint firstItem="Ksx-4w-kjN" firstAttribute="top" secondItem="Hue-AL-vpD" secondAttribute="bottom" id="RYe-56-Mq4"/>
                             <constraint firstItem="sE3-H5-h0O" firstAttribute="centerX" secondItem="Hue-AL-vpD" secondAttribute="centerX" id="asr-43-Xgq"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="51R-py-SmU" secondAttribute="bottom" constant="10" id="bU3-Ou-M51"/>
                             <constraint firstAttribute="bottom" secondItem="Ksx-4w-kjN" secondAttribute="bottom" id="dBc-ff-o1h"/>
+                            <constraint firstItem="Hue-AL-vpD" firstAttribute="top" secondItem="7Ob-kq-3o9" secondAttribute="bottom" id="fcd-RM-qek"/>
                             <constraint firstItem="JeD-YI-2ej" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="iAr-g3-YL1"/>
                             <constraint firstItem="51R-py-SmU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="kB7-5c-gVN"/>
-                            <constraint firstItem="Hue-AL-vpD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="kxF-Ha-AM0"/>
                             <constraint firstItem="LQS-QA-l6x" firstAttribute="centerX" secondItem="JeD-YI-2ej" secondAttribute="centerX" id="o8r-nM-ZA8"/>
                             <constraint firstItem="LQS-QA-l6x" firstAttribute="top" secondItem="JeD-YI-2ej" secondAttribute="bottom" constant="20" id="oa0-99-eH7"/>
                             <constraint firstItem="JeD-YI-2ej" firstAttribute="centerX" secondItem="sE3-H5-h0O" secondAttribute="centerX" id="u9Y-6a-B62"/>
@@ -184,6 +198,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="bugCaptureFlowControl" destination="7Ob-kq-3o9" id="742-xN-tNf"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
