@@ -57,6 +57,22 @@ public struct DeviceLoggingFields {
     
     /// The screen scale
     var screenScale : Float = 0.0
+    
+    /// The string representation of the device features using the default DeviceFeaturesTextPresenter
+    var textPresentation : String {
+        
+        var text = String()
+        let properties = self
+        let deviceProperties = Mirror(reflecting: properties)
+        
+        for property in deviceProperties.children {
+            let propertyLabel = property.label ?? "Unknown label"
+            let propertyName = DeviceFeaturesTextPresenter.present(property: propertyLabel)
+            let propertyValue = DeviceFeaturesTextPresenter.present(property: propertyLabel, with: property.value )
+            text.append("\(propertyName) = \(propertyValue) \n")
+        }
+        return text
+    }
 }
 
 /// The supported fields for a DeviceLoggingFields custom representation
@@ -381,6 +397,7 @@ fileprivate let MegaByteBytes : Int64 = 1024 * 1024
 /// Extension to retrieve the required fields in DeviceLoggingFields filled up
 public extension UIDevice {
     
+    /// The hardware & software features of this device required to setup the environment in JIRA
     var deviceLoggingData : DeviceLoggingFields {
         var data = DeviceLoggingFields()
         isBatteryMonitoringEnabled = true

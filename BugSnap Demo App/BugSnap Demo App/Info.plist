@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.4</string>
 	<key>CFBundleVersion</key>
-	<string>8</string>
+	<string>9</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -38,6 +38,8 @@
 	<string>#Put your JIRA Authentication email</string>
 	<key>JIRA.APIKey</key>
 	<string>#Put your JIRA API Token</string>
+	<key>JIRA.Project</key>
+	<string>#Either the Key, Identifier or Name for your JIRA Project</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

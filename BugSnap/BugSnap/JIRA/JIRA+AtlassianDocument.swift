@@ -84,10 +84,7 @@ public extension JIRA.IssueField.Value {
         
         let components = string.components(separatedBy: CharacterSet.newlines)
         var elements = [[String:Any]]()
-        
-        // Append the device features
-        elements.append(serializeDeviceProperties())
-        
+
         // Append the paragraphs for the description
         components.forEach {
             
@@ -96,6 +93,24 @@ public extension JIRA.IssueField.Value {
             let paragraph = serializeTextParagraph(text: $0)
             elements.append(paragraph)
         }
+        root[Document.GeneralKeys.contents.rawValue] = elements
+        
+        return root
+    }
+    
+    /**
+        Serializes the device information as a document using a table layout
+        - Returns: A json dictionary with the structure of an attlasian document. Mainly a table with the values for the environment.
+    */
+    func serializeEnvironmentAsDocument() -> [String:Any]? {
+        var root = [String:Any]()
+        root[Document.RootKeys.version.rawValue] = Document.version
+        root[Document.GeneralKeys.type.rawValue] = Document.objectType
+        
+        var elements = [[String:Any]]()
+        
+        // Append the device features
+        elements.append(serializeDeviceProperties())
         root[Document.GeneralKeys.contents.rawValue] = elements
         
         return root
@@ -133,7 +148,7 @@ public extension JIRA.IssueField.Value {
     
     /**
         Serializes the device properties into a JIRA table
-        - Returns: A JIRA table serialized as a JSON Dictionary. 
+        - Returns: A JIRA table serialized as a JSON Dictionary.
     */
     func serializeDeviceProperties() -> [String:Any] {
         var table = [String:Any]()

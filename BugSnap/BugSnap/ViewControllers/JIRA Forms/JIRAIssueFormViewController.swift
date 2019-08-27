@@ -65,7 +65,6 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     
     /// A loading view controller
     private weak var loadingViewController : LoadingViewController? = nil
-    
 
     // MARK: - View Life Cycle
     
@@ -148,12 +147,15 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         
         autocomplete.fieldPlaceholder = ""
         autocomplete.objectLoaderHandler = JIRARestAPI.sharedInstance.allProjects
+        autocomplete.preloadedObjectKey = UserDefaults.standard.jiraProject
         autocomplete.onObjectSelected = {
             [weak self] (project) in
             self?.onProjectSelected(project: project)
         }
+        
         autocomplete.view.backgroundColor = UIColor(red: 238, green: 238, blue: 238)
         autocomplete.view.translatesAutoresizingMaskIntoConstraints = false
+        
         
         autocomplete.willMove(toParent: self)
         contentView.addSubview(autocomplete.view)
@@ -307,6 +309,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
     private func onProjectSelected( project : JIRA.Object? ) {
         guard let jiraProject = project as? JIRA.Project  else { return }
         
+        UserDefaults.standard.jiraProject = project?.identifier  // Save the selected project for future iterations
         let controller = UIAlertController(title: "Wait a sec...", message: "Loading JIRA's project configuration", preferredStyle: .alert)
         present(controller, animated: true, completion: nil)
         
@@ -400,6 +403,10 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
             } else if ($0.key ?? "") == "description" && descriptionField.text?.count ?? 0 > 0 {
                 let value = JIRA.IssueField.Value()
                 value.stringValue = descriptionField.text
+                $0.value = value
+            } else if ($0.key ?? "") == "environment" {
+                let value = JIRA.IssueField.Value()
+                value.stringValue = UIDevice.current.deviceLoggingData.textPresentation
                 $0.value = value
             }
         }
@@ -545,7 +552,7 @@ public class JIRAIssueFormViewController: ScrolledViewController, UITextFieldDel
         // Check if the form has the URL of a video
         } else if videoURL != nil {
             uploadScreenRecording(issue: issueObject)
-        } 
+        }
     }
     
     private func handleAttachmentResponse( issue : JIRA.Object , errors : [String]? , caller : @escaping (JIRA.Object)->Void ) {

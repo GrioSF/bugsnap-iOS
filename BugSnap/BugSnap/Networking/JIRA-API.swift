@@ -69,6 +69,9 @@ public class JIRARestAPI : NSObject {
         
         /// The API key for the user given by JIRA.USER
         case apiKey = "JIRA.APIKey"
+        
+        /// The API Key for the jira project. The project can be the name, key or the identifier in jira.
+        case project = "JIRA.Project"
     }
     
     public enum ConfigurationErrorKeys : Int {
@@ -145,6 +148,8 @@ public class JIRARestAPI : NSObject {
                     userName = value
                 case .apiKey:
                     apiToken = value
+                case .project:
+                    UserDefaults.standard.jiraProject = value
             }
         }
         
@@ -350,6 +355,61 @@ public class JIRARestAPI : NSObject {
     }
     
     /**
+        Searches for issues within the project with the given projectId and the string used as a query.
+        This method uses the API for getting the Issue Picker Suggestions. The request is built in two parts: the first one set the text for the query parameter; the second part uses JQL with the expression key = <string parameter> OR summary ~ <string parameter>
+        - Parameter project: The project identifier containing the issues
+        - Parameter string: The string that would be passed as the query for the service call
+        - Parameter completion: The closure handler when the service has a response about the issue
+    */
+    public func searchIssue( in project: String, with string: String , completion : @escaping ([JIRA.IssuePicker]?,[String]?)->Void ) {
+        
+        let encodedQuery = string.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        let jql = "(key = \"\(string)\" or summary ~ \"\(string)\")".addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        var request = URLRequest(url: URL(string: "rest/api/3/issue/picker?currentProjectId=\(project)&query=\(encodedQuery)&&currentJQL=\(jql)", relativeTo: serverURL)!)
+        request.httpMethod = "GET"
+        let urlSession = URLSession(configuration: sessionConfiguration)
+        let task = urlSession.dataTask(with: request) { (data, response, error) in
+            
+            var resultIssues : [JIRA.IssuePicker]? = nil
+            var messages : [String]? = nil
+            
+            if let responseData = data,
+               error == nil {
+                /* let stringData = String(data: responseData, encoding: .utf8)
+                print("----------------------------------------")
+                print("\(stringData ?? "")")
+                */
+                let json = try? JSONSerialization.jsonObject(with: responseData, options: .allowFragments)
+                if let jsonDictionary = json as? [AnyHashable : Any],
+                   let sectionsArray = jsonDictionary["sections"] as? [[AnyHashable:Any]] {
+                    
+                    var issueMap = [String:JIRA.IssuePicker]()
+                    // For each section extract the issues
+                    for section in sectionsArray {
+                        guard let issues = section["issues"] as? [[AnyHashable:Any]] else { continue }
+                        for issue in issues {
+                            let jiraIssue = JIRA.IssuePicker()
+                            jiraIssue.load(from: issue)
+                            if let key = jiraIssue.key {
+                                issueMap[key] = jiraIssue
+                            }
+                        }
+                    }
+                    resultIssues = [JIRA.IssuePicker]()
+                    issueMap.sorted { $0.key > $1.key }.forEach { resultIssues?.append($0.value)}
+                }
+            }else if let connectionError = error {
+                messages = [connectionError.localizedDescription]
+            }
+            
+            DispatchQueue.main.async {
+                completion(resultIssues, messages)
+            }
+        }
+        task.resume()
+    }
+    
+    /**
         Uploads the snapshot as an attachment of an issue
         - Parameter issue: The issue for adding the attachment
         - Parameter snapshot: The snapshot captured for attaching in the issue
@@ -418,6 +478,11 @@ public class JIRARestAPI : NSObject {
         return request
     }
     
+    /**
+        It executes the attachment request given in the parameter. Keep in mind the request is assembled with one of the build attachment request (either using traditional POST data or stream data) and the result for this request is passed as a parameter for the closure *completion*.
+        - Parameter request: The attachment request for an issue already setup
+        - Parameter completion: The closure that will handle the response for this request. The parameters are either the attachment object or an array of errors if possible.
+    */
     private func executeJIRAAttachmentRequest( request : URLRequest , completion : @escaping (JIRA.IssueField.Attachment?,[String]?)->Void) {
         let urlSession = URLSession(configuration: sessionConfiguration)
         let task = urlSession.dataTask(with: request) { (data, response, error) in

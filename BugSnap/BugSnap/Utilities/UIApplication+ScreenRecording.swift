@@ -85,7 +85,7 @@ extension UIApplication {
         self.videoWriter = videoWriter
         
         RPScreenRecorder.shared().delegate = self
-        RPScreenRecorder.shared().isMicrophoneEnabled = true
+        RPScreenRecorder.shared().isMicrophoneEnabled = false
         RPScreenRecorder.shared().startCapture(handler: { [weak self] (buffer, bufferType, error) in
             guard error == nil else { return }
         

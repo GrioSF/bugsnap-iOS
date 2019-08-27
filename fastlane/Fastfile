@@ -29,6 +29,7 @@ platform :ios do
     set_info_plist_value(path: "./BugSnap Demo App/BugSnap Demo App/Info.plist", key: "JIRA.URL", value: ENV["JIRA_URL"])
     set_info_plist_value(path: "./BugSnap Demo App/BugSnap Demo App/Info.plist", key: "JIRA.User", value: ENV["JIRA_User"])
     set_info_plist_value(path: "./BugSnap Demo App/BugSnap Demo App/Info.plist", key: "JIRA.APIKey", value: ENV["JIRA_APIKey"])
+    set_info_plist_value(path: "./BugSnap Demo App/BugSnap Demo App/Info.plist", key: "JIRA.Project", value: ENV["JIRA_Project"])
   end
 
   private_lane :setup_keychain do

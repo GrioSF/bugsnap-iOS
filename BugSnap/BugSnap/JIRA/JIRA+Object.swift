@@ -39,19 +39,19 @@ public class JIRA : NSObject {
         }
         
         /// The link for the project
-        var link : String? = nil
+        public var link : String? = nil
         
         /// The id for the project
-        var identifier : String? = nil
+        public var identifier : String? = nil
         
         /// The name for the project
-        var name : String? = nil
+        public var name : String? = nil
         
         /// The url for the icon of this object
-        var iconURL : URL? = nil
+        public var iconURL : URL? = nil
         
         /// The key for this object
-        var key : String? = nil
+        public var key : String? = nil
         
         /**
             Required initializer. This implementation is to precisely use templates in order to have generic calls for autocomplete

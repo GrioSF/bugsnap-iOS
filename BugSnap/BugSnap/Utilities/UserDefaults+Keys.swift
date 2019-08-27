@@ -21,10 +21,13 @@ public extension UserDefaults {
         
         /// The api token
         case apiToken = "com.grio.os.bugsnap.jira.apitoken"
+        
+        /// The jira project
+        case project = "com.grio.os.bugsnap.jira.project"
     }
     
     /// Stores the user name
-    var jiraUserName : String? {
+    @objc var jiraUserName : String? {
         get{
             return string(forKey: JIRAAuthtenticationKeys.userName.rawValue)
         }
@@ -38,7 +41,7 @@ public extension UserDefaults {
     }
     
     /// Stores the api token
-    var jiraApiToken : String? {
+    @objc var jiraApiToken : String? {
         get{
             return string(forKey: JIRAAuthtenticationKeys.apiToken.rawValue)
         }
@@ -47,6 +50,20 @@ public extension UserDefaults {
                 setValue(newVal!, forKey: JIRAAuthtenticationKeys.apiToken.rawValue)
             } else {
                 removeObject(forKey: JIRAAuthtenticationKeys.apiToken.rawValue)
+            }
+        }
+    }
+    
+    /// Stores the jira project identifier
+    @objc var jiraProject : String? {
+        get {
+            return string(forKey: JIRAAuthtenticationKeys.project.rawValue)
+        }
+        set(newVal){
+            if newVal != nil {
+                setValue(newVal!, forKey: JIRAAuthtenticationKeys.project.rawValue)
+            } else {
+                removeObject(forKey: JIRAAuthtenticationKeys.project.rawValue)
             }
         }
     }
