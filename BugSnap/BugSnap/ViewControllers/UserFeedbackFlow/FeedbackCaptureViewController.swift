@@ -7,17 +7,21 @@
 //
 
 import UIKit
+import AVFoundation
 
 /**
     View controller to show a briefing about the issue to be reported.
     Notice this view controller sends the data to the system for feedback and does the attachment of the screenshot.
 */
-public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate {
+public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     
     // MARK: - UI Elements
     
     /// The attachment that was captured during the preview
     @objc public var snapshot : UIImage? = nil
+    
+    /// The URL for the video attachment that was captrued during the preview
+    @objc public var videoURL : URL? = nil
     
     // MARK: - Constants
     
@@ -32,11 +36,17 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
     /// The title label for the card
     private var titleLabel = UILabel()
     
-    /// The capture field
-    private var textView = UITextView()
+    /// The summary field
+    private var summaryField = UITextField()
+    
+    /// The description field
+    private var descriptionField = UITextView()
     
     /// The placeholder for the textview
     private var placeholder = UILabel()
+    
+    /// The attachment disclosure
+    private var attachmentDisclosure = UILabel()
     
     /// The attachment title
     private var snapshotButton = UIImageView()
@@ -49,6 +59,15 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
     
     /// The issue creator
     private var issueCreator : JIRAIssueCreator? = nil
+    
+    /// The video player layer for playing back the video
+    private var videoPlayerLayer : AVPlayerLayer? = nil
+    
+    // MARK: - Deinitialization
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     // MARK: - View LifeCycle
     
@@ -60,6 +79,12 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         animateCardEntry()
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Update the bounds for the video player layer
+        videoPlayerLayer?.bounds = snapshotButton.bounds
     }
     
     // MARK: - Animate card
@@ -74,7 +99,10 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         UIView.animate(withDuration: 0.8, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.6, options: [.beginFromCurrentState,.curveEaseInOut], animations: {
             self.card.transform = CGAffineTransform.identity
             self.view.backgroundColor = UIColor(white: 0.0, alpha: 0.3)
-        }, completion: nil)
+        }, completion: { (_) in
+            // Update the bounds for the video player layer
+            self.videoPlayerLayer?.bounds = self.snapshotButton.bounds
+        })
     }
     
     private func animateCardDismiss() {
@@ -94,8 +122,9 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         setupTitle()
         setupButtons()
         setupSeparator()
-        setupTextView()
+        setupSummaryField()
         setupAttachment()
+        setupDescriptionField()
         card.isHidden = true
     }
     
@@ -164,31 +193,51 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         sectionSeparator.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5.0).isActive = true
     }
     
-    private func setupTextView() {
-        textView.textAlignment = .left
-        textView.font = UIFont(name: "HelveticaNeue", size: 16.0)
-        textView.textColor = UIColor.black
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.delegate = self
+    private func setupSummaryField() {
+        summaryField.textAlignment = .left
+        summaryField.font = UIFont(name: "HelveticaNeue", size: 16.0)
+        summaryField.textColor = UIColor.black
+        summaryField.translatesAutoresizingMaskIntoConstraints = false
+        summaryField.delegate = self
+        summaryField.placeholder = "Add an explanation"
+        summaryField.returnKeyType = .continue
+        
+        card.addSubview(summaryField)
+        summaryField.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: horizontalMargin).isActive = true
+        summaryField.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -horizontalMargin).isActive = true
+        summaryField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10.0).isActive = true
+        summaryField.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+    }
+    
+    private func setupDescriptionField() {
+        descriptionField.textAlignment = .left
+        descriptionField.font = UIFont(name: "HelveticaNeue", size: 12.0)
+        descriptionField.textColor = UIColor.black
+        descriptionField.translatesAutoresizingMaskIntoConstraints = false
+        descriptionField.delegate = self
+        descriptionField.cornerRadius = 8.0
+        descriptionField.borderWidth = 1.0
+        descriptionField.borderColor = UIColor.lightGray
         
         
-        placeholder.text = "Add an explanation"
-        placeholder.font = UIFont(name: "HelveticaNeue", size: 16.0)
+        placeholder.text = "In a few words, describe the situation in more detail."
+        placeholder.font = UIFont(name: "HelveticaNeue", size: 12.0)
         placeholder.textColor = UIColor.gray
         placeholder.textAlignment = .left
+        placeholder.numberOfLines = 0
         placeholder.translatesAutoresizingMaskIntoConstraints = false
-        textView.addSubview(placeholder)
+        placeholder.lineBreakMode = .byWordWrapping
+        descriptionField.addSubview(placeholder)
         
-        placeholder.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 5.0).isActive = true
-        placeholder.trailingAnchor.constraint(equalTo: textView.trailingAnchor).isActive = true
-        placeholder.topAnchor.constraint(equalTo: textView.topAnchor, constant: 5.0).isActive = true
-        placeholder.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
+        placeholder.leadingAnchor.constraint(equalTo: descriptionField.leadingAnchor, constant: 5.0).isActive = true
+        placeholder.topAnchor.constraint(equalTo: descriptionField.topAnchor, constant: 8.0).isActive = true
+        placeholder.widthAnchor.constraint(equalTo: descriptionField.widthAnchor, multiplier: 0.7, constant: 0.0).isActive = true
         
-        card.addSubview(textView)
-        textView.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: horizontalMargin).isActive = true
-        textView.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -horizontalMargin).isActive = true
-        textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10.0).isActive = true
-        textView.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+        card.addSubview(descriptionField)
+        descriptionField.leadingAnchor.constraint(equalTo: snapshotButton.trailingAnchor, constant: 40.0).isActive = true
+        descriptionField.trailingAnchor.constraint(equalTo: attachmentDisclosure.trailingAnchor).isActive = true
+        descriptionField.topAnchor.constraint(equalTo: snapshotButton.topAnchor).isActive = true
+        descriptionField.bottomAnchor.constraint(equalTo: snapshotButton.bottomAnchor).isActive = true
     }
     
     private func setupAttachment() {
@@ -203,11 +252,9 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         card.addSubview(attachmentTitle)
         attachmentTitle.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: horizontalMargin).isActive = true
         attachmentTitle.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -horizontalMargin).isActive = true
-        attachmentTitle.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: 10.0).isActive = true
+        attachmentTitle.topAnchor.constraint(equalTo: summaryField.bottomAnchor, constant: 10.0).isActive = true
         attachmentTitle.heightAnchor.constraint(equalToConstant: 20.0).isActive = true
         
-        
-        snapshotButton.image = snapshot
         snapshotButton.cornerRadius = 5.0
         snapshotButton.borderColor = UIColor.lightGray
         snapshotButton.borderWidth = 1.0
@@ -215,6 +262,7 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         snapshotButton.clipsToBounds = true
         snapshotButton.translatesAutoresizingMaskIntoConstraints = false
         snapshotButton.isUserInteractionEnabled = true
+        setupCaptureThumbnail()
         
         card.addSubview(snapshotButton)
         let aspect = UIScreen.main.bounds.height / UIScreen.main.bounds.width
@@ -223,11 +271,7 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         snapshotButton.topAnchor.constraint(equalTo: attachmentTitle.bottomAnchor, constant: 5.0).isActive = true
         snapshotButton.heightAnchor.constraint(equalTo: snapshotButton.widthAnchor, multiplier: aspect).isActive = true
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(onSnapshot))
-        snapshotButton.addGestureRecognizer(tap)
-        
-        let attachmentDisclosure = UILabel()
-        attachmentDisclosure.text = "The information about your device and this app will be included automatically in this report."
+        attachmentDisclosure.text = "Information about your device and this app will be included automatically in this report."
         attachmentDisclosure.numberOfLines = 0
         attachmentDisclosure.font = UIFont(name: "HelveticaNeue", size: 12.0)
         attachmentDisclosure.textColor = UIColor.lightGray
@@ -239,6 +283,34 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         attachmentDisclosure.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -horizontalMargin).isActive = true
         attachmentDisclosure.topAnchor.constraint(equalTo: snapshotButton.bottomAnchor, constant: 10.0).isActive = true
         attachmentDisclosure.bottomAnchor.constraint(lessThanOrEqualTo: card.bottomAnchor, constant: -10.0).isActive = true
+    }
+    
+    private func setupCaptureThumbnail() {
+        
+        guard let url = videoURL else {
+            setupSnapshot(image: snapshot! )
+            return
+        }
+        setupVideo(url: url)
+    }
+    
+    private func setupSnapshot( image : UIImage ) {
+        snapshotButton.image = image
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onSnapshot))
+        snapshotButton.addGestureRecognizer(tap)
+    }
+    
+    private func setupVideo( url : URL ) {
+        let videoPlayer = AVPlayer(url: url)
+        videoPlayerLayer = AVPlayerLayer(player: videoPlayer)
+        snapshotButton.layer.addSublayer(videoPlayerLayer!)
+        videoPlayerLayer?.bounds = snapshotButton.bounds
+        videoPlayerLayer?.videoGravity = .resizeAspectFill
+        videoPlayerLayer?.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onToggleVideoPlayBack))
+        snapshotButton.addGestureRecognizer(tap)
+        NotificationCenter.default.addObserver(self, selector: #selector(onVideoStopped(notification:)), name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
     // MARK: - UICallback
@@ -263,15 +335,38 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
                 
     }
     
+    @objc func onToggleVideoPlayBack() {
+        
+        if videoPlayerLayer?.player?.rate ?? 0 > 0.0 {
+            videoPlayerLayer?.player?.pause()
+        } else {
+            videoPlayerLayer?.player?.play()
+        }
+    }
+    
     @objc func onBack() {
         animateCardDismiss()
     }
     
     @objc func onSend() {
-        textView.resignFirstResponder()
+        view.endEditing(true)
         issueCreator = JIRAIssueCreator()
         issueCreator?.viewController = self
-        issueCreator?.createIssue(text: textView.text, snapshot: snapshot!)
+        issueCreator?.createIssue(text: summaryField.text ?? "", description: descriptionField.text ?? "", snapshot: snapshot!)
+    }
+    
+    // MARK: - UITextViewDelegate
+    
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let mutableString = NSMutableString(string: textField.text ?? "")
+        mutableString.replaceCharacters(in: range, with: string)
+        sendButton.isEnabled = placeholder.isHidden && (summaryField.text?.count ?? 0) > 0
+        return true
+    }
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        descriptionField.becomeFirstResponder()
+        return true
     }
     
     // MARK: - UITextViewDelegate
@@ -280,7 +375,14 @@ public class FeedbackCaptureViewController: UIViewController, UITextViewDelegate
         let mutableString = NSMutableString(string: textView.text)
         mutableString.replaceCharacters(in: range, with: text)
         placeholder.isHidden = mutableString.length > 0
-        sendButton.isEnabled = placeholder.isHidden
+        sendButton.isEnabled = placeholder.isHidden && (summaryField.text?.count ?? 0) > 0
         return true
+    }
+    
+    // MARK: - Notifications
+    
+    @objc func onVideoStopped( notification : Notification ) {
+        let scale = CMTimeScale(100.0)
+        videoPlayerLayer?.player?.seek(to: CMTime(seconds: 0.0, preferredTimescale: scale), completionHandler: { (_) in })
     }
 }

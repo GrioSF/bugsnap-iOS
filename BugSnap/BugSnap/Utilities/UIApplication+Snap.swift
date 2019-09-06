@@ -100,7 +100,7 @@ public extension UIApplication {
         
         guard Thread.current.isMainThread,
             applicationState != .background else {
-                NSLog("Tried to enable shake gesture on either a secondary thread or in a non active state")
+                NSLog("Tried to call shake gesture on either a secondary thread or in a non active state")
                 return
         }
         
@@ -108,7 +108,7 @@ public extension UIApplication {
         if isScreenRecording {
             doEndCapture()
         // Check whether the screen recorder is available
-        } else if RPScreenRecorder.shared().isAvailable  && !userFeedbackFlow {
+        } else if RPScreenRecorder.shared().isAvailable {
             askSnapAction()
         // Otherwise defaults to the snapshot action
         } else {
@@ -118,10 +118,16 @@ public extension UIApplication {
     
     // MARK: - Support
     
-    private func askSnapAction() {
+    @objc func askSnapAction() {
         guard let topMost = UIViewController.topMostViewController else {
                 NSLog("Couldn't find either the key window or the top most view controller")
                 return
+        }
+        
+        // Stop screen recording if it's recording already
+        guard !isScreenRecording else {
+            doEndCapture()
+            return
         }
         
         let optionSheetController = CaptureOptionSheetViewController()
@@ -158,7 +164,7 @@ public extension UIApplication {
             [weak self] (image) in
             
             if self?.userFeedbackFlow ?? false {
-                self?.startUserFeedbackFlow(image: image!)
+                UIViewController.topMostViewController?.startJIRACapture(snapshot: image)
             } else {
                 self?.startQAFlow(image: image)
             }
@@ -168,15 +174,17 @@ public extension UIApplication {
     /**
         Starts the flow with the capture card in order to have some sort of automated user feedback
         - Parameter image: The image captured
+        - Parameter url: The URL for the video recording.
      */
-    private func startUserFeedbackFlow( image : UIImage? ) {
+    private func startUserFeedbackFlow( image : UIImage?, url : URL? = nil ) {
         guard let topMost = UIViewController.topMostViewController else {
             return
         }
         let loading = topMost.presentLoading(message: "Loading image...")
         
-        let controller = FeedbackCardViewController()
+        let controller = FeedbackCaptureViewController()
         controller.snapshot = image
+        controller.videoURL = url
         controller.modalPresentationStyle = .overCurrentContext
         
         loading.dismiss(animated: true, completion: {

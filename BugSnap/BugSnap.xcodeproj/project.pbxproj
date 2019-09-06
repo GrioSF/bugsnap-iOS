@@ -178,7 +178,7 @@
 		7FC50C68230F080C0066A8C3 /* JIRAIssueCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JIRAIssueCreator.swift; sourceTree = "<group>"; };
 		7FD2312722E8B0F100292997 /* UIApplication+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Logging.swift"; sourceTree = "<group>"; };
 		7FD2312922E8FA8D00292997 /* FileManager+Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Util.swift"; sourceTree = "<group>"; };
-		7FE43E1622F1050D000F8ABC /* BugSnap.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = BugSnap.podspec; path = ../../BugSnap.podspec; sourceTree = "<group>"; };
+		7FE43E1622F1050D000F8ABC /* BugSnap.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = BugSnap.podspec; path = ../../BugSnap.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7FEB197A22BC050300E9C8B5 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		7FEB197C22BC264800E9C8B5 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
 		7FEB197E22BD91A400E9C8B5 /* AutocompleteTextFieldViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocompleteTextFieldViewController.swift; sourceTree = "<group>"; };
@@ -280,6 +280,7 @@
 		7F0BCF9F22B04F9B006B4F26 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				7FBE149A2322C4E4006661BB /* UserFeedbackFlow */,
 				7F66ABEF22C5183400806661 /* JIRA Forms */,
 				7FB62E2E22B980360007A02E /* JIRA Data Selectors */,
 				7FB62E1B22B7D4500007A02E /* Annotation Editor Menues */,
@@ -288,8 +289,6 @@
 				7F66ABF722C5336D00806661 /* ScrolledViewController.swift */,
 				7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */,
 				7FEB52FC22FC5ECC000498BC /* OptionSelectorPopupViewController.swift */,
-				7F2DBE47230C9852002E5011 /* FeedbackCardViewController.swift */,
-				7FC50C66230EED190066A8C3 /* FeedbackCaptureViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -424,6 +423,15 @@
 				7F66ABD122C2C2B700806661 /* JIRA+Attachment.swift */,
 			);
 			path = JIRA;
+			sourceTree = "<group>";
+		};
+		7FBE149A2322C4E4006661BB /* UserFeedbackFlow */ = {
+			isa = PBXGroup;
+			children = (
+				7F2DBE47230C9852002E5011 /* FeedbackCardViewController.swift */,
+				7FC50C66230EED190066A8C3 /* FeedbackCaptureViewController.swift */,
+			);
+			path = UserFeedbackFlow;
 			sourceTree = "<group>";
 		};
 		7FEBAC4D22B17FF70022158D /* CustomViews */ = {
