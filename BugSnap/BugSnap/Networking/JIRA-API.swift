@@ -217,7 +217,7 @@ public class JIRARestAPI : NSObject {
     */
     func allProjects( completion : @escaping ([JIRA.Project]?)->Void) {
         
-        var request = URLRequest(url: URL(string: "rest/api/3/project/search?startAt=0&maxResults=10&orderBy=name", relativeTo: serverURL)!)
+        var request = URLRequest(url: URL(string: "rest/api/3/project/search?startAt=0&maxResults=50&orderBy=name", relativeTo: serverURL)!)
         request.httpMethod = "GET"
         
         let urlSession = URLSession(configuration: sessionConfiguration)
