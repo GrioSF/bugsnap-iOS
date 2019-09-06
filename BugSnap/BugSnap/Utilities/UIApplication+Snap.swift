@@ -118,10 +118,16 @@ public extension UIApplication {
     
     // MARK: - Support
     
-    private func askSnapAction() {
+    @objc func askSnapAction() {
         guard let topMost = UIViewController.topMostViewController else {
                 NSLog("Couldn't find either the key window or the top most view controller")
                 return
+        }
+        
+        // Stop screen recording if it's recording already
+        guard !isScreenRecording else {
+            doEndCapture()
+            return
         }
         
         let optionSheetController = CaptureOptionSheetViewController()
