@@ -280,6 +280,7 @@
 		7F0BCF9F22B04F9B006B4F26 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				7FBE149A2322C4E4006661BB /* UserFeedbackFlow */,
 				7F66ABEF22C5183400806661 /* JIRA Forms */,
 				7FB62E2E22B980360007A02E /* JIRA Data Selectors */,
 				7FB62E1B22B7D4500007A02E /* Annotation Editor Menues */,
@@ -288,8 +289,6 @@
 				7F66ABF722C5336D00806661 /* ScrolledViewController.swift */,
 				7F4C8E0122F89445001EAD96 /* CaptureOptionSheetViewController.swift */,
 				7FEB52FC22FC5ECC000498BC /* OptionSelectorPopupViewController.swift */,
-				7F2DBE47230C9852002E5011 /* FeedbackCardViewController.swift */,
-				7FC50C66230EED190066A8C3 /* FeedbackCaptureViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -424,6 +423,15 @@
 				7F66ABD122C2C2B700806661 /* JIRA+Attachment.swift */,
 			);
 			path = JIRA;
+			sourceTree = "<group>";
+		};
+		7FBE149A2322C4E4006661BB /* UserFeedbackFlow */ = {
+			isa = PBXGroup;
+			children = (
+				7F2DBE47230C9852002E5011 /* FeedbackCardViewController.swift */,
+				7FC50C66230EED190066A8C3 /* FeedbackCaptureViewController.swift */,
+			);
+			path = UserFeedbackFlow;
 			sourceTree = "<group>";
 		};
 		7FEBAC4D22B17FF70022158D /* CustomViews */ = {

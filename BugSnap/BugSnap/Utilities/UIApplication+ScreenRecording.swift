@@ -20,6 +20,9 @@ fileprivate var _recordingIndicatorWindow = "_recordingIndicatorWindow"
 /// A key for storing the file for saving the video
 fileprivate var _avassetwriterfile = "_avassetwriterfile"
 
+/// A key for storing whether the screen recording has been stopped
+fileprivate var _recordingstopped = "_recordingStoppedKey"
+
 /// Extension to support screen recording
 extension UIApplication {
     
@@ -34,6 +37,20 @@ extension UIApplication {
             willChangeValue(forKey: "isScreenRecording")
             objc_setAssociatedObject(self, &_shakeStopRecordingKey, number, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             didChangeValue(forKey: "isScreenRecording")
+        }
+    }
+    
+    /// Flag to know whether screen recording has been stopped. This should be only modified from the main thread
+    var wasScreenRecordingStopped: Bool {
+        get {
+            guard let number = objc_getAssociatedObject(self, &_recordingstopped) as? NSNumber else { return false }
+            return number.boolValue
+        }
+        set(newVal) {
+            let number = NSNumber(booleanLiteral: newVal)
+            willChangeValue(forKey: "wasScreenRecordingStopped")
+            objc_setAssociatedObject(self, &_recordingstopped, number, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            didChangeValue(forKey: "wasScreenRecordingStopped")
         }
     }
     
@@ -83,17 +100,22 @@ extension UIApplication {
         
         let videoWriter =  VideoFileWriter()
         self.videoWriter = videoWriter
+        wasScreenRecordingStopped = false
         
         RPScreenRecorder.shared().delegate = self
         RPScreenRecorder.shared().isMicrophoneEnabled = false
         RPScreenRecorder.shared().startCapture(handler: { [weak self] (buffer, bufferType, error) in
             guard error == nil else { return }
         
-            self?.isScreenRecording = true
-            if self?.screenRecordingIndicator == nil {
-                DispatchQueue.main.async {
-                    let window  = UIView.addRecordingIndicator()
-                    self?.screenRecordingIndicator = window
+            DispatchQueue.main.async {
+                
+                if !(self?.wasScreenRecordingStopped ?? true) {
+                    self?.isScreenRecording = true
+                    if self?.screenRecordingIndicator == nil {
+                        
+                        let window  = UIView.addRecordingIndicator()
+                        self?.screenRecordingIndicator = window
+                    }
                 }
             }
             
@@ -114,6 +136,7 @@ extension UIApplication {
             let loading = UIViewController.topMostViewController?.presentLoading(message: "Stopping capture...")
             RPScreenRecorder.shared().stopCapture { [weak self] (error) in
                 DispatchQueue.main.async {
+                    self?.wasScreenRecordingStopped = true
                     self?.showEndCapture(loading: loading!, error: error)
                     RPScreenRecorder.shared().delegate = nil
                 }

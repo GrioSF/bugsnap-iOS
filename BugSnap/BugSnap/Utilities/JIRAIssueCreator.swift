@@ -31,15 +31,23 @@ public class JIRAIssueCreator: NSObject {
     /// The text to set in the issue
     private var issueText : String!
     
+    /// The description to set in the issue
+    private var descriptionText : String!
+    
     /// The snapshot to set in the issue
-    private var snapshot : UIImage!
+    private var snapshot : UIImage? = nil
+    
+    /// The video url to set as an attachment
+    private var videoURL : URL? = nil
     
     /// MARK: - Facing API
     
     
-    @objc public func createIssue( text : String, snapshot : UIImage ) {
+    @objc public func createIssue( text : String, description : String, snapshot : UIImage? = nil , videoURL : URL? = nil ) {
         issueText = text
+        descriptionText = description
         self.snapshot = snapshot
+        self.videoURL = videoURL
         selectProject()
     }
     
@@ -55,6 +63,19 @@ public class JIRAIssueCreator: NSObject {
             
             guard let strongSelf = self else { return }
             strongSelf.handleAttachmentResponse(issue: issue, errors: errors, caller: strongSelf.uploadImage(issue:))
+        }
+    }
+    
+    /**
+        Uploads the video result of the annotated screen recording.
+        - Parameter issue: The issue created previously with the summary and description provided by the UI.
+     */
+    private func uploadScreenRecording( issue : JIRA.Object ) {
+        loadingViewController?.message = "Uploading video..."
+        JIRARestAPI.sharedInstance.attach(fileURL: videoURL!, mimeType: .mp4Video, issue: issue) { [weak self] (_, errors) in
+            
+            guard let strongSelf = self else { return }
+            strongSelf.handleAttachmentResponse(issue: issue, errors: errors, caller: strongSelf.uploadScreenRecording(issue:))
         }
     }
     
@@ -123,7 +144,7 @@ public class JIRAIssueCreator: NSObject {
                 $0.value = value
             } else if ($0.key ?? "") == "description" {
                 let value = JIRA.IssueField.Value()
-                value.stringValue = issueText
+                value.stringValue = descriptionText
                 $0.value = value
             } else if ($0.key ?? "") == "environment" {
                 let value = JIRA.IssueField.Value()
@@ -159,7 +180,12 @@ public class JIRAIssueCreator: NSObject {
             return
         }
         
-        uploadImage(issue: issueObject)
+        if snapshot != nil {
+            uploadImage(issue: issueObject)
+        } else if videoURL != nil {
+            uploadScreenRecording(issue: issueObject)
+        }
+        
     }
     
     private func handleAttachmentResponse( issue : JIRA.Object , errors : [String]? , caller : @escaping (JIRA.Object)->Void ) {
