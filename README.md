@@ -1,137 +1,56 @@
-# bugsnap-iOS
+## [fastlane match](https://docs.fastlane.tools/actions/match/)
 
-An iOS Library enabling users to report bugs directly from their mobile device.
+This repository contains all your certificates and provisioning profiles needed to build and sign your applications. They are encrypted using OpenSSL via a passphrase.
 
-# Integration
+**Important:** Make sure this repository is set to private and only your team members have access to this repo.
 
-## Source Code Integration
+Do not modify this file, as it gets overwritten every time you run _match_.
 
-### CocoaPods
+### Installation
 
-**BugSnap** can be integrated with **CocoaPods**. In order to get familiar with **CocoaPods** take a look [here](https://cocoapods.org/). On your **Podfile** you need to add the **Pod** for **BugSnap**:
-
-```
-
-pod 'BugSnap', :git => 'https://github.com/GrioSF/bugsnap-iOS.git'
+Make sure you have the latest version of the Xcode command line tools installed:
 
 ```
-
-If you're using **SSH** you can change the line above for the following:
-
-```
-pod 'BugSnap', :git => 'git@github.com:GrioSF/bugsnap-iOS.git'
+xcode-select --install
 ```
 
-For testing the framework as a development POD you can download the repo and use the following sintax:
+Install _fastlane_ using
 
 ```
-pod ‘BugSnap’, :path => ‘~/path-where-you-downloaded-the-repo/bug-snap-ios’
+[sudo] gem install fastlane -NV
 ```
 
-*Note*: We'll update when the pod is public.
+or alternatively using `brew cask install fastlane`
 
-## Enabling the Shake Gesture and JIRA Integration
+### Usage
 
-After you integrate the source code of the framework **bugsnap** you only need to setup your own parameters for connecting to JIRA and enable the shake gesture detection. In order to do that, you need to add the folllowing lines (it's preferrable in the AppDelegate):
-
-```swift
-import BugSnap
-
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-    ...
-    // Enable the shake gesture through UIApplication extension
-    UIApplication.shared.enableShakeGestureSnap()
-    ...
-}
-```
-
-For configuring your connection with JIRA there're a few ways to achieve it:
-
-1) Hard coding the connection URL and provide the credentials at runtime with the login form presented when you try to upload a ticket to JIRA:
-
-```swift
-import BugSnap
-...
-
-// At the application delegate 
-// Configure your server here
-JIRARestAPI.sharedInstance.serverURL = URL(string:"#put your jira server here")
-
-// When the form appears, provide you user/API Token for JIRA
-...
-```
-
-2) Hard coding the connection URL and the credentials in your source code. The API Key is generated in [JIRA API Tokens](https://id.atlassian.com/manage/api-tokens)
-
-```swift
-import BugSnap
-...
-// At the application delegate 
-// Configure your server here
-JIRARestAPI.sharedInstance.serverURL = URL(string:"#put your jira server here")
-// Setup your credentails here
-JIRARestAPI.sharedInstance.setupConnection(userName: "#your user email for JIRA", apiToken: "#Your API Key")
-```
-
-3) Use the Info.plist file for your build and setup the following lines (as strings):
+Navigate to your project folder and run
 
 ```
-JIRA.URL  = '#Your JIRA server'
-JIRA.User = '#Your JIRA email for authentication'
-JIRA.APIKey = '#Your JIRA API Token key'
+fastlane match appstore
+```
+```
+fastlane match adhoc
+```
+```
+fastlane match development
+```
+```
+fastlane match enterprise
 ```
 
-Once you setup these keys in the Info.plist, you need to instruct the library to load them from there; achieving this is easy with the following line:
+For more information open [fastlane match git repo](https://docs.fastlane.tools/actions/match/)
 
-```swift
-import BugSnap
+### Content
 
-...
-// At the application delegate 
-do {
-    try JIRARestAPI.sharedInstance.loadConnectionParameters()
-}
-catch{
-    print("Error while configuring JIRA connection \(error)")
-}
-...
-```
+#### certs
 
-In any case you'll be prompted with the user name/ api token to confirm the credentials and it will try to ping the projects names (fetching only one) in order to verify everything was successfully setup.
+This directory contains all your certificates with their private keys
 
-## Enabling Log Capture
+#### profiles
 
-BugSnap has a feature for **redirecting** the **stderr** to files allowing the target App to attach the last two log files to the issue created in **JIRA**. In order to enable such feature you only have to make the following call in your AppDelegate:
+This directory contains all provisioning profiles
 
-```swift
-import BugSnap
+------------------------------------
 
-...
-UIApplication.shared.redirectLogging()
-...
-```
-
-Such call will have default parameters for the Log files monitoring and creationg.  The API exposed allows to set the approximate file size in kilobytes and the maximum number of files that should reside in the **Logs** directory. In any case, if you wan to download the **sandbox** filesystem with **Xcode** you'll find the log files in the **Caches** subdirectory in the **sandbox** file system. When started the redirection, **BugSnap** will create a new file and will redirect the **stderr** to such file. The benefit of this feature is that statements with **NSLog** will go to these files, so no code change will be required and you can log as required in order to debug your app. Furthermore, **BugSnap** will also monitor the filesystem under the **Logs** directory to allow a maximum number of files. The **Swift** declaration for the method in the UIApplication extension is:
-
-```swift
- @objc func redirectLogging( maxFileSize : UInt = 1024 , maxFiles : UInt = 5) { 
- ...
- }
-```
-
-So by default **BugSnap** will have files of approximately 1 MegaByte and a maximum number of five of these files. Since in  each run a new file is created, the test run will contain just the latest log data generated by your app. To minimize the amount of information sent to **JIRA** only the last two files are attached as a single **Log** file. 
-
-If you want to handle the data of these **Log** files in your app, you can do so with an API exposed by **BugSnap** allowing to gather a single **Data** object with the contents (in order) of the last **n** log files with the **UIApplication** extension provided:
-
-```swift
-@objc static func lastLogs( numFiles : UInt = 2) -> Data? {
-...
-}
-```
-This method is exactly the same method used to gather log data and upload it to **JIRA** as an attachment to the issue created. 
-
-
-# DEMO App Version Management
-
-Version management is done via fastlane. Please check the project specific [fastlane commands](fastlane/README.md) for more details.
+For more information open [fastlane match git repo](https://docs.fastlane.tools/actions/match/)
